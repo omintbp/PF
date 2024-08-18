@@ -1,4 +1,6 @@
-namespace PetFamily.Domain.Entities.Pets;
+using PetFamily.Domain.Entities.Pets;
+
+namespace PetFamily.Domain.Entities.ValueObjects;
 
 public record PaymentDetails
 {

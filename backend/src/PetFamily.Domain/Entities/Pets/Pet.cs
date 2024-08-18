@@ -1,3 +1,4 @@
+using PetFamily.Domain.Entities.ValueObjects;
 using PetFamily.Domain.Enums;
 using PetFamily.Domain.Shared;
 
@@ -10,16 +11,16 @@ public class Pet : Entity<PetId>
         
     }
     
-    private Pet(PetId id, string name, string species, string description, string breedName,
+    private Pet(PetId id, string name, string species, string description, string breed,
         string color, string healthInfo, Address address, double weight, double height,
-        string phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
+        PhoneNumber phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
         HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails) 
         : base(id)
     {
         Name = name;
         Species = species;
         Description = description;
-        BreedName = breedName;
+        Breed = breed;
         Color = color;
         HealthInfo = healthInfo;
         Address = address;
@@ -40,7 +41,7 @@ public class Pet : Entity<PetId>
     
     public string Description { get; private set; }
     
-    public string BreedName { get; private set; }
+    public string Breed { get; private set; }
     
     public string Color { get; private set; }
     
@@ -52,7 +53,7 @@ public class Pet : Entity<PetId>
 
     public double Height { get; private set; }
     
-    public string PhoneNumber { get; private set; } 
+    public PhoneNumber PhoneNumber { get; private set; } 
     
     public bool IsCastrated { get; private set; }
     
@@ -68,7 +69,7 @@ public class Pet : Entity<PetId>
 
     public static Pet Create(PetId id, string name, string species, string description, string breedName,
         string color, string healthInfo, Address address, double weight, double height,
-        string phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
+        PhoneNumber phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
         HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails)
     {
         var pet = new Pet(id, name, species, description, breedName,color,
