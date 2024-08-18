@@ -1,18 +1,17 @@
 using PetFamily.Domain.Entities.Pets;
 using PetFamily.Domain.Entities.ValueObjects;
 using PetFamily.Domain.Enums;
-using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.Volunteers;
 
-public class Volunteer : Entity<VolunteerId>
+public class Volunteer : Shared.Entity<VolunteerId>
 {
     private readonly List<Pet> _pets = [];
 
     private readonly List<SocialNetwork> _socialNetworks = [];
 
-    private Volunteer( VolunteerId id, FullName fullName, EmailAddress email, string description, 
-        int experience, PhoneNumber phoneNumber, PaymentDetails paymentDetails, List<Pet> pets,
+    private Volunteer(VolunteerId id, FullName fullName, EmailAddress email, Description description, 
+        Experience experience, PhoneNumber phoneNumber, PaymentDetails paymentDetails, List<Pet> pets,
         List<SocialNetwork> socialNetworks) : base(id)
     {
         FullName = fullName;
@@ -29,9 +28,9 @@ public class Volunteer : Entity<VolunteerId>
 
     public EmailAddress Email { get; private set; }
     
-    public string Description { get; private set; }
+    public Description Description { get; private set; }
     
-    public int Experience { get; private set; }
+    public Experience Experience { get; private set; }
     
     public PhoneNumber PhoneNumber { get; private set; }
     
@@ -47,8 +46,8 @@ public class Volunteer : Entity<VolunteerId>
     
     public int GetPetsNeedsHelpCount() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
 
-    public static Volunteer Create(VolunteerId id, FullName fullName, EmailAddress email, string description, 
-        int experience, PhoneNumber phoneNumber, PaymentDetails paymentDetails, List<Pet> pets,
+    public static Volunteer Create(VolunteerId id, FullName fullName, EmailAddress email, Description description, 
+        Experience experience, PhoneNumber phoneNumber, PaymentDetails paymentDetails, List<Pet> pets,
         List<SocialNetwork> socialNetworks)
     {
         var volunteer = new Volunteer(id, fullName, email, description, experience, phoneNumber, paymentDetails, pets, socialNetworks);

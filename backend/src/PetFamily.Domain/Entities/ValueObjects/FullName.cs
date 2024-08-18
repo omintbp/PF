@@ -1,3 +1,6 @@
+using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+
 namespace PetFamily.Domain.Entities.ValueObjects;
 
 public record FullName
@@ -15,8 +18,17 @@ public record FullName
 
     public string Patronymic { get; }
 
-    public static FullName Create(string firstName, string surname, string patronymic)
+    public static Result<FullName,Error> Create(string firstName, string surname, string patronymic)
     {
+        if (string.IsNullOrWhiteSpace(firstName))
+            return Errors.General.ValueIsInvalid(nameof(firstName));
+        
+        if (string.IsNullOrWhiteSpace(surname))
+            return Errors.General.ValueIsInvalid(nameof(surname));
+        
+        if (string.IsNullOrWhiteSpace(patronymic))
+            return Errors.General.ValueIsInvalid(nameof(patronymic));
+        
         var fullName = new FullName(firstName, surname, patronymic);
         
         return fullName;
