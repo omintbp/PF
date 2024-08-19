@@ -12,10 +12,24 @@ public class Pet : Entity<PetId>
         
     }
     
-    private Pet(PetId id, string name, string species, string description, string breed,
-        string color, string healthInfo, Address address, double weight, double height,
-        PhoneNumber phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
-        HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails,
+    private Pet(
+        PetId id, 
+        string name, 
+        string species, 
+        string description, 
+        string breed,
+        string color, 
+        string healthInfo, 
+        Address address, 
+        double weight, 
+        double height,
+        PhoneNumber phoneNumber, 
+        bool isCastrated, 
+        DateTime birthday, 
+        bool isVaccinated,
+        HelpStatus helpStatus, 
+        DateTimeOffset createdAt, 
+        PaymentDetails paymentDetails,
         List<PetPhoto> photos) 
         : base(id)
     {
@@ -72,14 +86,45 @@ public class Pet : Entity<PetId>
 
     public IReadOnlyList<PetPhoto> Photos => _photos;
 
-    public static Pet Create(PetId id, string name, string species, string description, string breedName,
-        string color, string healthInfo, Address address, double weight, double height,
-        PhoneNumber phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
-        HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails, List<PetPhoto> photos)
+    public static Pet Create(
+        PetId id,
+        string name,
+        string species,
+        string description,
+        string breedName,
+        string color,
+        string healthInfo,
+        Address address,
+        double weight,
+        double height,
+        PhoneNumber phoneNumber,
+        bool isCastrated,
+        DateTime birthday,
+        bool isVaccinated,
+        HelpStatus helpStatus,
+        DateTimeOffset createdAt, 
+        PaymentDetails paymentDetails, 
+        List<PetPhoto> photos)
     {
-        var pet = new Pet(id, name, species, description, breedName,color,
-            healthInfo, address, weight, height, phoneNumber, isCastrated, birthday,
-            isVaccinated, helpStatus, createdAt, paymentDetails, photos);
+        var pet = new Pet(
+            id, 
+            name, 
+            species, 
+            description, 
+            breedName,
+            color,
+            healthInfo, 
+            address, 
+            weight, 
+            height, 
+            phoneNumber, 
+            isCastrated, 
+            birthday,
+            isVaccinated, 
+            helpStatus, 
+            createdAt, 
+            paymentDetails, 
+            photos);
         
         return pet;
     }
