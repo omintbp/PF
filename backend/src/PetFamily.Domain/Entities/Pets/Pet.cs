@@ -6,6 +6,7 @@ namespace PetFamily.Domain.Entities.Pets;
 
 public class Pet : Entity<PetId>
 {
+    private readonly List<PetPhoto> _photos = [];
     private Pet() 
     {
         
@@ -14,7 +15,8 @@ public class Pet : Entity<PetId>
     private Pet(PetId id, string name, string species, string description, string breed,
         string color, string healthInfo, Address address, double weight, double height,
         PhoneNumber phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
-        HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails) 
+        HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails,
+        List<PetPhoto> photos) 
         : base(id)
     {
         Name = name;
@@ -33,6 +35,7 @@ public class Pet : Entity<PetId>
         HelpStatus = helpStatus;
         CreatedAt = createdAt;
         PaymentDetails = paymentDetails;
+        _photos = photos;
     }
 
     public string Name { get; private set; }
@@ -67,14 +70,16 @@ public class Pet : Entity<PetId>
     
     public DateTimeOffset CreatedAt { get; private set; }
 
+    public IReadOnlyList<PetPhoto> Photos => _photos;
+
     public static Pet Create(PetId id, string name, string species, string description, string breedName,
         string color, string healthInfo, Address address, double weight, double height,
         PhoneNumber phoneNumber, bool isCastrated, DateTime birthday, bool isVaccinated,
-        HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails)
+        HelpStatus helpStatus, DateTimeOffset createdAt, PaymentDetails paymentDetails, List<PetPhoto> photos)
     {
         var pet = new Pet(id, name, species, description, breedName,color,
             healthInfo, address, weight, height, phoneNumber, isCastrated, birthday,
-            isVaccinated, helpStatus, createdAt, paymentDetails);
+            isVaccinated, helpStatus, createdAt, paymentDetails, photos);
         
         return pet;
     }
