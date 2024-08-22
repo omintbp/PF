@@ -5,7 +5,8 @@ namespace PetFamily.Domain.Entities.Pets;
 
 public class PetPhoto : Shared.Entity<PetPhotoId>
 {
-    private PetPhoto()
+    private PetPhoto(PetPhotoId id) 
+        : base(id)
     {
         
     }

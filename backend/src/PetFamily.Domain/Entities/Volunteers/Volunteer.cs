@@ -1,5 +1,5 @@
 using PetFamily.Domain.Entities.Pets;
-using PetFamily.Domain.Entities.ValueObjects;
+using PetFamily.Domain.Entities.SharedValueObjects;
 using PetFamily.Domain.Enums;
 
 namespace PetFamily.Domain.Entities.Volunteers;
@@ -8,20 +8,30 @@ public class Volunteer : Shared.Entity<VolunteerId>
 {
     private readonly List<Pet> _pets = [];
 
-    private readonly List<SocialNetwork> _socialNetworks = [];
+    private Volunteer(VolunteerId id)
+        : base(id)
+    {
+        
+    }
 
-    private Volunteer(VolunteerId id, FullName fullName, EmailAddress email, Description description, 
-        Experience experience, PhoneNumber phoneNumber, PaymentDetails paymentDetails, List<Pet> pets,
-        List<SocialNetwork> socialNetworks) : base(id)
+    private Volunteer(
+        VolunteerId id, 
+        FullName fullName, 
+        EmailAddress email, 
+        Description description, 
+        Experience experience, 
+        PhoneNumber phoneNumber, 
+        VolunteerDetails details, 
+        List<Pet> pets) 
+        : base(id)
     {
         FullName = fullName;
         Email = email;
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        PaymentDetails = paymentDetails;
+        Details = details;
         _pets = pets;
-        _socialNetworks = socialNetworks;
     }
 
     public FullName FullName { get; private set; }
@@ -34,11 +44,10 @@ public class Volunteer : Shared.Entity<VolunteerId>
     
     public PhoneNumber PhoneNumber { get; private set; }
     
-    public PaymentDetails PaymentDetails { get; private set; }
+    public VolunteerDetails Details { get; private set; }
     
     public IReadOnlyCollection<Pet> Pets => _pets;
     
-    public IReadOnlyCollection<SocialNetwork> SocialNetworks => _socialNetworks;
     
     public int GetPetsHomeFoundCount() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
     
@@ -46,11 +55,27 @@ public class Volunteer : Shared.Entity<VolunteerId>
     
     public int GetPetsNeedsHelpCount() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
 
-    public static Volunteer Create(VolunteerId id, FullName fullName, EmailAddress email, Description description, 
-        Experience experience, PhoneNumber phoneNumber, PaymentDetails paymentDetails, List<Pet> pets,
-        List<SocialNetwork> socialNetworks)
+    public static Volunteer Create(
+        VolunteerId id, 
+        FullName fullName, 
+        EmailAddress email, 
+        Description description, 
+        Experience experience, 
+        PhoneNumber phoneNumber, 
+        VolunteerDetails details, 
+        List<Pet> pets
+        )
     {
-        var volunteer = new Volunteer(id, fullName, email, description, experience, phoneNumber, paymentDetails, pets, socialNetworks);
+        var volunteer = new Volunteer(
+            id, 
+            fullName, 
+            email, 
+            description, 
+            experience, 
+            phoneNumber, 
+            details, 
+            pets
+            );
 
         return volunteer;
     } 

@@ -1,7 +1,7 @@
 namespace PetFamily.Domain.Entities.Pets;
 
 public record PetPhotoId
-{ 
+{
     private PetPhotoId(Guid value) 
     { 
         Value = value; 

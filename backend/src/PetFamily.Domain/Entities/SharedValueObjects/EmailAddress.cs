@@ -1,10 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.Entities.ValueObjects;
+namespace PetFamily.Domain.Entities.SharedValueObjects;
 
 public record EmailAddress
 {
@@ -12,7 +10,7 @@ public record EmailAddress
             @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
             @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + 
             @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", RegexOptions.IgnoreCase);
-    
+
     private EmailAddress(string value)
     {
         Value = value;
