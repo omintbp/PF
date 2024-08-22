@@ -58,7 +58,7 @@ public record PetDetails
         if (string.IsNullOrWhiteSpace(healthInfo) || healthInfo.Length > Constants.Pet.MAX_HEALTH_INFO_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(healthInfo));
         
-        if(birthday > DateTime.Now - TimeSpan.FromDays(Constants.Pet.MAX_PET_AGE * 365))
+        if(birthday < DateTime.Now - TimeSpan.FromDays(Constants.Pet.MAX_PET_AGE * 365))
             return Errors.General.ValueIsInvalid(nameof(birthday));
 
         var petDetails = new PetDetails(
