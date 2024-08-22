@@ -12,4 +12,11 @@ public static class Constants
     {
         public static int MAX_EXPERIENCE = 100;
     }
+
+    public static class Pet
+    {
+        public static int MAX_HEALTH_INFO_LENGTH = 8000;
+
+        public static int MAX_PET_AGE = 300;
+    }
 }
