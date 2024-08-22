@@ -1,4 +1,4 @@
-using PetFamily.Domain.Entities.ValueObjects;
+using PetFamily.Domain.Entities.SharedValueObjects;
 using PetFamily.Domain.Enums;
 using PetFamily.Domain.Shared;
 
@@ -7,7 +7,7 @@ namespace PetFamily.Domain.Entities.Pets;
 public class Pet : Entity<PetId>
 {
     private readonly List<PetPhoto> _photos = [];
-    private Pet() 
+    private Pet(PetId id): base(id) 
     {
         
     }

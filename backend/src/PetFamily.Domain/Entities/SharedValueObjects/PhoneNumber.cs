@@ -2,13 +2,13 @@ using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.Entities.ValueObjects;
+namespace PetFamily.Domain.Entities.SharedValueObjects;
 
 public record PhoneNumber
 {
     private static readonly Regex ValidatePhoneNumberRegex = new Regex(
         @"^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$");
-    
+
     private PhoneNumber(string value)
     {
         Value = value;

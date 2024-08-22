@@ -1,6 +1,6 @@
-using PetFamily.Domain.Entities.Pets;
+using PetFamily.Domain.Entities.SharedValueObjects;
 
-namespace PetFamily.Domain.Entities.ValueObjects;
+namespace PetFamily.Domain.Entities.Pets;
 
 public record PaymentDetails
 {
@@ -13,6 +13,8 @@ public record PaymentDetails
         _requisites = requisites;
     }
 
+    private PaymentDetails() {}
+    
     public static PaymentDetails Create(List<Requisite> requisites)
     {
         var details = new PaymentDetails(requisites);
