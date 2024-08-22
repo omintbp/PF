@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.Entities.Pets;
+using PetFamily.Domain.Entities.Species;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Infrastructure.Configurations;
@@ -27,20 +28,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .IsRequired();
         });
         
-        builder.Property(p => p.Species)
-            .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
-            .IsRequired();
-        
         builder.ComplexProperty(p => p.Description, db =>
         {
             db.Property(p => p.Value)
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("description");
         });
-        
-        builder.Property(p => p.Breed)
-            .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
-            .IsRequired();
         
         builder.ComplexProperty(p => p.Details, db =>
         {
@@ -93,8 +86,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
         });
 
-
-
         builder.ComplexProperty(p => p.PhoneNumber, pb =>
         {
             pb.Property(phone => phone.Value)
@@ -103,8 +94,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .IsRequired();
         });
 
- 
-        
         builder.Property(p => p.HelpStatus).HasConversion<string>()
             .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
         
@@ -123,6 +112,18 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                     .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                     .IsRequired();
             });
+        });
+
+        builder.ComplexProperty(p => p.SpeciesDetails, db =>
+        {
+            db.Property(d => d.SpeciesId)
+                .HasConversion(
+                    id => id.Value,
+                    id => SpeciesId.Create(id))
+                .HasColumnName("species_id");
+
+            db.Property(d => d.BreedId)
+                .HasColumnName("breed_id");
         });
 
         builder.HasMany(p => p.Photos)
