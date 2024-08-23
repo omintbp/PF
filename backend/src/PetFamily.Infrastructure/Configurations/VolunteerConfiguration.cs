@@ -69,7 +69,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
         builder.OwnsOne(v => v.Details, vb =>
         {
-            vb.ToJson();
+            vb.ToJson("details");
             
             vb.OwnsMany(p => p.Requisites, rb =>
             {

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Domain.Entities.Pets;
 using PetFamily.Domain.Entities.Species;
+using PetFamily.Domain.Entities.Volunteers.Pets;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Infrastructure.Configurations;
@@ -101,7 +101,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         
         builder.OwnsOne(p => p.PaymentDetails, pb =>
         {
-            pb.ToJson();
+            pb.ToJson("payment_details");
 
             pb.OwnsMany(d => d.Requisites, rb =>
             {

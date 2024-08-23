@@ -1,6 +1,6 @@
 using PetFamily.Domain.Entities.SharedValueObjects;
 
-namespace PetFamily.Domain.Entities.Pets;
+namespace PetFamily.Domain.Entities.Volunteers.Pets;
 
 public record PaymentDetails
 {
