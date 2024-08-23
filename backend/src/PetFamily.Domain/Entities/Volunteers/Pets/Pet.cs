@@ -2,7 +2,7 @@ using PetFamily.Domain.Entities.SharedValueObjects;
 using PetFamily.Domain.Enums;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.Entities.Pets;
+namespace PetFamily.Domain.Entities.Volunteers.Pets;
 
 public class Pet : Entity<PetId>
 {
@@ -13,7 +13,7 @@ public class Pet : Entity<PetId>
         
     }
     
-    private Pet(
+    public Pet(
         PetId id, 
         PetName name, 
         Description description, 
@@ -58,36 +58,4 @@ public class Pet : Entity<PetId>
     public SpeciesDetails SpeciesDetails { get; private set; }
 
     public IReadOnlyList<PetPhoto> Photos => _photos;
-
-    public static Pet Create(
-        PetId id, 
-        PetName name, 
-        Description description, 
-        Address address, 
-        PhoneNumber phoneNumber, 
-        DateTime birthday, 
-        HelpStatus helpStatus, 
-        DateTimeOffset createdAt, 
-        PaymentDetails paymentDetails,
-        PetDetails details,
-        List<PetPhoto> photos,
-        SpeciesDetails speciesDetails
-        )
-    {
-        var pet = new Pet(
-           id, 
-           name, 
-           description, 
-           address, 
-           phoneNumber, 
-           helpStatus, 
-           createdAt, 
-           paymentDetails, 
-           details, 
-           photos,
-           speciesDetails
-           );
-        
-        return pet;
-    }
 }

@@ -1,6 +1,6 @@
 using PetFamily.Domain.Entities.Species;
 
-namespace PetFamily.Domain.Entities.Pets;
+namespace PetFamily.Domain.Entities.Volunteers.Pets;
 
 public record SpeciesDetails
 {

@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.Entities.Pets;
+namespace PetFamily.Domain.Entities.Volunteers.Pets;
 
 public record PetName
 {

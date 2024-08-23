@@ -1,5 +1,5 @@
-using PetFamily.Domain.Entities.Pets;
 using PetFamily.Domain.Entities.SharedValueObjects;
+using PetFamily.Domain.Entities.Volunteers.Pets;
 using PetFamily.Domain.Enums;
 
 namespace PetFamily.Domain.Entities.Volunteers;
@@ -14,7 +14,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         
     }
 
-    private Volunteer(
+    public Volunteer(
         VolunteerId id, 
         FullName fullName, 
         EmailAddress email, 
@@ -54,29 +54,4 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public int GetPetsLookingForHomeCount() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
     
     public int GetPetsNeedsHelpCount() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
-
-    public static Volunteer Create(
-        VolunteerId id, 
-        FullName fullName, 
-        EmailAddress email, 
-        Description description, 
-        Experience experience, 
-        PhoneNumber phoneNumber, 
-        VolunteerDetails details, 
-        List<Pet> pets
-        )
-    {
-        var volunteer = new Volunteer(
-            id, 
-            fullName, 
-            email, 
-            description, 
-            experience, 
-            phoneNumber, 
-            details, 
-            pets
-            );
-
-        return volunteer;
-    } 
 }
