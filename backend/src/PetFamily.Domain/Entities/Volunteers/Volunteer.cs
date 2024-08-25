@@ -11,17 +11,17 @@ public class Volunteer : Shared.Entity<VolunteerId>
     private Volunteer(VolunteerId id)
         : base(id)
     {
-        
     }
 
     public Volunteer(
-        VolunteerId id, 
-        FullName fullName, 
-        EmailAddress email, 
-        Description description, 
-        Experience experience, 
-        PhoneNumber phoneNumber, 
-        VolunteerDetails details) 
+        VolunteerId id,
+        FullName fullName,
+        EmailAddress email,
+        Description description,
+        Experience experience,
+        PhoneNumber phoneNumber,
+        VolunteerRequisites requisites,
+        VolunteerSocialNetworks socialNetworks)
         : base(id)
     {
         FullName = fullName;
@@ -29,27 +29,29 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description = description;
         Experience = experience;
         PhoneNumber = phoneNumber;
-        Details = details;
+        Requisites = requisites;
+        SocialNetworks = socialNetworks;
     }
 
     public FullName FullName { get; private set; }
 
     public EmailAddress Email { get; private set; }
-    
+
     public Description Description { get; private set; }
-    
+
     public Experience Experience { get; private set; }
-    
+
     public PhoneNumber PhoneNumber { get; private set; }
-    
-    public VolunteerDetails Details { get; private set; }
-    
+
+    public VolunteerRequisites Requisites { get; private set; }
+
+    public VolunteerSocialNetworks SocialNetworks { get; private set; }
+
     public IReadOnlyCollection<Pet> Pets => _pets;
-    
-    
+
     public int GetPetsHomeFoundCount() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
-    
+
     public int GetPetsLookingForHomeCount() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
-    
+
     public int GetPetsNeedsHelpCount() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
 }

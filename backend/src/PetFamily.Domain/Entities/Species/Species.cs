@@ -6,20 +6,19 @@ namespace PetFamily.Domain.Entities.Species;
 public class Species : Entity<SpeciesId>
 {
     private readonly List<Breed> _breeds = [];
-    
-    private Species(SpeciesId id) 
+
+    private Species(SpeciesId id)
         : base(id)
     {
-        
     }
-    
-    private Species(SpeciesId id, SpeciesName name,  List<Breed> breeds) 
+
+    private Species(SpeciesId id, SpeciesName name, List<Breed> breeds)
         : base(id)
     {
         Name = name;
         _breeds = breeds;
     }
-    
+
     public SpeciesName Name { get; private set; }
 
     public IReadOnlyList<Breed> Breeds => _breeds;

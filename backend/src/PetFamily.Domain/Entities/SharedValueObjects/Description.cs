@@ -9,7 +9,7 @@ public record Description
     {
         Value = value;
     }
-    
+
     public string? Value { get; }
 
     public static Result<Description, Error> Create(string? value)
@@ -18,7 +18,7 @@ public record Description
             return Errors.General.ValueIsInvalid(nameof(Description));
 
         var description = new Description(value);
-        
+
         return description;
     }
 }

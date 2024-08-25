@@ -13,14 +13,14 @@ public record PhoneNumber
     {
         Value = value;
     }
-    
+
     public string Value { get; }
 
     public static Result<PhoneNumber, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || !ValidatePhoneNumberRegex.IsMatch(value))
             return Errors.General.ValueIsInvalid(nameof(PhoneNumber));
-        
+
         var phoneNumber = new PhoneNumber(value);
 
         return phoneNumber;

@@ -6,7 +6,7 @@ namespace PetFamily.Domain.Entities.Species.Breeds;
 public record BreedName
 {
     private BreedName(string value)
-    { 
+    {
         Value = value;
     }
 

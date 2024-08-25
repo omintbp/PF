@@ -11,14 +11,14 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
     public void Configure(EntityTypeBuilder<Pet> builder)
     {
         builder.ToTable("pets");
-        
+
         builder.HasKey(p => p.Id);
-        
+
         builder.Property(p => p.Id)
             .HasConversion(
                 id => id.Value,
                 id => PetId.Create(id)
-                );
+            );
 
         builder.ComplexProperty(p => p.Name, nb =>
         {
@@ -27,39 +27,39 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("name")
                 .IsRequired();
         });
-        
+
         builder.ComplexProperty(p => p.Description, db =>
         {
             db.Property(p => p.Value)
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("description");
         });
-        
+
         builder.ComplexProperty(p => p.Details, db =>
         {
             db.Property(d => d.Birthday)
                 .HasColumnName("birthday_date")
                 .IsRequired();
-            
+
             db.Property(p => p.Weight)
                 .HasColumnName("weight");
 
             db.Property(p => p.Height)
                 .HasColumnName("height");
-            
+
             db.Property(p => p.HealthInfo)
                 .HasMaxLength(Constants.Pet.MAX_HEALTH_INFO_LENGTH)
                 .HasColumnName("health_info")
                 .IsRequired();
-            
+
             db.Property(p => p.Color)
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("color")
                 .IsRequired();
-            
+
             db.Property(p => p.IsCastrated)
                 .HasColumnName("is_castrated");
-        
+
             db.Property(p => p.IsVaccinated)
                 .HasColumnName("is_vaccinated");
         });
@@ -96,9 +96,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.HelpStatus).HasConversion<string>()
             .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
-        
+
         builder.Property(p => p.CreatedAt);
-        
+
         builder.OwnsOne(p => p.PaymentDetails, pb =>
         {
             pb.ToJson("payment_details");

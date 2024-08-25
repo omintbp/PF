@@ -10,27 +10,27 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
     public void Configure(EntityTypeBuilder<Volunteer> builder)
     {
         builder.ToTable("volunteers");
-        
+
         builder.HasKey(v => v.Id);
 
         builder.Property(v => v.Id)
             .HasConversion(
-                id => id.Value, 
+                id => id.Value,
                 value => VolunteerId.Create(value)
-                );
-        
+            );
+
         builder.ComplexProperty(v => v.FullName, nb =>
         {
             nb.Property(n => n.FirstName)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("first_name");
-            
+
             nb.Property(n => n.Patronymic)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("patronymic");
-            
+
             nb.Property(n => n.Surname)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
@@ -44,7 +44,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
         });
-        
+
         builder.ComplexProperty(v => v.Description, db =>
         {
             db.Property(d => d.Value)
@@ -52,13 +52,13 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .IsRequired(false)
                 .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH);
         });
-        
+
         builder.ComplexProperty(v => v.Experience, eb =>
         {
             eb.Property(d => d.Value)
                 .HasColumnName("experience");
         });
-        
+
         builder.ComplexProperty(v => v.PhoneNumber, pb =>
         {
             pb.Property(p => p.Value)
@@ -67,11 +67,11 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .IsRequired();
         });
 
-        builder.OwnsOne(v => v.Details, vb =>
+        builder.OwnsOne(v => v.Requisites, vb =>
         {
-            vb.ToJson("details");
-            
-            vb.OwnsMany(p => p.Requisites, rb =>
+            vb.ToJson("requisites");
+
+            vb.OwnsMany(p => p.Values, rb =>
             {
                 rb.Property(r => r.Name)
                     .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
@@ -81,13 +81,18 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                     .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH)
                     .IsRequired(false);
             });
-            
-            vb.OwnsMany(p => p.SocialNetworks, rb =>
+        });
+
+        builder.OwnsOne(v => v.SocialNetworks, vb =>
+        {
+            vb.ToJson("social_networks");
+
+            vb.OwnsMany(p => p.Values, rb =>
             {
                 rb.Property(r => r.Name)
                     .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                     .IsRequired();
-                
+
                 rb.Property(r => r.Url)
                     .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
                     .IsRequired();

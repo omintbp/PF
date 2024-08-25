@@ -35,7 +35,8 @@ namespace PetFamily.Infrastructure.Migrations
                     patronymic = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     surname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    details = table.Column<string>(type: "jsonb", nullable: false)
+                    requisites = table.Column<string>(type: "jsonb", nullable: false),
+                    social_networks = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,7 +74,7 @@ namespace PetFamily.Infrastructure.Migrations
                     address_flat = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     address_house = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     address_street = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     birthday_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     health_info = table.Column<string>(type: "character varying(8000)", maxLength: 8000, nullable: false),

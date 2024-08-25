@@ -9,7 +9,7 @@ public record Experience
     {
         Value = value;
     }
-    
+
     public int Value { get; }
 
     public static Result<Experience, Error> Create(int value)
@@ -18,7 +18,7 @@ public record Experience
             return Errors.General.ValueIsInvalid(nameof(Experience));
 
         var experience = new Experience(value);
-        
+
         return experience;
     }
 }
