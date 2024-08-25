@@ -21,8 +21,7 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Description description, 
         Experience experience, 
         PhoneNumber phoneNumber, 
-        VolunteerDetails details, 
-        List<Pet> pets) 
+        VolunteerDetails details) 
         : base(id)
     {
         FullName = fullName;
@@ -31,7 +30,6 @@ public class Volunteer : Shared.Entity<VolunteerId>
         Experience = experience;
         PhoneNumber = phoneNumber;
         Details = details;
-        _pets = pets;
     }
 
     public FullName FullName { get; private set; }

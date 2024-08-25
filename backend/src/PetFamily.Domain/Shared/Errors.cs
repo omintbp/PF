@@ -8,7 +8,7 @@ public static class Errors
         {
             var label = name ?? "value";
             
-            return Error.Validation($"{label}.is.invalid", $"{label} is invalid");
+            return Error.Validation($"value.is.invalid", $"{label} is invalid");
         }
     }
 }
