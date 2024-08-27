@@ -1,6 +1,7 @@
 using PetFamily.Application.Volunteers;
 using PetFamily.Application.Volunteers.CreateVolunteer;
-using PetFamily.Domain.Entities.Volunteers;
+using PetFamily.Domain.PetManagement.AggregateRoot;
+using PetFamily.Domain.Shared.IDs;
 
 namespace PetFamily.Infrastructure.Repositories;
 

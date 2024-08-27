@@ -1,5 +1,3 @@
-using PetFamily.Domain.Enums;
-
 namespace PetFamily.Domain.Shared;
 
 public record Error

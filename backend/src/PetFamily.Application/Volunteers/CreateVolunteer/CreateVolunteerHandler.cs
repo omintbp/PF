@@ -1,7 +1,9 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Domain.Entities.SharedValueObjects;
-using PetFamily.Domain.Entities.Volunteers;
+using PetFamily.Domain.PetManagement.AggregateRoot;
+using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.IDs;
+using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 

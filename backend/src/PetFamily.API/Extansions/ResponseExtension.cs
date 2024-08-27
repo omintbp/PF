@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Response;
-using PetFamily.Domain.Enums;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.API.Extansions;
