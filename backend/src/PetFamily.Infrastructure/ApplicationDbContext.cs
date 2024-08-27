@@ -2,19 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PetFamily.Domain.Entities.Species;
-using PetFamily.Domain.Entities.Volunteers;
+using PetFamily.Domain.PetManagement.AggregateRoot;
+using PetFamily.Domain.SpeciesManagement.AggregateRoot;
 
 namespace PetFamily.Infrastructure;
 
 public class ApplicationDbContext(IConfiguration configuration) : DbContext
 {
     private const string DATABASE = "PetFamily";
-    
+
     public DbSet<Volunteer> Volunteers => Set<Volunteer>();
 
     public DbSet<Species> Species => Set<Species>();
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString(DATABASE));

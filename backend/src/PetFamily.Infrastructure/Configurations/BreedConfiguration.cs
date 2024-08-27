@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Domain.Entities.Species.Breeds;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.IDs;
+using PetFamily.Domain.SpeciesManagement.Entities;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -10,9 +11,9 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
     public void Configure(EntityTypeBuilder<Breed> builder)
     {
         builder.ToTable("breeds");
-        
+
         builder.HasKey(b => b.Id);
-        
+
         builder.Property(b => b.Id)
             .HasConversion(
                 id => id.Value,

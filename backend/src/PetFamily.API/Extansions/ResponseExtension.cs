@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Response;
-using PetFamily.Domain.Enums;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.API.Extansions;
@@ -21,7 +20,7 @@ public static class ResponseExtension
         var responseError = new ResponseError(error.Code, error.Message, null);
 
         var envelope = Envelope.Error([responseError]);
-        
+
         return new ObjectResult(envelope)
         {
             StatusCode = statusCode,

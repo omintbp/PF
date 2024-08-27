@@ -2,7 +2,7 @@ using PetFamily.Application.SharedDTOs;
 
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
-public record CreateVolunteerRequest( 
+public record CreateVolunteerRequest(
     string FirstName,
     string Surname,
     string Patronymic,
@@ -10,6 +10,6 @@ public record CreateVolunteerRequest(
     string? Description,
     int Experience,
     string PhoneNumber,
-    List<SocialNetworkDto> SocialNetworks,
-    List<RequisiteDto> Requisites
-    );
+    IEnumerable<SocialNetworkDto> SocialNetworks,
+    IEnumerable<RequisiteDto> Requisites
+);
