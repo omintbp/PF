@@ -10,6 +10,8 @@ public record EmailAddress
         @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
         @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", RegexOptions.IgnoreCase);
 
+    public static int MAX_EMAIL_LENGTH = 250;
+    
     private EmailAddress(string value)
     {
         Value = value;
@@ -19,7 +21,9 @@ public record EmailAddress
 
     public static Result<EmailAddress, Error> Create(string value)
     {
-        if (string.IsNullOrEmpty(value) || !ValidationRegex.IsMatch(value))
+        if (string.IsNullOrEmpty(value) 
+            || !ValidationRegex.IsMatch(value)
+            || value.Length > MAX_EMAIL_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(EmailAddress));
 
         var email = new EmailAddress(value);

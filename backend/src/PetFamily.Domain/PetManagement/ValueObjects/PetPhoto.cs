@@ -6,6 +6,7 @@ namespace PetFamily.Domain.PetManagement.ValueObjects;
 
 public class PetPhoto : Shared.Entity<PetPhotoId>
 {
+    public const int MAX_PATH_LENGTH = 8000;
     private PetPhoto(PetPhotoId id) 
         : base(id)
     {
@@ -24,7 +25,7 @@ public class PetPhoto : Shared.Entity<PetPhotoId>
 
     public static Result<PetPhoto, Error> Create(PetPhotoId id, string path, bool isMain)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        if (string.IsNullOrWhiteSpace(path) || path.Length > MAX_PATH_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(path));
         
         var petPhoto = new PetPhoto(id, path, isMain);

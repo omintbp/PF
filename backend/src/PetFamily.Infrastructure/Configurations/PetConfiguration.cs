@@ -1,8 +1,11 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.PetManagement.Entities;
+using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
+using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -31,7 +34,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.ComplexProperty(p => p.Description, db =>
         {
             db.Property(p => p.Value)
-                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
+                .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH)
                 .HasColumnName("description");
         });
 
@@ -48,7 +51,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("height");
 
             db.Property(p => p.HealthInfo)
-                .HasMaxLength(Constants.Pet.MAX_HEALTH_INFO_LENGTH)
+                .HasMaxLength(PetDetails.MAX_HEALTH_INFO_LENGTH)
                 .HasColumnName("health_info")
                 .IsRequired();
 
@@ -89,12 +92,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.ComplexProperty(p => p.PhoneNumber, pb =>
         {
             pb.Property(phone => phone.Value)
-                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
+                .HasMaxLength(PhoneNumber.MAX_PHONE_NUMBER_LENGTH)
                 .HasColumnName("phone_number")
                 .IsRequired();
         });
 
-        builder.Property(p => p.HelpStatus).HasConversion<string>()
+        builder.Property(p => p.HelpStatus)
+            .HasConversion<string>()
             .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
 
         builder.Property(p => p.CreatedAt);

@@ -50,9 +50,21 @@ public class Volunteer : Shared.Entity<VolunteerId>
 
     public IReadOnlyCollection<Pet> Pets => _pets;
 
-    public int GetPetsHomeFoundCount() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
+    public int GetPetsHomeFoundCount() =>
+        _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
 
-    public int GetPetsLookingForHomeCount() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
+    public int GetPetsLookingForHomeCount() =>
+        _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
 
-    public int GetPetsNeedsHelpCount() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
+    public int GetPetsNeedsHelpCount() =>
+        _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
+
+    public void AddPet(Pet pet) =>
+        _pets.Add(pet);
+
+    public void UpdateRequisites(VolunteerRequisites requisites) =>
+        Requisites = requisites;
+
+    public void UpdateSocialNetworks(VolunteerSocialNetworks socialNetworks) =>
+        SocialNetworks = socialNetworks;
 }
