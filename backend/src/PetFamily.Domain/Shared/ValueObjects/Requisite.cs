@@ -16,10 +16,10 @@ public record Requisite
 
     public static Result<Requisite, Error> Create(string name, string description)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(name));
 
-        if (string.IsNullOrWhiteSpace(description))
+        if (string.IsNullOrWhiteSpace(description) || name.Length > Constants.MAX_MEDIUM_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(description));
 
         var requisite = new Requisite(name, description);

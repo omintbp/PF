@@ -5,6 +5,10 @@ namespace PetFamily.Domain.PetManagement.ValueObjects;
 
 public record PetDetails
 {
+    public static int MAX_HEALTH_INFO_LENGTH = 8000;
+    
+    public static int MAX_PET_AGE = 300;
+
     private PetDetails(
         double weight, 
         double height, 
@@ -55,10 +59,10 @@ public record PetDetails
         if(string.IsNullOrWhiteSpace(color) || color.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(color));
         
-        if (string.IsNullOrWhiteSpace(healthInfo) || healthInfo.Length > Constants.Pet.MAX_HEALTH_INFO_LENGTH)
+        if (string.IsNullOrWhiteSpace(healthInfo) || healthInfo.Length > MAX_HEALTH_INFO_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(healthInfo));
         
-        if(birthday < DateTime.Now - TimeSpan.FromDays(Constants.Pet.MAX_PET_AGE * 365))
+        if(birthday < DateTime.Now - TimeSpan.FromDays(MAX_PET_AGE * 365))
             return Errors.General.ValueIsInvalid(nameof(birthday));
 
         var petDetails = new PetDetails(
@@ -68,8 +72,7 @@ public record PetDetails
             isVaccinated, 
             color, 
             healthInfo, 
-            birthday
-            );
+            birthday);
 
         return petDetails;
     }

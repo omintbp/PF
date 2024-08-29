@@ -5,6 +5,8 @@ namespace PetFamily.Domain.PetManagement.ValueObjects;
 
 public record SocialNetwork
 {
+    public static int MAX_URL_LENGTH = 8000;
+
     private SocialNetwork(string url, string name)
     {
         Url = url;
@@ -17,10 +19,12 @@ public record SocialNetwork
 
     public static Result<SocialNetwork, Error> Create(string url, string name)
     {
-        if (string.IsNullOrWhiteSpace(url) || !Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+        if (string.IsNullOrWhiteSpace(url)
+            || !Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute)
+            || url.Length > MAX_URL_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(url));
 
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(name));
 
         var socialNetwork = new SocialNetwork(url, name);

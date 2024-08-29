@@ -5,7 +5,7 @@ namespace PetFamily.Domain.PetManagement.ValueObjects;
 
 public record FullName
 {
-    private FullName(string firstName, string surname, string patronymic)
+    private FullName(string firstName, string surname, string? patronymic)
     {
         FirstName = firstName;
         Surname = surname;
@@ -16,17 +16,17 @@ public record FullName
 
     public string Surname { get; }
 
-    public string Patronymic { get; }
+    public string? Patronymic { get; }
 
-    public static Result<FullName, Error> Create(string firstName, string surname, string patronymic)
+    public static Result<FullName, Error> Create(string firstName, string surname, string? patronymic)
     {
-        if (string.IsNullOrWhiteSpace(firstName))
+        if (string.IsNullOrWhiteSpace(firstName) || firstName.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(firstName));
 
-        if (string.IsNullOrWhiteSpace(surname))
+        if (string.IsNullOrWhiteSpace(surname) || surname.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(surname));
 
-        if (string.IsNullOrWhiteSpace(patronymic))
+        if (patronymic?.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(patronymic));
 
         var fullName = new FullName(firstName, surname, patronymic);

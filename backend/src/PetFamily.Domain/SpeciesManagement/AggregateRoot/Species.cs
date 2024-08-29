@@ -31,4 +31,6 @@ public class Species : Entity<SpeciesId>
 
         return species;
     }
+
+    public void AddBreed(Breed breed) => _breeds.Add(breed);
 }
