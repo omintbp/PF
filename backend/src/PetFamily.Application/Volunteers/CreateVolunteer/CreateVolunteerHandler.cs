@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -22,71 +24,38 @@ public sealed class CreateVolunteerHandler
     {
         var volunteerId = VolunteerId.NewVolunteerId();
 
-        var email = EmailAddress.Create(request.Email);
+        var email = EmailAddress.Create(request.Email).Value;
 
-        if (email.IsFailure)
-            return email.Error;
+        var fullName = FullName.Create(
+                request.FullName.FirstName, 
+                request.FullName.Surname, 
+                request.FullName.Patronymic)
+            .Value;
 
-        var fullName = FullName.Create(request.FirstName, request.Surname, request.Patronymic);
+        var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
 
-        if (fullName.IsFailure)
-            return fullName.Error;
+        var description = Description.Create(request.Description).Value;
 
-        var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
-
-        if (phoneNumber.IsFailure)
-            return phoneNumber.Error;
-
-        var description = Description.Create(request.Description);
-
-        if (description.IsFailure)
-            return description.Error;
-
-        var experience = Experience.Create(request.Experience);
-
-        if (experience.IsFailure)
-            return experience.Error;
+        var experience = Experience.Create(request.Experience).Value;
 
         var requisites = request.Requisites
-            .Select(r => Requisite.Create(r.Name, r.Description))
-            .ToList();
-
-        if (requisites.Any(r => r.IsFailure))
-        {
-            var requisitesErrors = requisites.Where(r => r.IsFailure)
-                .Select(r => r.Error.Message);
-
-            var errorMessage = string.Join(';', requisitesErrors);
-
-            return Error.Validation("values.is.invalid", errorMessage);
-        }
+            .Select(r => Requisite.Create(r.Name, r.Description).Value);
 
         var socialNetworks = request.SocialNetworks
-            .Select(s => SocialNetwork.Create(s.Url, s.Name))
-            .ToList();
+            .Select(s => SocialNetwork.Create(s.Url, s.Name).Value);
 
-        if (socialNetworks.Any(s => s.IsFailure))
-        {
-            var socialNetworksErrors = socialNetworks.Where(r => r.IsFailure)
-                .Select(r => r.Error.Message);
-
-            var errorMessage = string.Join(';', socialNetworksErrors);
-
-            return Error.Validation("values.is.invalid", errorMessage);
-        }
-
-        var requisitesResult = new VolunteerRequisites(requisites.Select(r => r.Value));
-        var socialNetworksResult = new VolunteerSocialNetworks(socialNetworks.Select(s => s.Value));
+        var volunteerRequisites = new VolunteerRequisites(requisites);
+        var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);
 
         var volunteer = new Volunteer(
             volunteerId,
-            fullName.Value,
-            email.Value,
-            description.Value,
-            experience.Value,
-            phoneNumber.Value,
-            requisitesResult,
-            socialNetworksResult
+            fullName,
+            email,
+            description,
+            experience,
+            phoneNumber,
+            volunteerRequisites,
+            volunteerSocialNetworks
         );
 
         var id = await _repository.Add(volunteer, cancellationToken);

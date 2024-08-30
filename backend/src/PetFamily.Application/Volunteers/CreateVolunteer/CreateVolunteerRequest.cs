@@ -3,9 +3,7 @@ using PetFamily.Application.SharedDTOs;
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public record CreateVolunteerRequest(
-    string FirstName,
-    string Surname,
-    string Patronymic,
+    FullNameDto FullName,
     string Email,
     string? Description,
     int Experience,
