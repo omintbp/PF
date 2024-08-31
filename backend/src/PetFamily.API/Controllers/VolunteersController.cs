@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.API.Extansions;
+using PetFamily.API.Extensions;
 using PetFamily.Application.Volunteers.CreateVolunteer;
 
 namespace PetFamily.API.Controllers;

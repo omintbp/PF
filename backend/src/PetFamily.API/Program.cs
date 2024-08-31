@@ -1,4 +1,5 @@
 using PetFamily.API;
+using PetFamily.API.Middlewares;
 using PetFamily.Application;
 using PetFamily.Infrastructure;
 
@@ -10,6 +11,8 @@ builder.Services
     .AddApplication();
 
 var app = builder.Build();
+
+app.UseExceptionHandleMiddleware();
 
 if (app.Environment.IsDevelopment())
 {
