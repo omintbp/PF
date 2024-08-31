@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Response;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.API.Extansions;
+namespace PetFamily.API.Extensions;
 
 public static class ResponseExtension
 {
