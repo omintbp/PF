@@ -29,6 +29,16 @@ services:
     networks:
       - custom_network
     restart: always
+  
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:5341
+      - 8081:80
 
 networks:
   custom_network:
