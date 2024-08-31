@@ -20,4 +20,13 @@ public static class CustomValidator
             context.AddFailure(result.Error.Serialize());
         });
     }
+
+    public static IRuleBuilder<T, TElement> WithError<T, TElement>(
+        this IRuleBuilderOptions<T, TElement> ruleBuilder,
+        Error error)
+    {
+        ruleBuilder.WithMessage(error.Serialize());
+
+        return ruleBuilder;
+    }
 }
