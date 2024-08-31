@@ -3,7 +3,7 @@ using PetFamily.Application.Validation;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Create;
 
 public class CreateVolunteerRequestValidator : AbstractValidator<CreateVolunteerRequest>
 {
