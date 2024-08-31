@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -12,10 +13,14 @@ namespace PetFamily.Application.Volunteers.CreateVolunteer;
 public sealed class CreateVolunteerHandler
 {
     private readonly IVolunteerRepository _repository;
+    private readonly ILogger<CreateVolunteerHandler> _logger;
 
-    public CreateVolunteerHandler(IVolunteerRepository repository)
+    public CreateVolunteerHandler(
+        IVolunteerRepository repository,
+        ILogger<CreateVolunteerHandler> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
 
     public async Task<Result<Guid, Error>> Handle(
@@ -59,6 +64,8 @@ public sealed class CreateVolunteerHandler
         );
 
         var id = await _repository.Add(volunteer, cancellationToken);
+        
+        _logger.LogInformation("Created volunteer with ID: {id}", id);
 
         return id.Value;
     }
