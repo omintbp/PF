@@ -99,10 +99,14 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                     .IsRequired();
             });
         });
-
+        
         builder.HasMany(v => v.Pets)
             .WithOne()
-            .OnDelete(DeleteBehavior.NoAction)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasForeignKey("volunteer_id");
+        
+        builder.Property<bool>("_isDeleted")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasColumnName("is_deleted");
     }
 }

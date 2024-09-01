@@ -1,12 +1,15 @@
 using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Domain.PetManagement.AggregateRoot;
 
-public class Volunteer : Shared.Entity<VolunteerId>
+public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
 {
+    private bool _isDeleted = false;
+    
     private readonly List<Pet> _pets = [];
 
     private Volunteer(VolunteerId id)
@@ -79,4 +82,24 @@ public class Volunteer : Shared.Entity<VolunteerId>
 
     public void UpdateSocialNetworks(VolunteerSocialNetworks socialNetworks) =>
         SocialNetworks = socialNetworks;
+
+    public void Delete()
+    {
+        _isDeleted = true;
+
+        foreach (var pet in _pets)
+        {
+            pet.Delete();
+        }
+    }
+
+    public void Restore()
+    {
+        _isDeleted = false;
+        
+        foreach (var pet in _pets)
+        {
+            pet.Restore();
+        }
+    }
 }
