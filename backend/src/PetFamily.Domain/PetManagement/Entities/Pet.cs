@@ -5,8 +5,10 @@ using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Domain.PetManagement.Entities;
 
-public class Pet : Entity<PetId>
+public class Pet : Entity<PetId>, ISoftDeletable
 {
+    private bool _isDeleted = false;
+    
     private readonly List<PetPhoto> _photos = [];
 
     private Pet(PetId id) : base(id)
@@ -60,4 +62,13 @@ public class Pet : Entity<PetId>
     public IReadOnlyList<PetPhoto> Photos => _photos;
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
+    public void Delete()
+    {
+        _isDeleted = true;
+    }
+
+    public void Restore()
+    {
+        _isDeleted = false;
+    }
 }

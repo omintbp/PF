@@ -8,7 +8,7 @@ public record PaymentDetails
 
     private PaymentDetails() {}
 
-    private PaymentDetails(List<Requisite> requisites)
+    public PaymentDetails(List<Requisite> requisites)
     {
         Requisites = requisites;
     }

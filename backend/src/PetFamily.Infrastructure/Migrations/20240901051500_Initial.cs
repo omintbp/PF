@@ -28,6 +28,7 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     experience = table.Column<int>(type: "integer", nullable: false),
@@ -68,13 +69,14 @@ namespace PetFamily.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     help_status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     address_city = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     address_country = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    address_flat = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    address_flat = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     address_house = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     address_street = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     birthday_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     health_info = table.Column<string>(type: "character varying(8000)", maxLength: 8000, nullable: false),
@@ -83,7 +85,7 @@ namespace PetFamily.Infrastructure.Migrations
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     weight = table.Column<double>(type: "double precision", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    phone_number = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     payment_details = table.Column<string>(type: "jsonb", nullable: false)
@@ -95,7 +97,8 @@ namespace PetFamily.Infrastructure.Migrations
                         name: "fk_pets_volunteers_volunteer_id",
                         column: x => x.volunteer_id,
                         principalTable: "volunteers",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

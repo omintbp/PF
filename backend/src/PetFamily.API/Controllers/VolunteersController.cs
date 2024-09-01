@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.Application.Volunteers.Create;
+using PetFamily.Application.Volunteers.Delete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateRequisites;
 using PetFamily.Application.Volunteers.UpdateSocialNetworks;
@@ -89,6 +90,28 @@ public class VolunteersController : ControllerBase
 
         var result = await handler.Handle(request, cancellationToken);
 
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete(
+        [FromRoute] Guid id, 
+        [FromServices] DeleteVolunteerRequestHandler handler,
+        [FromServices] DeleteVolunteerRequestValidator validator,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new DeleteVolunteerRequest(id);
+        
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        
+        if(validationResult.IsValid == false)
+            return validationResult.ToValidationErrorResponse();
+        
+        var result = await handler.Handle(request, cancellationToken);
+        
         if (result.IsFailure)
             return result.Error.ToResponse();
 
