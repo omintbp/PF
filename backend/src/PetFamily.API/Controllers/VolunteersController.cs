@@ -9,9 +9,7 @@ using PetFamily.Application.Volunteers.UpdateSocialNetworks;
 
 namespace PetFamily.API.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class VolunteersController : ControllerBase
+public class VolunteersController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult> Create(

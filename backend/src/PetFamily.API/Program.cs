@@ -10,9 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.Debug()
-    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq") 
+    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq")
                  ?? throw new ArgumentNullException("Seq connection string is missing"))
-    .Enrich.WithThreadId()  
+    .Enrich.WithThreadId()
     .Enrich.WithEnvironmentName()
     .Enrich.WithEnvironmentUserName()
     .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
@@ -22,7 +22,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Services
     .AddApi()
-    .AddInfrastructure()
+    .AddInfrastructure(builder.Configuration)
     .AddApplication();
 
 builder.Services.AddSerilog();

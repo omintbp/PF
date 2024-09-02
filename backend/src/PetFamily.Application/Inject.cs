@@ -1,5 +1,8 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using PetFamily.Application.Files.Delete;
+using PetFamily.Application.Files.Get;
+using PetFamily.Application.Files.Upload;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.Delete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
@@ -18,7 +21,18 @@ public static class Inject
         services.AddScoped<UpdateRequisitesHandler>();
         services.AddScoped<DeleteVolunteerRequestHandler>();
 
+        services.AddFileHandlers();
+
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
+
+        return services;
+    }
+
+    private static IServiceCollection AddFileHandlers(this IServiceCollection services)
+    {
+        services.AddScoped<UploadFileRequestHandler>();
+        services.AddScoped<DeleteFileRequestHandler>();
+        services.AddScoped<GetFileRequestHandler>();
 
         return services;
     }
