@@ -109,8 +109,8 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date")
                         .HasColumnName("created_at");
 
                     b.Property<string>("HelpStatus")

@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -101,5 +102,15 @@ public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
         {
             pet.Restore();
         }
+    }
+
+    public Result<Pet, Error> GetPetById(PetId petId)
+    {
+        var pet = _pets.FirstOrDefault(p => p.Id == petId);
+
+        if (pet is null)
+            return Errors.General.NotFound(petId.Value);
+
+        return pet;
     }
 }

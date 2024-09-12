@@ -23,7 +23,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Services
     .AddApi()
     .AddInfrastructure(builder.Configuration)
-    .AddApplication();
+    .AddApplication(builder.Configuration);
 
 builder.Services.AddSerilog();
 

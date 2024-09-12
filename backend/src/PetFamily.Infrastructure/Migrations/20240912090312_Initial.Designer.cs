@@ -13,7 +13,7 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240901051500_Initial")]
+    [Migration("20240912090312_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -112,8 +112,8 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date")
                         .HasColumnName("created_at");
 
                     b.Property<string>("HelpStatus")
