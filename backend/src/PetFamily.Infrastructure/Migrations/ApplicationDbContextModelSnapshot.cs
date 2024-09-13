@@ -109,8 +109,8 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateOnly>("CreatedAt")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp(6)")
                         .HasColumnName("created_at");
 
                     b.Property<string>("HelpStatus")

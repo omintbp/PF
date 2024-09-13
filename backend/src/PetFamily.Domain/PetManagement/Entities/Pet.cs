@@ -22,7 +22,7 @@ public class Pet : Entity<PetId>, ISoftDeletable
         Address address,
         PhoneNumber phoneNumber,
         HelpStatus helpStatus,
-        DateOnly createdAt,
+        DateTime createdAt,
         PaymentDetails paymentDetails,
         PetDetails details,
         SpeciesDetails speciesDetails)
@@ -51,7 +51,7 @@ public class Pet : Entity<PetId>, ISoftDeletable
 
     public PaymentDetails PaymentDetails { get; private set; }
 
-    public DateOnly CreatedAt { get; private set; }
+    public DateTime CreatedAt { get; private set; }
 
     public PetDetails Details { get; private set; }
 
@@ -60,6 +60,7 @@ public class Pet : Entity<PetId>, ISoftDeletable
     public IReadOnlyList<PetPhoto> Photos => _photos;
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
+    
     public void Delete()
     {
         _isDeleted = true;

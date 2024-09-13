@@ -73,7 +73,7 @@ public class AddPetCommandHandler
             address,
             phone,
             command.Status,
-            DateOnly.FromDateTime(DateTime.Now),
+            DateTime.Now,
             paymentDetails,
             petDetails,
             SpeciesDetails.None);
