@@ -101,7 +101,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasConversion<string>()
             .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
 
-        builder.Property(p => p.CreatedAt);
+        builder.Property(p => p.CreatedAt).HasColumnType("timestamp(6)");
 
         builder.OwnsOne(p => p.PaymentDetails, pb =>
         {

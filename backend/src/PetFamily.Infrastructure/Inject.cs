@@ -6,6 +6,7 @@ using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
 using Minio;
+using PetFamily.Application.Database;
 
 namespace PetFamily.Infrastructure;
 
@@ -14,6 +15,7 @@ public static class Inject
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<ApplicationDbContext>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IVolunteerRepository, VolunteerRepository>();
 

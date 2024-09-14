@@ -8,8 +8,8 @@ public record PaymentDetails
 
     private PaymentDetails() {}
 
-    public PaymentDetails(List<Requisite> requisites)
+    public PaymentDetails(IEnumerable<Requisite> requisites)
     {
-        Requisites = requisites;
+        Requisites = requisites.ToList();
     }
 }

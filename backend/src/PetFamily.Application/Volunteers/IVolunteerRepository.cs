@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetManagement.AggregateRoot;
+using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 

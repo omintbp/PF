@@ -22,10 +22,9 @@ public class Pet : Entity<PetId>, ISoftDeletable
         Address address,
         PhoneNumber phoneNumber,
         HelpStatus helpStatus,
-        DateTimeOffset createdAt,
+        DateTime createdAt,
         PaymentDetails paymentDetails,
         PetDetails details,
-        List<PetPhoto> photos,
         SpeciesDetails speciesDetails)
         : base(id)
     {
@@ -38,7 +37,6 @@ public class Pet : Entity<PetId>, ISoftDeletable
         PaymentDetails = paymentDetails;
         Details = details;
         SpeciesDetails = speciesDetails;
-        _photos = photos;
     }
 
     public PetName Name { get; private set; }
@@ -53,7 +51,7 @@ public class Pet : Entity<PetId>, ISoftDeletable
 
     public PaymentDetails PaymentDetails { get; private set; }
 
-    public DateTimeOffset CreatedAt { get; private set; }
+    public DateTime CreatedAt { get; private set; }
 
     public PetDetails Details { get; private set; }
 
@@ -62,6 +60,7 @@ public class Pet : Entity<PetId>, ISoftDeletable
     public IReadOnlyList<PetPhoto> Photos => _photos;
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
+    
     public void Delete()
     {
         _isDeleted = true;
