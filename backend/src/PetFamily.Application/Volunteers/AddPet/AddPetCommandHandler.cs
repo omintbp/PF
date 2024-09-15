@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Domain.PetManagement.Entities;
@@ -14,21 +15,29 @@ public class AddPetCommandHandler
     private readonly ILogger<AddPetCommand> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IVolunteerRepository _repository;
+    private readonly IValidator<AddPetCommand> _validator;
 
     public AddPetCommandHandler(
         ILogger<AddPetCommand> logger,
         IUnitOfWork unitOfWork,
-        IVolunteerRepository repository)
+        IVolunteerRepository repository,
+        IValidator<AddPetCommand> validator)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _repository = repository;
+        _validator = validator;
     }
 
     public async Task<Result<Guid, Error>> Handle(
         AddPetCommand command,
         CancellationToken cancellationToken)
     {
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+
+        if (validationResult.IsValid == false)
+            return Errors.General.ValueIsInvalid();
+        
         var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);

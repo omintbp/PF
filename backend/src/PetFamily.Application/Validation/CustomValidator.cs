@@ -33,7 +33,7 @@ public static class CustomValidator
     public static IRuleBuilderOptionsConditions<T, string> MustBeAllowedExtension<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         IEnumerable<string> allowedExtensions)
-    {
+    {   
         return ruleBuilder.Custom((path, context) =>
         {
             var extension = Path.GetExtension(path);
