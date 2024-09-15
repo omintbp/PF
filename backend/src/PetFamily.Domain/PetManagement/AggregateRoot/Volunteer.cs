@@ -10,7 +10,7 @@ namespace PetFamily.Domain.PetManagement.AggregateRoot;
 public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
 {
     private bool _isDeleted = false;
-    
+
     private readonly List<Pet> _pets = [];
 
     private Volunteer(VolunteerId id)
@@ -75,8 +75,17 @@ public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
         PhoneNumber = phoneNumber;
     }
 
-    public void AddPet(Pet pet) =>
+    public UnitResult<Error> AddPet(Pet pet)
+    {
+        var positionResult = SetPetInitialPosition(pet);
+
+        if (positionResult.IsFailure)
+            return positionResult.Error;
+
         _pets.Add(pet);
+
+        return UnitResult.Success<Error>();
+    }
 
     public void UpdateRequisites(VolunteerRequisites requisites) =>
         Requisites = requisites;
@@ -97,7 +106,7 @@ public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
     public void Restore()
     {
         _isDeleted = false;
-        
+
         foreach (var pet in _pets)
         {
             pet.Restore();
@@ -112,5 +121,84 @@ public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
             return Errors.General.NotFound(petId.Value);
 
         return pet;
+    }
+
+    public UnitResult<Error> MovePet(Pet pet, Position newPosition)
+    {
+        if (pet.Position == newPosition || _pets.Count == 1)
+            return UnitResult.Success<Error>();
+
+        var adjustResult = AdjustPositionIfOutOfRange(newPosition);
+
+        if (adjustResult.IsFailure)
+            return adjustResult.Error;
+
+        var moveResult = MovePetBetweenPositions(pet, newPosition);
+
+        if (moveResult.IsFailure)
+            return moveResult.Error;
+
+        pet.SetPosition(newPosition);
+
+        return UnitResult.Success<Error>();
+    }
+
+    private Result<Position, Error> SetPetInitialPosition(Pet pet)
+    {
+        var position = Position.Create(_pets.Count + 1);
+
+        if (position.IsFailure)
+            return position.Error;
+
+        pet.SetPosition(position.Value);
+
+        return position;
+    }
+
+    private UnitResult<Error> MovePetBetweenPositions(Pet pet, Position newPosition)
+    {
+        if (newPosition.Value > pet.Position.Value)
+        {
+            var petsToMove = _pets.Where(p => p.Position.Value > pet.Position.Value
+                                              && p.Position.Value <= newPosition.Value);
+            foreach (var petToMove in petsToMove)
+            {
+                var moveBackwardResult = petToMove.Position.MoveBackward();
+
+                if (moveBackwardResult.IsFailure)
+                    return moveBackwardResult.Error;
+                
+                petToMove.SetPosition(moveBackwardResult.Value);
+            }
+        }
+        else
+        {
+            var petsToMove = _pets.Where(p => p.Position.Value < pet.Position.Value
+                                              && p.Position.Value >= newPosition.Value);
+            foreach (var petToMove in petsToMove)
+            {
+                var moveForwardResult = petToMove.Position.MoveForward();
+
+                if (moveForwardResult.IsFailure)
+                    return moveForwardResult.Error;
+                
+                petToMove.SetPosition(moveForwardResult.Value);
+            }
+        }
+
+        return UnitResult.Success<Error>();
+    }
+
+    private Result<Position, Error> AdjustPositionIfOutOfRange(Position position)
+    {
+        if (position.Value <= _pets.Count)
+            return position;
+
+        var adjustedPositionResult = Position.Create(_pets.Count);
+
+        if (adjustedPositionResult.IsFailure)
+            return adjustedPositionResult.Error;
+
+        return adjustedPositionResult.Value;
     }
 }

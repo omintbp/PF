@@ -61,6 +61,10 @@ public class Pet : Entity<PetId>, ISoftDeletable
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
     
+    public Position Position { get; private set; }
+    
+    public void SetPosition(Position position) => Position = position;
+    
     public void Delete()
     {
         _isDeleted = true;
