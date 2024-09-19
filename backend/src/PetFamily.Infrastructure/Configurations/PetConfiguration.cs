@@ -30,6 +30,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("name")
                 .IsRequired();
         });
+        
+        builder.ComplexProperty(pet => pet.Position, pb =>
+        {
+            pb.Property(p => p.Value)
+                .HasColumnName("position");
+        });
 
         builder.ComplexProperty(p => p.Description, db =>
         {

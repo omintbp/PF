@@ -7,6 +7,12 @@ using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
 using Minio;
 using PetFamily.Application.Database;
+using PetFamily.Application.Files;
+using PetFamily.Application.Messaging;
+using PetFamily.Infrastructure.BackgroundServices;
+using PetFamily.Infrastructure.MessageQueues;
+using PetFamily.Infrastructure.Services;
+using FileInfo = PetFamily.Application.Providers.FileInfo;
 
 namespace PetFamily.Infrastructure;
 
@@ -18,6 +24,12 @@ public static class Inject
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IVolunteerRepository, VolunteerRepository>();
+        
+        services.AddHostedService<FileCleanerBackgroundService>();
+
+        services.AddScoped<IFileCleanerService, FileCleanerService>();
+
+        services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, InMemoryMessageQueue<IEnumerable<FileInfo>>>();
 
         services.AddMinio(configuration);
 

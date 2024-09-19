@@ -2,12 +2,13 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
-using PetFamily.Application.SharedDTOs;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
+using FileInfo = PetFamily.Application.Providers.FileInfo;
 
 namespace PetFamily.Application.Volunteers.AddPetPhotos;
 
@@ -20,19 +21,22 @@ public class AddPetPhotosCommandHandler
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddPetPhotosCommand> _logger;
     private readonly IValidator<AddPetPhotosCommand> _validator;
+    private readonly IMessageQueue<IEnumerable<FileInfo>> _queue;
 
     public AddPetPhotosCommandHandler(
         IFileProvider fileProvider,
         IVolunteerRepository repository,
         IUnitOfWork unitOfWork,
         ILogger<AddPetPhotosCommand> logger,
-        IValidator<AddPetPhotosCommand> validator)
+        IValidator<AddPetPhotosCommand> validator,
+        IMessageQueue<IEnumerable<FileInfo>> queue)
     {
         _fileProvider = fileProvider;
         _repository = repository;
         _unitOfWork = unitOfWork;
         _logger = logger;
         _validator = validator;
+        _queue = queue;
     }
 
     public async Task<Result<Guid, Error>> Handle(
@@ -73,7 +77,7 @@ public class AddPetPhotosCommandHandler
 
             var filePath = filePathResult.Value;
 
-            var fileData = new FileData(photo.Content, filePath, PHOTOS_BUCKET_NAME);
+            var fileData = new FileData(photo.Content, new FileInfo(filePath, PHOTOS_BUCKET_NAME));
 
             filesData.Add(fileData);
         }
@@ -81,7 +85,11 @@ public class AddPetPhotosCommandHandler
         var filesPathResult = await _fileProvider.UploadFiles(filesData, cancellationToken);
 
         if (filesPathResult.IsFailure)
+        {
+            await _queue.WriteAsync(filesData.Select(f => f.Info), cancellationToken);
+            
             return filesPathResult.Error;
+        }
 
         foreach (var path in filesPathResult.Value)
         {

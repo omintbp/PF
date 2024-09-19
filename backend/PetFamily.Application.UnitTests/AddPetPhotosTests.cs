@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PetFamily.Application.Database;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Application.SharedDTOs;
 using PetFamily.Application.Volunteers;
@@ -17,6 +18,7 @@ using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
+using FileInfo = PetFamily.Application.Providers.FileInfo;
 
 
 namespace PetFamily.Application.UnitTests;
@@ -28,6 +30,7 @@ public class AddPetPhotosTests
     private readonly Mock<IVolunteerRepository> _volunteerRepositoryMock = new();
     private readonly Mock<ILogger<AddPetPhotosCommand>> _loggerMock = new();
     private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock  = new();
+    private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _queue = new();
 
     [Fact]
     public async Task Handle_Should_Return_Error_If_Volunteer_Not_Found()
@@ -62,7 +65,8 @@ public class AddPetPhotosTests
             _volunteerRepositoryMock.Object,
             _unitOfWorkMock.Object,
             _loggerMock.Object,
-            _validatorMock.Object);
+            _validatorMock.Object,
+            _queue.Object);
 
         // act
         var handleResult = await handler.Handle(command, ct);
@@ -108,7 +112,8 @@ public class AddPetPhotosTests
             _volunteerRepositoryMock.Object,
             _unitOfWorkMock.Object,
             _loggerMock.Object,
-            _validatorMock.Object);
+            _validatorMock.Object,
+            _queue.Object);
 
         // act
         var handleResult = await handler.Handle(command, ct);
@@ -153,7 +158,8 @@ public class AddPetPhotosTests
             _volunteerRepositoryMock.Object,
             _unitOfWorkMock.Object,
             _loggerMock.Object,
-            _validatorMock.Object);
+            _validatorMock.Object,
+            _queue.Object);
 
         // act
         var handleResult = await handler.Handle(command, ct);
@@ -199,7 +205,8 @@ public class AddPetPhotosTests
             _volunteerRepositoryMock.Object,
             _unitOfWorkMock.Object,
             _loggerMock.Object,
-            _validatorMock.Object);
+            _validatorMock.Object,
+            _queue.Object);
 
         // act
         var handleResult = await handler.Handle(command, ct);
