@@ -21,22 +21,13 @@ using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Application.UnitTests;
 
-public class AddPetPhotosTest
+public class AddPetPhotosTests
 {
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly Mock<IFileProvider> _fileProviderMock;
-    private readonly Mock<IVolunteerRepository> _volunteerRepositoryMock;
-    private readonly Mock<ILogger<AddPetPhotosCommand>> _loggerMock;
-    private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock;
-
-    public AddPetPhotosTest()
-    {
-        _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _volunteerRepositoryMock = new Mock<IVolunteerRepository>();
-        _loggerMock = new Mock<ILogger<AddPetPhotosCommand>>();
-        _validatorMock = new Mock<IValidator<AddPetPhotosCommand>>();
-        _fileProviderMock = new Mock<IFileProvider>();
-    }
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+    private readonly Mock<IFileProvider> _fileProviderMock = new ();
+    private readonly Mock<IVolunteerRepository> _volunteerRepositoryMock = new();
+    private readonly Mock<ILogger<AddPetPhotosCommand>> _loggerMock = new();
+    private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock  = new();
 
     [Fact]
     public async Task Handle_Should_Return_Error_If_Volunteer_Not_Found()
@@ -174,7 +165,7 @@ public class AddPetPhotosTest
     }
 
     [Fact]
-    public async Task Handle_Should_Should_Upload_Files_To_Pet_Successfully()
+    public async Task Handle_Should_Upload_Files_To_Pet_Successfully()
     {
         // arrange
         const int petCount = 1;
@@ -215,7 +206,7 @@ public class AddPetPhotosTest
 
         // assert
         handleResult.IsSuccess.Should().BeTrue();
-        handleResult.Value.Should().Be(handleResult.Value);
+        handleResult.Value.Should().Be(volunteer.Id.Value);
         pet.Photos.Count.Should().Be(filesCount);
     }
 
