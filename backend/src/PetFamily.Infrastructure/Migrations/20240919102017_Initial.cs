@@ -86,6 +86,7 @@ namespace PetFamily.Infrastructure.Migrations
                     weight = table.Column<double>(type: "double precision", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    position = table.Column<int>(type: "integer", nullable: false),
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     payment_details = table.Column<string>(type: "jsonb", nullable: false)
