@@ -6,21 +6,21 @@ using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Application.Volunteers.UpdateMainInfo;
 
-public class UpdateMainInfoRequestValidator : AbstractValidator<UpdateMainInfoRequest>
+public class UpdateMainInfoCommandValidator : AbstractValidator<UpdateMainInfoCommand>
 {
-    public UpdateMainInfoRequestValidator()
+    public UpdateMainInfoCommandValidator()
     {
         RuleFor(r => r.VolunteerId)
             .NotEmpty()
             .WithError(Errors.General.ValueIsInvalid());
 
-        RuleFor(r => r.Dto.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
+        RuleFor(r => r.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
 
-        RuleFor(r => r.Dto.Description).MustBeValueObject(Description.Create);
+        RuleFor(r => r.Description).MustBeValueObject(Description.Create);
 
-        RuleFor(r => r.Dto.Experience).MustBeValueObject(Experience.Create);
+        RuleFor(r => r.Experience).MustBeValueObject(Experience.Create);
 
-        RuleFor(r => r.Dto.FullName)
+        RuleFor(r => r.FullName)
             .MustBeValueObject(n => FullName.Create(n.FirstName, n.Surname, n.Patronymic));
     }
 }

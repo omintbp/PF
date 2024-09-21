@@ -10,21 +10,21 @@ namespace PetFamily.Application.Volunteers.UpdateRequisites;
 public sealed class UpdateRequisitesHandler
 {
     private readonly IVolunteerRepository _repository;
-    private readonly ILogger<UpdateRequisitesRequest> _logger;
+    private readonly ILogger<UpdateRequisitesCommand> _logger;
 
     public UpdateRequisitesHandler(
         IVolunteerRepository repository,
-        ILogger<UpdateRequisitesRequest> logger)
+        ILogger<UpdateRequisitesCommand> logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
     public async Task<Result<Guid, Error>> Handle(
-        UpdateRequisitesRequest request,
+        UpdateRequisitesCommand command,
         CancellationToken cancellationToken)
     {
-        var volunteerId = VolunteerId.Create(request.VolunteerId);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
 
@@ -33,7 +33,7 @@ public sealed class UpdateRequisitesHandler
 
         var volunteer = volunteerResult.Value;
 
-        var requisites = request.Dto.Requisites
+        var requisites = command.Requisites
             .Select(r => Requisite.Create(r.Name, r.Description).Value);
 
         var volunteerRequisites = new VolunteerRequisites(requisites);

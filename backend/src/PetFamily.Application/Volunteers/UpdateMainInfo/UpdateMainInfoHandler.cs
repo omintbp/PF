@@ -10,21 +10,21 @@ namespace PetFamily.Application.Volunteers.UpdateMainInfo;
 public sealed class UpdateMainInfoHandler
 {
     private readonly IVolunteerRepository _repository;
-    private readonly ILogger<UpdateMainInfoRequest> _logger;
+    private readonly ILogger<UpdateMainInfoCommand> _logger;
 
     public UpdateMainInfoHandler(
         IVolunteerRepository repository,
-        ILogger<UpdateMainInfoRequest> logger)
+        ILogger<UpdateMainInfoCommand> logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
     public async Task<Result<Guid, Error>> Handle(
-        UpdateMainInfoRequest request,
+        UpdateMainInfoCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(request.VolunteerId);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
 
@@ -34,15 +34,15 @@ public sealed class UpdateMainInfoHandler
         var volunteer = volunteerResult.Value;
 
         var fullName = FullName.Create(
-            request.Dto.FullName.FirstName,
-            request.Dto.FullName.Surname,
-            request.Dto.FullName.Patronymic).Value;
+            command.FullName.FirstName,
+            command.FullName.Surname,
+            command.FullName.Patronymic).Value;
 
-        var phoneNumber = PhoneNumber.Create(request.Dto.PhoneNumber).Value;
+        var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
-        var experience = Experience.Create(request.Dto.Experience).Value;
+        var experience = Experience.Create(command.Experience).Value;
 
-        var description = Description.Create(request.Dto.Description).Value;
+        var description = Description.Create(command.Description).Value;
 
         volunteer.UpdateMainInfo(fullName, description, experience, phoneNumber);
 
