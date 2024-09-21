@@ -107,14 +107,14 @@ public class VolunteersController : ApplicationController
         [FromServices] DeleteVolunteerRequestValidator validator,
         CancellationToken cancellationToken = default)
     {
-        var request = new DeleteVolunteerCommand(id);
+        var command = new DeleteVolunteerCommand(id);
 
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (validationResult.IsValid == false)
             return validationResult.ToValidationErrorResponse();
 
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
