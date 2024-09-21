@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -29,21 +30,21 @@ public class AddPetCommandHandler
         _validator = validator;
     }
 
-    public async Task<Result<Guid, Error>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         AddPetCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
 
         if (validationResult.IsValid == false)
-            return Errors.General.ValueIsInvalid();
+            return validationResult.ToErrorsList();
         
         var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteerResult.IsFailure)
-            return Errors.General.NotFound(volunteerId.Value);
+            return Errors.General.NotFound(volunteerId.Value).ToErrorList();
 
         var volunteer = volunteerResult.Value;
 

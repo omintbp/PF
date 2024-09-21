@@ -26,10 +26,10 @@ namespace PetFamily.Application.UnitTests;
 public class AddPetPhotosTests
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
-    private readonly Mock<IFileProvider> _fileProviderMock = new ();
+    private readonly Mock<IFileProvider> _fileProviderMock = new();
     private readonly Mock<IVolunteerRepository> _volunteerRepositoryMock = new();
     private readonly Mock<ILogger<AddPetPhotosCommand>> _loggerMock = new();
-    private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock  = new();
+    private readonly Mock<IValidator<AddPetPhotosCommand>> _validatorMock = new();
     private readonly Mock<IMessageQueue<IEnumerable<FileInfo>>> _queue = new();
 
     [Fact]
@@ -73,7 +73,7 @@ public class AddPetPhotosTests
 
         // assert
         handleResult.IsFailure.Should().BeTrue();
-        handleResult.Error.Type.Should().Be(ErrorType.NotFound);
+        handleResult.Error.First().Type.Should().Be(ErrorType.NotFound);
         pet.Photos.Should().BeEmpty();
     }
 
@@ -120,7 +120,7 @@ public class AddPetPhotosTests
 
         // assert
         handleResult.IsFailure.Should().BeTrue();
-        handleResult.Error.Type.Should().Be(ErrorType.NotFound);
+        handleResult.Error.First().Type.Should().Be(ErrorType.NotFound);
         pet.Photos.Should().BeEmpty();
     }
 
@@ -148,7 +148,11 @@ public class AddPetPhotosTests
 
         _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AddPetPhotosCommand>(), ct))
             .ReturnsAsync(new ValidationResult(
-                [new ValidationFailure("fileName", "The file extension is not allowed.")]));
+            [
+                new ValidationFailure(
+                    "fileName",
+                    Errors.General.ValueIsInvalid().Serialize())
+            ]));
 
         _fileProviderMock.Setup(f => f.UploadFiles(It.IsAny<IEnumerable<FileData>>(), ct))
             .ReturnsAsync(new List<FilePath>());
@@ -166,7 +170,7 @@ public class AddPetPhotosTests
 
         // assert
         handleResult.IsFailure.Should().BeTrue();
-        handleResult.Error.Type.Should().Be(ErrorType.Validation);
+        handleResult.Error.First().Type.Should().Be(ErrorType.Validation);
         pet.Photos.Should().BeEmpty();
     }
 

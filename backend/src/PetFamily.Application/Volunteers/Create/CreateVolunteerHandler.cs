@@ -1,5 +1,8 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -11,27 +14,35 @@ namespace PetFamily.Application.Volunteers.Create;
 public sealed class CreateVolunteerHandler
 {
     private readonly IVolunteerRepository _repository;
+    private readonly IValidator<CreateVolunteerCommand> _validator;
     private readonly ILogger<CreateVolunteerHandler> _logger;
 
     public CreateVolunteerHandler(
         IVolunteerRepository repository,
+        IValidator<CreateVolunteerCommand> validator,
         ILogger<CreateVolunteerHandler> logger)
     {
         _repository = repository;
+        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         CreateVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorsList();
+
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var email = EmailAddress.Create(command.Email).Value;
 
         var fullName = FullName.Create(
-                command.FullName.FirstName, 
-                command.FullName.Surname, 
+                command.FullName.FirstName,
+                command.FullName.Surname,
                 command.FullName.Patronymic)
             .Value;
 
@@ -62,7 +73,7 @@ public sealed class CreateVolunteerHandler
         );
 
         var id = await _repository.Add(volunteer, cancellationToken);
-        
+
         _logger.LogInformation("Created volunteer with ID: {id}", id);
 
         return id.Value;

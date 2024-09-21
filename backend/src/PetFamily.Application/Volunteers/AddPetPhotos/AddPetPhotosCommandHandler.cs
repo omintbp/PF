@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
+using PetFamily.Application.Extensions;
 using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetManagement.ValueObjects;
@@ -39,20 +40,20 @@ public class AddPetPhotosCommandHandler
         _queue = queue;
     }
 
-    public async Task<Result<Guid, Error>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         AddPetPhotosCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
 
         if (validationResult.IsValid == false)
-            return Errors.General.ValueIsInvalid();
+            return validationResult.ToErrorsList();
 
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteerResult.IsFailure)
-            return Errors.General.NotFound(volunteerId.Value);
+            return Errors.General.NotFound(volunteerId.Value).ToErrorList();
 
         var volunteer = volunteerResult.Value;
 
@@ -60,7 +61,7 @@ public class AddPetPhotosCommandHandler
         var petResult = volunteer.GetPetById(petId);
 
         if (petResult.IsFailure)
-            return petResult.Error;
+            return petResult.Error.ToErrorList();
 
         var pet = petResult.Value;
 
@@ -73,7 +74,7 @@ public class AddPetPhotosCommandHandler
                 Path.GetExtension(photo.FileName));
 
             if (filePathResult.IsFailure)
-                return filePathResult.Error;
+                return filePathResult.Error.ToErrorList();
 
             var filePath = filePathResult.Value;
 
@@ -88,7 +89,7 @@ public class AddPetPhotosCommandHandler
         {
             await _queue.WriteAsync(filesData.Select(f => f.Info), cancellationToken);
             
-            return filesPathResult.Error;
+            return filesPathResult.Error.ToErrorList();
         }
 
         foreach (var path in filesPathResult.Value)
@@ -97,7 +98,7 @@ public class AddPetPhotosCommandHandler
             var petPhoto = PetPhoto.Create(petPhotoId, path.Path, false);
 
             if (petPhoto.IsFailure)
-                return petPhoto.Error;
+                return petPhoto.Error.ToErrorList();
 
             pet.AddPhoto(petPhoto.Value);
         }
