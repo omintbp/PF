@@ -9,21 +9,21 @@ namespace PetFamily.Application.Volunteers.UpdateSocialNetworks;
 public sealed class UpdateSocialNetworksHandler
 {
     private readonly IVolunteerRepository _repository;
-    private readonly ILogger<UpdateSocialNetworksRequest> _logger;
+    private readonly ILogger<UpdateSocialNetworksCommand> _logger;
 
     public UpdateSocialNetworksHandler(
         IVolunteerRepository repository,
-        ILogger<UpdateSocialNetworksRequest> logger)
+        ILogger<UpdateSocialNetworksCommand> logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
     public async Task<Result<Guid, Error>> Handle(
-        UpdateSocialNetworksRequest request,
+        UpdateSocialNetworksCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(request.VolunteerId);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
 
@@ -32,7 +32,7 @@ public sealed class UpdateSocialNetworksHandler
 
         var volunteer = volunteerResult.Value;
 
-        var socialNetworks = request.Dto.SocialNetworks
+        var socialNetworks = command.SocialNetworks
             .Select(s => SocialNetwork.Create(s.Url, s.Name).Value);
 
         var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);

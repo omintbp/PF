@@ -2,7 +2,7 @@ using PetFamily.Application.SharedDTOs;
 
 namespace PetFamily.Application.Volunteers.Create;
 
-public record CreateVolunteerRequest(
+public record CreateVolunteerCommand(
     FullNameDto FullName,
     string Email,
     string? Description,

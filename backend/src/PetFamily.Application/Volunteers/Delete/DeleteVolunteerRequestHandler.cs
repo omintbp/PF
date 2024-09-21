@@ -12,21 +12,21 @@ namespace PetFamily.Application.Volunteers.Delete;
 public class DeleteVolunteerRequestHandler
 {
     private readonly IVolunteerRepository _repository;
-    private readonly ILogger<DeleteVolunteerRequest> _logger;
+    private readonly ILogger<DeleteVolunteerCommand> _logger;
 
     public DeleteVolunteerRequestHandler(
         IVolunteerRepository repository, 
-        ILogger<DeleteVolunteerRequest> logger)
+        ILogger<DeleteVolunteerCommand> logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
     public async Task<Result<Guid, Error>> Handle(
-        DeleteVolunteerRequest request, 
+        DeleteVolunteerCommand command, 
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(request.VolunteerId);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
 

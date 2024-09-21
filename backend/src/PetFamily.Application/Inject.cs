@@ -1,9 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Files.Delete;
-using PetFamily.Application.Files.Get;
-using PetFamily.Application.Files.Upload;
 using PetFamily.Application.Options;
 using PetFamily.Application.Volunteers.AddPet;
 using PetFamily.Application.Volunteers.AddPetPhotos;
@@ -18,7 +15,7 @@ namespace PetFamily.Application;
 public static class Inject
 {
     public static IServiceCollection AddApplication(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddScoped<CreateVolunteerHandler>();
@@ -29,20 +26,9 @@ public static class Inject
         services.AddScoped<AddPetCommandHandler>();
         services.AddScoped<AddPetPhotosCommandHandler>();
 
-        services.AddFileHandlers();
-
         services.Configure<ImageUploadOptions>(configuration.GetSection(ImageUploadOptions.IMAGE_UPLAOD_OPTIONS));
-        
+
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
-
-        return services;
-    }
-
-    private static IServiceCollection AddFileHandlers(this IServiceCollection services)
-    {
-        services.AddScoped<UploadFileRequestHandler>();
-        services.AddScoped<DeleteFileRequestHandler>();
-        services.AddScoped<GetFileRequestHandler>();
 
         return services;
     }
