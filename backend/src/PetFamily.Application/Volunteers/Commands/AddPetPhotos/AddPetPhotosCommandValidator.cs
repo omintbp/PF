@@ -1,11 +1,10 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using PetFamily.Application.Options;
 using PetFamily.Application.Validation;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Application.Volunteers.AddPetPhotos;
+namespace PetFamily.Application.Volunteers.Commands.AddPetPhotos;
 
 public class AddPetPhotosCommandValidator : AbstractValidator<AddPetPhotosCommand>
 {

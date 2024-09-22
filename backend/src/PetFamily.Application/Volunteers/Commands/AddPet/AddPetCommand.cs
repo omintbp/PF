@@ -1,7 +1,8 @@
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.SharedDTOs;
 using PetFamily.Domain.PetManagement;
 
-namespace PetFamily.Application.Volunteers.AddPet;
+namespace PetFamily.Application.Volunteers.Commands.AddPet;
 
 public record AddPetCommand(
     Guid VolunteerId,
@@ -12,4 +13,4 @@ public record AddPetCommand(
     string Phone,
     IEnumerable<RequisiteDto> Requisites,
     PetDetailsDto Details
-);
+) : ICommand;

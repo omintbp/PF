@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetManagement.Entities;
@@ -9,9 +10,9 @@ using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.AddPet;
+namespace PetFamily.Application.Volunteers.Commands.AddPet;
 
-public class AddPetCommandHandler
+public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
 {
     private readonly ILogger<AddPetCommand> _logger;
     private readonly IUnitOfWork _unitOfWork;

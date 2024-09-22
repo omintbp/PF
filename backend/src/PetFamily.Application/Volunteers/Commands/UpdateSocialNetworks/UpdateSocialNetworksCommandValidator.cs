@@ -3,7 +3,7 @@ using PetFamily.Application.Validation;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Application.Volunteers.UpdateSocialNetworks;
+namespace PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
 
 public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSocialNetworksCommand>
 {

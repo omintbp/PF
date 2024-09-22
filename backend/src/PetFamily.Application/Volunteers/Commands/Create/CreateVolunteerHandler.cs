@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
@@ -9,9 +9,9 @@ using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.Create;
+namespace PetFamily.Application.Volunteers.Commands.Create;
 
-public sealed class CreateVolunteerHandler
+public sealed class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerCommand>
 {
     private readonly IVolunteerRepository _repository;
     private readonly IValidator<CreateVolunteerCommand> _validator;

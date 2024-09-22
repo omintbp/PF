@@ -3,7 +3,7 @@ using PetFamily.Application.Validation;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.UpdateRequisites;
+namespace PetFamily.Application.Volunteers.Commands.UpdateRequisites;
 
 public class UpdateRequisitesCommandValidator : AbstractValidator<UpdateRequisitesCommand>
 {

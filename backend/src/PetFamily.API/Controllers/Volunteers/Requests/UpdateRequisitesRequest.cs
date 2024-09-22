@@ -1,5 +1,5 @@
 using PetFamily.Application.SharedDTOs;
-using PetFamily.Application.Volunteers.UpdateRequisites;
+using PetFamily.Application.Volunteers.Commands.UpdateRequisites;
 
 namespace PetFamily.API.Controllers.Volunteers.Requests;
 

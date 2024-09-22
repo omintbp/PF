@@ -1,23 +1,25 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
+using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.UpdateSocialNetworks;
+namespace PetFamily.Application.Volunteers.Commands.UpdateRequisites;
 
-public sealed class UpdateSocialNetworksHandler
+public sealed class UpdateRequisitesHandler : ICommandHandler<Guid, UpdateRequisitesCommand>
 {
     private readonly IVolunteerRepository _repository;
-    private readonly IValidator<UpdateSocialNetworksCommand> _validator;
-    private readonly ILogger<UpdateSocialNetworksCommand> _logger;
+    private readonly IValidator<UpdateRequisitesCommand> _validator;
+    private readonly ILogger<UpdateRequisitesCommand> _logger;
 
-    public UpdateSocialNetworksHandler(
+    public UpdateRequisitesHandler(
         IVolunteerRepository repository,
-        IValidator<UpdateSocialNetworksCommand> validator,
-        ILogger<UpdateSocialNetworksCommand> logger)
+        IValidator<UpdateRequisitesCommand> validator,
+        ILogger<UpdateRequisitesCommand> logger)
     {
         _repository = repository;
         _validator = validator;
@@ -25,8 +27,8 @@ public sealed class UpdateSocialNetworksHandler
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
-        UpdateSocialNetworksCommand command,
-        CancellationToken cancellationToken = default)
+        UpdateRequisitesCommand command,
+        CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
 
@@ -42,16 +44,16 @@ public sealed class UpdateSocialNetworksHandler
 
         var volunteer = volunteerResult.Value;
 
-        var socialNetworks = command.SocialNetworks
-            .Select(s => SocialNetwork.Create(s.Url, s.Name).Value);
+        var requisites = command.Requisites
+            .Select(r => Requisite.Create(r.Name, r.Description).Value);
 
-        var volunteerSocialNetworks = new VolunteerSocialNetworks(socialNetworks);
+        var volunteerRequisites = new VolunteerRequisites(requisites);
 
-        volunteer.UpdateSocialNetworks(volunteerSocialNetworks);
+        volunteer.UpdateRequisites(volunteerRequisites);
 
         var id = await _repository.Save(volunteer, cancellationToken);
 
-        _logger.LogInformation("Social Networks for volunteer {id} updated", volunteerId);
+        _logger.LogInformation("Requisites for volunteer {id} updated", id);
 
         return id;
     }

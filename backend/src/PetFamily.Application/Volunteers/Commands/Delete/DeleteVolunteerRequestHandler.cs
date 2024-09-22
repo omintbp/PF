@@ -1,17 +1,14 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Extensions;
-using PetFamily.Domain.PetManagement;
-using PetFamily.Domain.PetManagement.Entities;
-using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
-using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.Delete;
+namespace PetFamily.Application.Volunteers.Commands.Delete;
 
-public class DeleteVolunteerRequestHandler
+public class DeleteVolunteerRequestHandler : ICommandHandler<Guid, DeleteVolunteerCommand>
 {
     private readonly IVolunteerRepository _repository;
     private readonly IValidator<DeleteVolunteerCommand> _validator;

@@ -1,10 +1,11 @@
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.SharedDTOs;
 
-namespace PetFamily.Application.Volunteers.UpdateMainInfo;
+namespace PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 
 public record UpdateMainInfoCommand(
     Guid VolunteerId,
     FullNameDto FullName,
     string PhoneNumber,
     int Experience,
-    string Description);
+    string Description) : ICommand;

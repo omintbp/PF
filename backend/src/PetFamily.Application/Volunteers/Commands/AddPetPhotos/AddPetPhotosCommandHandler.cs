@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Messaging;
@@ -11,9 +12,9 @@ using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
 using FileInfo = PetFamily.Application.Providers.FileInfo;
 
-namespace PetFamily.Application.Volunteers.AddPetPhotos;
+namespace PetFamily.Application.Volunteers.Commands.AddPetPhotos;
 
-public class AddPetPhotosCommandHandler
+public class AddPetPhotosCommandHandler : ICommandHandler<Guid, AddPetPhotosCommand>
 {
     private const string PHOTOS_BUCKET_NAME = "photos";
 
