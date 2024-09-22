@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Controllers.Volunteers.Requests;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
+using PetFamily.Application.Abstractions;
+using PetFamily.Application.Models;
+using PetFamily.Application.SharedDTOs;
 using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Application.Volunteers.Commands.AddPetPhotos;
 using PetFamily.Application.Volunteers.Commands.Create;
@@ -10,6 +13,7 @@ using PetFamily.Application.Volunteers.Commands.Delete;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdateRequisites;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
 
 namespace PetFamily.API.Controllers.Volunteers;
 
@@ -135,5 +139,18 @@ public class VolunteersController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> Get(
+        [FromQuery] GetVolunteersWithPaginationRequest request,
+        [FromServices] IQueryHandler<PagedList<VolunteerDto>, GetVolunteersWithPaginationQuery> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = request.ToQuery();
+        
+        var result = await handler.Handle(query, cancellationToken);
+
+        return Ok(result);
     }
 }

@@ -28,6 +28,8 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    requisites = table.Column<string>(type: "jsonb", nullable: false),
+                    social_networks = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -35,9 +37,7 @@ namespace PetFamily.Infrastructure.Migrations
                     first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     patronymic = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     surname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
-                    social_networks = table.Column<string>(type: "jsonb", nullable: false)
+                    phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {

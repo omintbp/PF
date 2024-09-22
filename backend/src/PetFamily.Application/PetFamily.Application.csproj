@@ -19,7 +19,6 @@
 
     <ItemGroup>
       <Folder Include="Volunteers\Commands\" />
-      <Folder Include="Volunteers\Queries\" />
     </ItemGroup>
 
 </Project>
