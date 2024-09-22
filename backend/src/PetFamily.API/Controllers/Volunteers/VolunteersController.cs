@@ -36,15 +36,9 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid id,
         [FromBody] UpdateMainInfoRequest request,
         [FromServices] UpdateMainInfoHandler handler,
-        [FromServices] IValidator<UpdateMainInfoCommand> validator,
         CancellationToken cancellationToken = default)
     {
         var command = request.ToCommand(id);
-
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (validationResult.IsValid == false)
-            return validationResult.ToValidationErrorResponse();
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -59,15 +53,9 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid id,
         [FromBody] UpdateSocialNetworksRequest request,
         [FromServices] UpdateSocialNetworksHandler handler,
-        [FromServices] IValidator<UpdateSocialNetworksCommand> validator,
         CancellationToken cancellationToken = default)
     {
         var command = request.ToCommand(id);
-
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (validationResult.IsValid == false)
-            return validationResult.ToValidationErrorResponse();
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -82,15 +70,9 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid id,
         [FromBody] UpdateRequisitesRequest request,
         [FromServices] UpdateRequisitesHandler handler,
-        [FromServices] IValidator<UpdateRequisitesCommand> validator,
         CancellationToken cancellationToken = default)
     {
         var command = request.ToCommand(id);
-
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (validationResult.IsValid == false)
-            return validationResult.ToValidationErrorResponse();
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -104,15 +86,9 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,
         [FromServices] DeleteVolunteerRequestHandler handler,
-        [FromServices] DeleteVolunteerRequestValidator validator,
         CancellationToken cancellationToken = default)
     {
         var command = new DeleteVolunteerCommand(id);
-
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (validationResult.IsValid == false)
-            return validationResult.ToValidationErrorResponse();
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -126,16 +102,10 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult> AddPet(
         [FromRoute] Guid volunteerId,
         [FromBody] AddPetRequest request,
-        [FromServices] IValidator<AddPetCommand> validator,
         [FromServices] AddPetCommandHandler handler,
         CancellationToken cancellationToken = default)
     {
         var command = request.ToCommand(volunteerId);
-
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (validationResult.IsValid == false)
-            return validationResult.ToValidationErrorResponse();
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -151,7 +121,6 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid petId,
         [FromForm] IFormFileCollection files,
         [FromServices] AddPetPhotosCommandHandler handler,
-        [FromServices] IValidator<AddPetPhotosCommand> validator,
         CancellationToken cancellationToken = default)
     {
         await using var processor = new FormFileProcessor();
@@ -159,11 +128,6 @@ public class VolunteersController : ApplicationController
         var filesDtos = processor.Process(files);
 
         var command = new AddPetPhotosCommand(volunteerId, petId, filesDtos);
-
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (validationResult.IsValid == false)
-            return validationResult.ToValidationErrorResponse();
 
         var result = await handler.Handle(command, cancellationToken);
 

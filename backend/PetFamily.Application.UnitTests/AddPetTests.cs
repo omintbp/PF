@@ -71,7 +71,7 @@ public class AddPetTests
     {
         // arrange
         const int petsCount = 10;
-        
+
         var ct = CancellationToken.None;
         var volunteer = CreateVolunteer(petsCount);
         var command = CreateValidAddPetCommand(volunteer.Id);
@@ -127,7 +127,7 @@ public class AddPetTests
 
         // assert
         handleResult.IsFailure.Should().BeTrue();
-        handleResult.Error.Type.Should().Be(ErrorType.NotFound);
+        handleResult.Error.First().Type.Should().Be(ErrorType.NotFound);
         volunteer.Pets.Count.Should().Be(0);
     }
 
@@ -145,7 +145,10 @@ public class AddPetTests
             .ReturnsAsync(volunteer);
         _validatorMock.Setup(v => v.ValidateAsync(It.IsAny<AddPetCommand>(), ct))
             .ReturnsAsync(new ValidationResult(
-                [new ValidationFailure("phone.number", "invalid phone number")]));
+            [
+                new ValidationFailure("phone.number",
+                    Errors.General.ValueIsInvalid().Serialize())
+            ]));
 
         var addPetHandler = new AddPetCommandHandler(
             _loggerMock.Object,
@@ -158,7 +161,7 @@ public class AddPetTests
 
         // assert
         handleResult.IsFailure.Should().BeTrue();
-        handleResult.Error.Type.Should().Be(ErrorType.Validation);
+        handleResult.Error.First().Type.Should().Be(ErrorType.Validation);
         volunteer.Pets.Count.Should().Be(0);
     }
 
