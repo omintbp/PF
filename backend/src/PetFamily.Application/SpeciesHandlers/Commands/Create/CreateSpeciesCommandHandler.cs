@@ -49,7 +49,7 @@ public class CreateSpeciesCommandHandler : ICommandHandler<Guid, CreateSpeciesCo
 
         await _unitOfWork.SaveChanges(cancellationToken);
         
-        _logger.LogInformation($"Created Species: {speciesId}");
+        _logger.LogInformation("Created Species: {speciesId}", speciesId);
 
         return id.Value;
     }

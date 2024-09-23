@@ -62,6 +62,23 @@ public class SpeciesController : ApplicationController
         
         return Ok();
     }
+    
+    [HttpDelete("{speciesId::guid}/breeds/{breedId::guid}")]
+    public async Task<ActionResult> DeleteBreed(
+        [FromRoute] Guid speciesId,
+        [FromRoute] Guid breedId,
+        [FromServices] ICommandHandler<DeleteBreedCommand> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new DeleteBreedCommand(speciesId, breedId);
+        
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok();
+    }
 
     [HttpGet]
     public async Task<ActionResult> Get(

@@ -4,22 +4,23 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
+using PetFamily.Application.SpeciesHandlers.Commands.Delete;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 
-namespace PetFamily.Application.SpeciesHandlers.Commands.Delete;
+namespace PetFamily.Application.SpeciesHandlers.Commands.DeleteBreed;
 
-public class DeleteSpeciesCommandHandler : ICommandHandler<DeleteSpeciesCommand>
+public class DeleteBreedCommandHandler : ICommandHandler<DeleteBreedCommand>
 {
-    private readonly ILogger<DeleteSpeciesCommandHandler> _logger;
+    private readonly ILogger<DeleteBreedCommandHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IValidator<DeleteSpeciesCommand> _validator;
+    private readonly IValidator<DeleteBreedCommand> _validator;
     private readonly ISpeciesRepository _repository;
 
-    public DeleteSpeciesCommandHandler(
-        ILogger<DeleteSpeciesCommandHandler> logger,
+    public DeleteBreedCommandHandler(
+        ILogger<DeleteBreedCommandHandler> logger,
         IUnitOfWork unitOfWork,
-        IValidator<DeleteSpeciesCommand> validator,
+        IValidator<DeleteBreedCommand> validator,
         ISpeciesRepository repository)
     {
         _logger = logger;
@@ -29,7 +30,7 @@ public class DeleteSpeciesCommandHandler : ICommandHandler<DeleteSpeciesCommand>
     }
 
     public async Task<UnitResult<ErrorList>> Handle(
-        DeleteSpeciesCommand command,
+        DeleteBreedCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
@@ -39,15 +40,20 @@ public class DeleteSpeciesCommandHandler : ICommandHandler<DeleteSpeciesCommand>
 
         var speciesId = SpeciesId.Create(command.SpeciesId);
         var speciesResult = await _repository.GetById(speciesId, cancellationToken);
-        
-        if(speciesResult.IsFailure)
+
+        if (speciesResult.IsFailure)
             return speciesResult.Error.ToErrorList();
 
-        _repository.Delete(speciesResult.Value);
+        var breedId = BreedId.Create(command.BreedId);
+
+        var removeResult = speciesResult.Value.DeleteBreedById(breedId);
+
+        if (removeResult.IsFailure)
+            return removeResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChanges(cancellationToken);
-        
-        _logger.LogInformation("Deleted Species: {speciesId}", speciesId);
+
+        _logger.LogInformation("Deleted breed: {breedId}", breedId);
 
         return UnitResult.Success<ErrorList>();
     }
