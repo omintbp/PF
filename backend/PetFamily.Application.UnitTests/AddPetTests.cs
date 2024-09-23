@@ -4,7 +4,7 @@ using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PetFamily.Application.Database;
-using PetFamily.Application.SharedDTOs;
+using PetFamily.Application.DTOs.Shared;
 using PetFamily.Application.VolunteersHandlers;
 using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
 using PetFamily.Domain.PetManagement;

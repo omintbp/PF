@@ -5,9 +5,9 @@ using Dapper;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
+using PetFamily.Application.DTOs.Shared;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Models;
-using PetFamily.Application.SharedDTOs;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.VolunteersHandlers.Queries.GetVolunteersWithPagination;

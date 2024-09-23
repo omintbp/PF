@@ -2,9 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Controllers.Species.Requests;
 using PetFamily.API.Extensions;
 using PetFamily.Application.Abstractions;
+using PetFamily.Application.DTOs.Species;
+using PetFamily.Application.Models;
 using PetFamily.Application.SpeciesHandlers.Commands.Create;
 using PetFamily.Application.SpeciesHandlers.Commands.CreateBreed;
 using PetFamily.Application.SpeciesHandlers.Commands.Delete;
+using PetFamily.Application.SpeciesHandlers.Queries.GetBreedsWithPagination;
+using PetFamily.Application.SpeciesHandlers.Queries.GetSpeciesWithPagination;
 
 namespace PetFamily.API.Controllers.Species;
 
@@ -57,5 +61,38 @@ public class SpeciesController : ApplicationController
             return result.Error.ToResponse();
         
         return Ok();
+    }
+
+    [HttpGet]
+    public async Task<ActionResult> Get(
+        [FromQuery] GetSpeciesWithPaginationRequest request,
+        [FromServices] IQueryHandler<PagedList<SpeciesDto>, GetSpeciesWithPaginationQuery> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = request.ToQuery();
+        
+        var result = await handler.Handle(query, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [HttpGet("{speciesId::guid}/breeds")]
+    public async Task<ActionResult> GetBreeds(
+        [FromRoute] Guid speciesId,
+        [FromQuery] GetBreedsWithPaginationRequest request,
+        [FromServices] IQueryHandler<PagedList<BreedDto>, GetBreedsWithPaginationQuery> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = request.ToQuery(speciesId);
+        
+        var result = await handler.Handle(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
 }

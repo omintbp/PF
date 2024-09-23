@@ -1,5 +1,5 @@
 using PetFamily.Application.Abstractions;
-using PetFamily.Application.SharedDTOs;
+using PetFamily.Application.DTOs.Shared;
 
 namespace PetFamily.Application.VolunteersHandlers.Commands.UpdateSocialNetworks;
 

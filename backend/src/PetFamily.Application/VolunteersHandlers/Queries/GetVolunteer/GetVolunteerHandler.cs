@@ -5,7 +5,7 @@ using Dapper;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
-using PetFamily.Application.SharedDTOs;
+using PetFamily.Application.DTOs.Shared;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.VolunteersHandlers.Queries.GetVolunteer;
