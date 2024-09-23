@@ -1,4 +1,3 @@
-using System.Data;
 using System.Text;
 using System.Text.Json;
 using CSharpFunctionalExtensions;
@@ -7,36 +6,29 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Models;
 using PetFamily.Application.SharedDTOs;
+using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
+namespace PetFamily.Application.Volunteers.Queries.GetVolunteer;
 
-public class GetVolunteersWithPaginationHandler
-    : IQueryHandler<PagedList<VolunteerDto>, GetVolunteersWithPaginationQuery>
+public class GetVolunteerHandler : IQueryHandler<VolunteerDto, GetVolunteerQuery>
 {
-    private readonly ILogger<GetVolunteersWithPaginationHandler> _logger;
+    private readonly ILogger<GetVolunteerHandler> _logger;
     private readonly ISqlConnectionFactory _factory;
 
-    public GetVolunteersWithPaginationHandler(
-        ILogger<GetVolunteersWithPaginationHandler> logger,
-        ISqlConnectionFactory factory)
+    public GetVolunteerHandler(ILogger<GetVolunteerHandler> logger, ISqlConnectionFactory factory)
     {
         _logger = logger;
         _factory = factory;
     }
 
-    public async Task<Result<PagedList<VolunteerDto>, ErrorList>> Handle(
-        GetVolunteersWithPaginationQuery query,
+    public async Task<Result<VolunteerDto, ErrorList>> Handle(GetVolunteerQuery query,
         CancellationToken cancellationToken)
     {
         var connection = _factory.Create();
 
         var parameters = new DynamicParameters();
-
-        var totalCount = await connection.ExecuteScalarAsync<long>(
-            "  SELECT COUNT(1) FROM volunteers;");
 
         var sql = new StringBuilder("""
                                     SELECT 
@@ -51,10 +43,12 @@ public class GetVolunteersWithPaginationHandler
                                         requisites, 
                                         social_networks 
                                     FROM 
-                                        volunteers 
+                                        volunteers v
+                                    WHERE
+                                        id = @id
                                     """);
 
-        sql.ApplyPagination(parameters, query.Page, query.PageSize);
+        parameters.Add("@id", query.Id);
 
         var volunteers = await connection.QueryAsync<VolunteerDto, string, string, VolunteerDto>(
             sql.ToString(),
@@ -71,14 +65,13 @@ public class GetVolunteersWithPaginationHandler
             splitOn: "requisites,social_networks",
             param: parameters);
 
-        var pagedList = new PagedList<VolunteerDto>()
-        {
-            Items = volunteers.ToList(),
-            Page = query.Page,
-            PageSize = query.PageSize,
-            TotalCount = totalCount
-        };
+        var volunteer = volunteers.FirstOrDefault();
 
-        return pagedList;
+        if (volunteer is null)
+            return Errors.General.NotFound().ToErrorList();
+
+        _logger.LogInformation("Got volunteer with id = {Id}", query.Id);
+
+        return volunteer;
     }
 }
