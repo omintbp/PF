@@ -9,7 +9,7 @@ public record SpeciesId
 
     public Guid Value { get; }
 
-    public static SpeciesId NewVolunteerId() => new(Guid.NewGuid());
+    public static SpeciesId NewSpeciesId() => new(Guid.NewGuid());
 
     public static SpeciesId Empty() => new(Guid.Empty);
 

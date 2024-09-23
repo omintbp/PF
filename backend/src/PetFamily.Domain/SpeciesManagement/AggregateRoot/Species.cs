@@ -14,23 +14,17 @@ public class Species : Entity<SpeciesId>
     {
     }
 
-    private Species(SpeciesId id, SpeciesName name, List<Breed> breeds)
+    public Species(SpeciesId id, SpeciesName name)
         : base(id)
     {
         Name = name;
-        _breeds = breeds;
     }
 
     public SpeciesName Name { get; private set; }
 
     public IReadOnlyList<Breed> Breeds => _breeds;
 
-    public static Species Create(SpeciesId id, SpeciesName name, List<Breed> breeds)
-    {
-        var species = new Species(id, name, breeds);
-
-        return species;
-    }
-
     public void AddBreed(Breed breed) => _breeds.Add(breed);
+    
+    public void AddBreeds(IEnumerable<Breed> breeds) => _breeds.AddRange(breeds);
 }

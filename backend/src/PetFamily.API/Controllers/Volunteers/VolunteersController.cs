@@ -5,15 +5,15 @@ using PetFamily.API.Processors;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Models;
 using PetFamily.Application.SharedDTOs;
-using PetFamily.Application.Volunteers.Commands.AddPet;
-using PetFamily.Application.Volunteers.Commands.AddPetPhotos;
-using PetFamily.Application.Volunteers.Commands.Create;
-using PetFamily.Application.Volunteers.Commands.Delete;
-using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
-using PetFamily.Application.Volunteers.Commands.UpdateRequisites;
-using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
-using PetFamily.Application.Volunteers.Queries.GetVolunteer;
-using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
+using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
+using PetFamily.Application.VolunteersHandlers.Commands.AddPetPhotos;
+using PetFamily.Application.VolunteersHandlers.Commands.Create;
+using PetFamily.Application.VolunteersHandlers.Commands.Delete;
+using PetFamily.Application.VolunteersHandlers.Commands.UpdateMainInfo;
+using PetFamily.Application.VolunteersHandlers.Commands.UpdateRequisites;
+using PetFamily.Application.VolunteersHandlers.Commands.UpdateSocialNetworks;
+using PetFamily.Application.VolunteersHandlers.Queries.GetVolunteer;
+using PetFamily.Application.VolunteersHandlers.Queries.GetVolunteersWithPagination;
 
 namespace PetFamily.API.Controllers.Volunteers;
 
