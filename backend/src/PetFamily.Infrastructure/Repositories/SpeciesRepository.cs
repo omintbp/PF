@@ -37,11 +37,9 @@ public class SpeciesRepository : ISpeciesRepository
         return species;
     }
 
-    public async Task<Guid> Delete(Species species, CancellationToken cancellationToken = default)
+    public Guid Delete(Species species)
     {
         _context.Remove(species);
-        
-        await _context.SaveChangesAsync(cancellationToken);
         
         return species.Id.Value;
     }
