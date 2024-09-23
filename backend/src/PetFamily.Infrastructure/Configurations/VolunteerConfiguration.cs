@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Application.SharedDTOs;
 using PetFamily.Domain.PetManagement.AggregateRoot;
+using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
+using PetFamily.Domain.Shared.ValueObjects;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -70,41 +74,27 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
         builder.OwnsOne(v => v.Requisites, vb =>
         {
-            vb.ToJson("requisites");
-
-            vb.OwnsMany(p => p.Values, rb =>
-            {
-                rb.Property(r => r.Name)
-                    .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
-                    .IsRequired();
-
-                rb.Property(r => r.Description)
-                    .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH)
-                    .IsRequired(false);
-            });
+            vb.Property(r => r.Values)
+                .ValueObjectsCollectionJsonConversion(
+                    r => new RequisiteDto(r.Name, r.Description),
+                    dto => Requisite.Create(dto.Name, dto.Description).Value)
+                .HasColumnName("requisites");
         });
 
-        builder.OwnsOne(v => v.SocialNetworks, vb =>
+        builder.OwnsOne(v => v.SocialNetworks, sb =>
         {
-            vb.ToJson("social_networks");
-
-            vb.OwnsMany(p => p.Values, rb =>
-            {
-                rb.Property(r => r.Name)
-                    .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
-                    .IsRequired();
-
-                rb.Property(r => r.Url)
-                    .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
-                    .IsRequired();
-            });
+            sb.Property(s => s.Values)
+                .ValueObjectsCollectionJsonConversion(
+                    sn => new SocialNetworkDto(sn.Url, sn.Name),
+                    dto => SocialNetwork.Create(dto.Url, dto.Name).Value)
+                .HasColumnName("social_networks");
         });
-        
+
         builder.HasMany(v => v.Pets)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade)
             .HasForeignKey("volunteer_id");
-        
+
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");

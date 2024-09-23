@@ -6,7 +6,7 @@ using Moq;
 using PetFamily.Application.Database;
 using PetFamily.Application.SharedDTOs;
 using PetFamily.Application.Volunteers;
-using PetFamily.Application.Volunteers.AddPet;
+using PetFamily.Application.Volunteers.Commands.AddPet;
 using PetFamily.Domain.PetManagement;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.Entities;

@@ -29,6 +29,8 @@ public static class Inject
 
         services.AddScoped<IFileCleanerService, FileCleanerService>();
 
+        services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+
         services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, InMemoryMessageQueue<IEnumerable<FileInfo>>>();
 
         services.AddMinio(configuration);
