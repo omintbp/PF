@@ -151,7 +151,10 @@ public class VolunteersController : ApplicationController
         
         var result = await handler.Handle(query, cancellationToken);
 
-        return Ok(result);
+        if(result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
     
     [HttpGet("{id::guid}")]
