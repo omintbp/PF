@@ -1,7 +1,8 @@
+using System.Data;
 using System.Text;
+using System.Text.Json;
 using Dapper;
 using PetFamily.Application.SharedDTOs;
-using PetFamily.Domain.PetManagement.ValueObjects;
 
 namespace PetFamily.Application.Extensions;
 
@@ -17,5 +18,26 @@ public static class SqlExtensions
         parameters.Add("@Offset", (page - 1) * pageSize);
 
         sqlBuilder.Append(" LIMIT @PageSize OFFSET @Offset");
+    }
+
+    public static async Task<List<VolunteerDto>> QueryVolunteersAsync(
+        this IDbConnection connection, string sql, DynamicParameters parameters)
+    {
+        var result = await connection.QueryAsync<VolunteerDto, string, string, VolunteerDto>(
+            sql,
+            (volunteer, requisitesJson, socialNetworksJson) =>
+            {
+                var requisites = JsonSerializer.Deserialize<RequisiteDto[]>(requisitesJson);
+                var socialNetworks = JsonSerializer.Deserialize<SocialNetworkDto[]>(socialNetworksJson);
+
+                volunteer.Requisites = requisites ?? [];
+                volunteer.SocialNetworks = socialNetworks ?? [];
+
+                return volunteer;
+            },
+            splitOn: "requisites,social_networks",
+            param: parameters);
+
+        return result.ToList();
     }
 }

@@ -1,4 +1,3 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Controllers.Volunteers.Requests;
 using PetFamily.API.Extensions;
@@ -13,6 +12,7 @@ using PetFamily.Application.Volunteers.Commands.Delete;
 using PetFamily.Application.Volunteers.Commands.UpdateMainInfo;
 using PetFamily.Application.Volunteers.Commands.UpdateRequisites;
 using PetFamily.Application.Volunteers.Commands.UpdateSocialNetworks;
+using PetFamily.Application.Volunteers.Queries.GetVolunteer;
 using PetFamily.Application.Volunteers.Queries.GetVolunteersWithPagination;
 
 namespace PetFamily.API.Controllers.Volunteers;
@@ -152,5 +152,21 @@ public class VolunteersController : ApplicationController
         var result = await handler.Handle(query, cancellationToken);
 
         return Ok(result);
+    }
+    
+    [HttpGet("{id::guid}")]
+    public async Task<ActionResult> GetById(
+        [FromRoute] Guid id,
+        [FromServices] IQueryHandler<VolunteerDto, GetVolunteerQuery> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetVolunteerQuery(id);
+        
+        var result = await handler.Handle(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
 }
