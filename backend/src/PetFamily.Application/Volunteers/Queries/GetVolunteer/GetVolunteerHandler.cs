@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.Extensions.Logging;
@@ -49,12 +50,26 @@ public class GetVolunteerHandler : IQueryHandler<VolunteerDto, GetVolunteerQuery
 
         parameters.Add("@id", query.Id);
 
-        var volunteers = await connection.QueryVolunteersAsync(sql.ToString(), parameters);
+        var volunteers = await connection.QueryAsync<VolunteerDto, string, string, VolunteerDto>(
+            sql.ToString(),
+            (volunteer, requisitesJson, socialNetworksJson) =>
+            {
+                var requisites = JsonSerializer.Deserialize<RequisiteDto[]>(requisitesJson);
+                var socialNetworks = JsonSerializer.Deserialize<SocialNetworkDto[]>(socialNetworksJson);
+
+                volunteer.Requisites = requisites ?? [];
+                volunteer.SocialNetworks = socialNetworks ?? [];
+
+                return volunteer;
+            },
+            splitOn: "requisites,social_networks",
+            param: parameters);
+
         var volunteer = volunteers.FirstOrDefault();
 
         if (volunteer is null)
             return Errors.General.NotFound().ToErrorList();
-        
+
         _logger.LogInformation("Got volunteer with id = {Id}", query.Id);
 
         return volunteer;
