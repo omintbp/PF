@@ -188,7 +188,9 @@ public class AddPetTests
             address,
             HelpStatus.FoundHome,
             phone,
-            requisites, petDetails);
+            requisites, petDetails,
+            Guid.NewGuid(),
+            Guid.NewGuid());
     }
 
     private AddPetCommand CreateNotValidAddPetCommand(VolunteerId volunteerId)
@@ -214,7 +216,10 @@ public class AddPetTests
             address,
             HelpStatus.FoundHome,
             phone,
-            requisites, petDetails);
+            requisites,
+            petDetails,
+            Guid.NewGuid(),
+            Guid.NewGuid());
     }
 
     private Volunteer CreateVolunteer(int petsCount)

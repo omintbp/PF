@@ -39,7 +39,7 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
 
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
-        
+
         var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
@@ -75,6 +75,10 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
             command.Details.HealthInfo,
             command.Details.Birthday).Value;
 
+        var speciesId = SpeciesId.Create(command.SpeciesId);
+
+        var speciesDetails = SpeciesDetails.Create(speciesId, command.BreedId);
+
         var petId = PetId.NewPetId();
 
         var pet = new Pet(
@@ -87,7 +91,7 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
             DateTime.Now,
             paymentDetails,
             petDetails,
-            SpeciesDetails.None);
+            speciesDetails);
 
         volunteer.AddPet(pet);
 

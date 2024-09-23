@@ -11,7 +11,9 @@ public record AddPetRequest(
     HelpStatus Status,
     string Phone,
     IEnumerable<RequisiteDto> Requisites,
-    PetDetailsDto Details)
+    PetDetailsDto Details,
+    Guid SpeciesId,
+    Guid BreedId)
 {
     public AddPetCommand ToCommand(Guid volunteerId) =>
         new AddPetCommand(
@@ -22,5 +24,7 @@ public record AddPetRequest(
             Status,
             Phone,
             Requisites,
-            Details);
+            Details,
+            SpeciesId,
+            BreedId);
 }

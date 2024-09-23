@@ -12,5 +12,7 @@ public record AddPetCommand(
     HelpStatus Status,
     string Phone,
     IEnumerable<RequisiteDto> Requisites,
-    PetDetailsDto Details
+    PetDetailsDto Details,
+    Guid SpeciesId,
+    Guid BreedId
 ) : ICommand;
