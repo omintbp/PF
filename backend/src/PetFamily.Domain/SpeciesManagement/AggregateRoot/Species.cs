@@ -46,7 +46,15 @@ public class Species : Shared.Entity<SpeciesId>
         return UnitResult.Success<Error>();
     }
 
-    public void AddBreed(Breed breed) => _breeds.Add(breed);
-    
+    public UnitResult<Error> AddBreed(Breed breed)
+    {
+        if (_breeds.Exists(b => b.Name == breed.Name))
+            return Errors.General.AlreadyExist(nameof(breed));
+        
+        _breeds.Add(breed);
+        
+        return UnitResult.Success<Error>();
+    }
+
     public void AddBreeds(IEnumerable<Breed> breeds) => _breeds.AddRange(breeds);
 }

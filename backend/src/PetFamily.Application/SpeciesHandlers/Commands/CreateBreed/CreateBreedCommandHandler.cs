@@ -53,7 +53,10 @@ public class CreateBreedCommandHandler : ICommandHandler<Guid, CreateBreedComman
 
         var breed = new Breed(breedId, breedName);
 
-        species.AddBreed(breed);
+        var addBreedResult = species.AddBreed(breed);
+        
+        if(addBreedResult.IsFailure)
+            return addBreedResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

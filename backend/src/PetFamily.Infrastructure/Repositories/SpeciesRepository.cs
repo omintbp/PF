@@ -19,9 +19,7 @@ public class SpeciesRepository : ISpeciesRepository
     public async Task<SpeciesId> Add(Species species, CancellationToken cancellationToken = default)
     {
         await _context.AddAsync(species, cancellationToken);
-
-        await _context.SaveChangesAsync(cancellationToken);
-
+        
         return species.Id;
     }
 
