@@ -4,9 +4,10 @@ using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PetFamily.Application.Database;
-using PetFamily.Application.SharedDTOs;
-using PetFamily.Application.Volunteers;
-using PetFamily.Application.Volunteers.Commands.AddPet;
+using PetFamily.Application.DTOs.Shared;
+using PetFamily.Application.DTOs.Volunteers;
+using PetFamily.Application.VolunteersHandlers;
+using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
 using PetFamily.Domain.PetManagement;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.Entities;
@@ -188,7 +189,9 @@ public class AddPetTests
             address,
             HelpStatus.FoundHome,
             phone,
-            requisites, petDetails);
+            requisites, petDetails,
+            Guid.NewGuid(),
+            Guid.NewGuid());
     }
 
     private AddPetCommand CreateNotValidAddPetCommand(VolunteerId volunteerId)
@@ -214,7 +217,10 @@ public class AddPetTests
             address,
             HelpStatus.FoundHome,
             phone,
-            requisites, petDetails);
+            requisites,
+            petDetails,
+            Guid.NewGuid(),
+            Guid.NewGuid());
     }
 
     private Volunteer CreateVolunteer(int petsCount)

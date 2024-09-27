@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Volunteers\Commands\" />
+      <Folder Include="VolunteersHandlers\Commands\" />
     </ItemGroup>
 
 </Project>

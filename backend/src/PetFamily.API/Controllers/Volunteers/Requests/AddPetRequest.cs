@@ -1,5 +1,6 @@
-using PetFamily.Application.SharedDTOs;
-using PetFamily.Application.Volunteers.Commands.AddPet;
+using PetFamily.Application.DTOs.Shared;
+using PetFamily.Application.DTOs.Volunteers;
+using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
 using PetFamily.Domain.PetManagement;
 
 namespace PetFamily.API.Controllers.Volunteers.Requests;
@@ -11,7 +12,9 @@ public record AddPetRequest(
     HelpStatus Status,
     string Phone,
     IEnumerable<RequisiteDto> Requisites,
-    PetDetailsDto Details)
+    PetDetailsDto Details,
+    Guid SpeciesId,
+    Guid BreedId)
 {
     public AddPetCommand ToCommand(Guid volunteerId) =>
         new AddPetCommand(
@@ -22,5 +25,7 @@ public record AddPetRequest(
             Status,
             Phone,
             Requisites,
-            Details);
+            Details,
+            SpeciesId,
+            BreedId);
 }

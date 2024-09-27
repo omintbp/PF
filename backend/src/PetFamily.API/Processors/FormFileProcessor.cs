@@ -1,4 +1,4 @@
-using PetFamily.Application.SharedDTOs;
+using PetFamily.Application.DTOs.Shared;
 
 namespace PetFamily.API.Processors;
 

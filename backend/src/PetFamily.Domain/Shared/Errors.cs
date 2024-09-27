@@ -16,5 +16,12 @@ public static class Errors
             var forId = id == null ? "" : $" for Id '{id}'";
             return Error.NotFound("record.not.found", $"record not found{forId}");
         }
+        
+        public static Error AlreadyExist(string? name)
+        {
+            var label = name ?? "record";
+            
+            return Error.Validation("record.already.exist", $"{label} already exist");
+        }
     }
 }

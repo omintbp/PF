@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Options;
+using PetFamily.Application.DTOs.Shared;
 using PetFamily.Application.Options;
-using PetFamily.Application.SharedDTOs;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Validation;

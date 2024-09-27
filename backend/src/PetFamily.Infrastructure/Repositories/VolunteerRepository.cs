@@ -1,18 +1,19 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.Volunteers;
+using PetFamily.Application.VolunteersHandlers;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
+using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
 public class VolunteerRepository : IVolunteerRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly WriteDbContext _context;
 
-    public VolunteerRepository(ApplicationDbContext context)
+    public VolunteerRepository(WriteDbContext context)
     {
         _context = context;
     }
@@ -53,9 +54,9 @@ public class VolunteerRepository : IVolunteerRepository
     public async Task<Guid> Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         _context.Remove(volunteer);
-        
+
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         return volunteer.Id.Value;
     }
 }

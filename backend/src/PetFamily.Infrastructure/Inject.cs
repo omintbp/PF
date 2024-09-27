@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Providers;
-using PetFamily.Application.Volunteers;
 using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
@@ -9,7 +8,10 @@ using Minio;
 using PetFamily.Application.Database;
 using PetFamily.Application.Files;
 using PetFamily.Application.Messaging;
+using PetFamily.Application.SpeciesHandlers;
+using PetFamily.Application.VolunteersHandlers;
 using PetFamily.Infrastructure.BackgroundServices;
+using PetFamily.Infrastructure.DbContexts;
 using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Services;
 using FileInfo = PetFamily.Application.Providers.FileInfo;
@@ -20,10 +22,15 @@ public static class Inject
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ApplicationDbContext>();
+        services.AddScoped<WriteDbContext>();
+        
+        services.AddScoped<IReadDbContext, ReadDbContext>();
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IVolunteerRepository, VolunteerRepository>();
+        
+        services.AddScoped<ISpeciesRepository, SpeciesRepository>();
         
         services.AddHostedService<FileCleanerBackgroundService>();
 
