@@ -48,6 +48,11 @@ public class CreateBreedCommandHandler : ICommandHandler<Guid, CreateBreedComman
 
         var species = speciesResult.Value;
 
+        var isBreedAlreadyExists = species.Breeds.Any(b => b.Name.Value == command.Name);
+
+        if (isBreedAlreadyExists)
+            return Errors.General.AlreadyExist(command.Name).ToErrorList();
+        
         var breedId = BreedId.NewBreedId();
         var breedName = BreedName.Create(command.Name).Value;
 

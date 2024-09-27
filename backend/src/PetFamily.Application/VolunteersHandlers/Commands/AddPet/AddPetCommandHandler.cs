@@ -17,17 +17,20 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
     private readonly ILogger<AddPetCommand> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IVolunteerRepository _repository;
+    private readonly IReadDbContext _readDbContext;
     private readonly IValidator<AddPetCommand> _validator;
 
     public AddPetCommandHandler(
         ILogger<AddPetCommand> logger,
         IUnitOfWork unitOfWork,
         IVolunteerRepository repository,
+        IReadDbContext readDbContext,
         IValidator<AddPetCommand> validator)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _repository = repository;
+        _readDbContext = readDbContext;
         _validator = validator;
     }
 
@@ -39,6 +42,16 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
 
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
+        
+        var isSpeciesExists = _readDbContext.Species.Any(x => x.Id == command.SpeciesId);
+
+        if (isSpeciesExists == false)
+            return Errors.General.NotFound(command.SpeciesId).ToErrorList();
+        
+        var isBreedExists = _readDbContext.Breeds.Any(x => x.Id == command.BreedId);
+        
+        if (isBreedExists == false)
+            return Errors.General.NotFound(command.BreedId).ToErrorList();
 
         var volunteerId = VolunteerId.Create(command.VolunteerId);
 

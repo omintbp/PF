@@ -27,15 +27,6 @@ public class VolunteerRepository : IVolunteerRepository
         return volunteer.Id;
     }
 
-    public async Task<IEnumerable<Volunteer>> GetAll(CancellationToken cancellationToken = default)
-    {
-        return await _context.Volunteers
-            .Include(v => v.Pets)
-            .ThenInclude(p => p.Photos)
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<Result<Volunteer, Error>> GetById(
         VolunteerId volunteerId,
         CancellationToken cancellationToken = default)
