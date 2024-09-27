@@ -10,7 +10,9 @@ using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
 using PetFamily.Application.VolunteersHandlers.Commands.AddPetPhotos;
 using PetFamily.Application.VolunteersHandlers.Commands.Create;
 using PetFamily.Application.VolunteersHandlers.Commands.Delete;
+using PetFamily.Application.VolunteersHandlers.Commands.DeletePetPhotos;
 using PetFamily.Application.VolunteersHandlers.Commands.UpdateMainInfo;
+using PetFamily.Application.VolunteersHandlers.Commands.UpdatePet;
 using PetFamily.Application.VolunteersHandlers.Commands.UpdateRequisites;
 using PetFamily.Application.VolunteersHandlers.Commands.UpdateSocialNetworks;
 using PetFamily.Application.VolunteersHandlers.Queries.GetVolunteer;
@@ -149,23 +151,7 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken = default)
     {
         var query = request.ToQuery();
-        
-        var result = await handler.Handle(query, cancellationToken);
 
-        if(result.IsFailure)
-            return result.Error.ToResponse();
-        
-        return Ok(result.Value);
-    }
-    
-    [HttpGet("{id::guid}")]
-    public async Task<ActionResult> GetById(
-        [FromRoute] Guid id,
-        [FromServices] IQueryHandler<VolunteerDto, GetVolunteerQuery> handler,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetVolunteerQuery(id);
-        
         var result = await handler.Handle(query, cancellationToken);
 
         if (result.IsFailure)
@@ -173,4 +159,57 @@ public class VolunteersController : ApplicationController
 
         return Ok(result.Value);
     }
+
+    [HttpGet("{id::guid}")]
+    public async Task<ActionResult> GetById(
+        [FromRoute] Guid id,
+        [FromServices] IQueryHandler<VolunteerDto, GetVolunteerQuery> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetVolunteerQuery(id);
+
+        var result = await handler.Handle(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPut("{volunteerId:guid}/pets/{petId:guid}")]
+    public async Task<ActionResult> UpdatePet(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromBody] UpdatePetRequest request,
+        [FromServices] ICommandHandler<Guid, UpdatePetCommand> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var command = request.ToCommand(volunteerId, petId);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
+    [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/photos")]
+    public async Task<ActionResult> DeletePetPhotos(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromQuery] DeletePetPhotosRequest request,
+        ICommandHandler<DeletePetPhotosCommand> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var command = request.ToCommand(volunteerId, petId);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
+    
 }

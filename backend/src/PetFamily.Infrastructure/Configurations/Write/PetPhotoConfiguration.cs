@@ -20,9 +20,12 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
                 id => PetPhotoId.Create(id)
             );
 
-        builder.Property(p => p.Path)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+        builder.ComplexProperty(p => p.FilePath, pb =>
+        {
+            pb.Property(p => p.Path)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+        });
 
         builder.Property(p => p.IsMain);
     }
