@@ -1,4 +1,6 @@
-namespace PetFamily.Application.DTOs.Shared;
+using PetFamily.Application.DTOs.Shared;
+
+namespace PetFamily.Application.DTOs.Volunteers;
 
 public class VolunteerDto
 {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PetFamily.Application.Database;
 using PetFamily.Application.DTOs.Shared;
+using PetFamily.Application.DTOs.Volunteers;
 using PetFamily.Application.VolunteersHandlers;
 using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
 using PetFamily.Domain.PetManagement;

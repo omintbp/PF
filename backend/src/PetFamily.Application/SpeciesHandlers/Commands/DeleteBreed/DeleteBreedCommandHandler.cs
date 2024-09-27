@@ -15,22 +15,22 @@ public class DeleteBreedCommandHandler : ICommandHandler<DeleteBreedCommand>
 {
     private readonly ILogger<DeleteBreedCommandHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IReadDbContext _readDbContext;
     private readonly IValidator<DeleteBreedCommand> _validator;
     private readonly ISpeciesRepository _repository;
-    private readonly IVolunteerRepository _volunteerRepository;
 
     public DeleteBreedCommandHandler(
         ILogger<DeleteBreedCommandHandler> logger,
         IUnitOfWork unitOfWork,
+        IReadDbContext readDbContext,
         IValidator<DeleteBreedCommand> validator,
-        ISpeciesRepository repository,
-        IVolunteerRepository volunteerRepository)
+        ISpeciesRepository repository)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _readDbContext = readDbContext;
         _validator = validator;
         _repository = repository;
-        _volunteerRepository = volunteerRepository;
     }
 
     public async Task<UnitResult<ErrorList>> Handle(
@@ -50,13 +50,11 @@ public class DeleteBreedCommandHandler : ICommandHandler<DeleteBreedCommand>
 
         var breedId = BreedId.Create(command.BreedId);
 
-        var volunteers = await _volunteerRepository.GetAll(cancellationToken);
-        var isBreedActive = volunteers.Any(v =>
-            v.Pets.Any(p => p.SpeciesDetails.BreedId == command.BreedId));
+        var isBreedActive = _readDbContext.Pets.Any(v => v.BreedId == breedId.Value);
 
-        if(isBreedActive)
+        if (isBreedActive)
             return Errors.General.ValueIsInvalid(nameof(breedId)).ToErrorList();
-        
+
         var removeResult = speciesResult.Value.DeleteBreedById(breedId);
 
         if (removeResult.IsFailure)

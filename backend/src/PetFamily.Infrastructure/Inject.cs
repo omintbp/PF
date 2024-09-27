@@ -11,6 +11,7 @@ using PetFamily.Application.Messaging;
 using PetFamily.Application.SpeciesHandlers;
 using PetFamily.Application.VolunteersHandlers;
 using PetFamily.Infrastructure.BackgroundServices;
+using PetFamily.Infrastructure.DbContexts;
 using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Services;
 using FileInfo = PetFamily.Application.Providers.FileInfo;
@@ -21,7 +22,10 @@ public static class Inject
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<ApplicationDbContext>();
+        services.AddScoped<WriteDbContext>();
+        
+        services.AddScoped<IReadDbContext, ReadDbContext>();
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IVolunteerRepository, VolunteerRepository>();

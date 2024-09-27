@@ -7,6 +7,7 @@ using PetFamily.Application.Models;
 using PetFamily.Application.SpeciesHandlers.Commands.Create;
 using PetFamily.Application.SpeciesHandlers.Commands.CreateBreed;
 using PetFamily.Application.SpeciesHandlers.Commands.Delete;
+using PetFamily.Application.SpeciesHandlers.Commands.DeleteBreed;
 using PetFamily.Application.SpeciesHandlers.Queries.GetBreedsWithPagination;
 using PetFamily.Application.SpeciesHandlers.Queries.GetSpeciesWithPagination;
 

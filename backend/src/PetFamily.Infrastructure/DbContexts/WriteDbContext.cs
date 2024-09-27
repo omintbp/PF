@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.SpeciesManagement.AggregateRoot;
 using PetFamily.Infrastructure.Interceptors;
 
-namespace PetFamily.Infrastructure;
+namespace PetFamily.Infrastructure.DbContexts;
 
-public class ApplicationDbContext(IConfiguration configuration) : DbContext
+public class WriteDbContext(IConfiguration configuration) : DbContext
 {
     private const string DATABASE = "PetFamily";
 
@@ -27,7 +26,9 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(WriteDbContext).Assembly,
+            type => type.FullName?.Contains("Configurations.Write") ?? false);
     }
 
     private ILoggerFactory CreateLoggerFactory() =>

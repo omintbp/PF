@@ -15,20 +15,20 @@ public class DeleteSpeciesCommandHandler : ICommandHandler<DeleteSpeciesCommand>
     private readonly ILogger<DeleteSpeciesCommandHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<DeleteSpeciesCommand> _validator;
-    private readonly IVolunteerRepository _volunteerRepository;
+    private readonly IReadDbContext _readDbContext;
     private readonly ISpeciesRepository _repository;
 
     public DeleteSpeciesCommandHandler(
         ILogger<DeleteSpeciesCommandHandler> logger,
         IUnitOfWork unitOfWork,
         IValidator<DeleteSpeciesCommand> validator,
-        IVolunteerRepository volunteerRepository,
+        IReadDbContext readDbContext,
         ISpeciesRepository repository)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _validator = validator;
-        _volunteerRepository = volunteerRepository;
+        _readDbContext = readDbContext;
         _repository = repository;
     }
 
@@ -47,9 +47,8 @@ public class DeleteSpeciesCommandHandler : ICommandHandler<DeleteSpeciesCommand>
         if(speciesResult.IsFailure)
             return speciesResult.Error.ToErrorList();
 
-        var volunteers = await _volunteerRepository.GetAll(cancellationToken);
-        var isSpeciesActive = volunteers.Any(v =>
-            v.Pets.Any(p => p.SpeciesDetails.SpeciesId == speciesId));
+        var isSpeciesActive = _readDbContext.Pets
+            .Any(p => p.SpeciesId == speciesId.Value);
 
         if(isSpeciesActive)
             return Errors.General.ValueIsInvalid(nameof(speciesId)).ToErrorList();

@@ -1,5 +1,6 @@
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DTOs.Shared;
+using PetFamily.Application.DTOs.Volunteers;
 using PetFamily.Domain.PetManagement;
 
 namespace PetFamily.Application.VolunteersHandlers.Commands.AddPet;

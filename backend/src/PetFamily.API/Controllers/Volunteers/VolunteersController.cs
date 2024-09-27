@@ -4,6 +4,7 @@ using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DTOs.Shared;
+using PetFamily.Application.DTOs.Volunteers;
 using PetFamily.Application.Models;
 using PetFamily.Application.VolunteersHandlers.Commands.AddPet;
 using PetFamily.Application.VolunteersHandlers.Commands.AddPetPhotos;

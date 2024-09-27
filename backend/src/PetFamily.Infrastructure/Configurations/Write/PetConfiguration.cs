@@ -1,13 +1,14 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Application.DTOs.Shared;
 using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
+using PetFamily.Infrastructure.Extensions;
 
-namespace PetFamily.Infrastructure.Configurations;
+namespace PetFamily.Infrastructure.Configurations.Write;
 
 public class PetConfiguration : IEntityTypeConfiguration<Pet>
 {
@@ -30,7 +31,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("name")
                 .IsRequired();
         });
-        
+
         builder.ComplexProperty(pet => pet.Position, pb =>
         {
             pb.Property(p => p.Value)
@@ -111,17 +112,11 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.OwnsOne(p => p.PaymentDetails, pb =>
         {
-            pb.ToJson("payment_details");
-
-            pb.OwnsMany(d => d.Requisites, rb =>
-            {
-                rb.Property(r => r.Description)
-                    .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH);
-
-                rb.Property(r => r.Name)
-                    .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
-                    .IsRequired();
-            });
+            pb.Property(details => details.Requisites)
+                .ValueObjectsCollectionJsonConversion(
+                    r => new RequisiteDto(r.Name, r.Description),
+                    dto => Requisite.Create(dto.Name, dto.Description).Value)
+                .HasColumnName("requisites");
         });
 
         builder.ComplexProperty(p => p.SpeciesDetails, db =>
@@ -140,7 +135,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .WithOne()
             .OnDelete(DeleteBehavior.NoAction)
             .HasForeignKey("pet_id");
-        
+
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
