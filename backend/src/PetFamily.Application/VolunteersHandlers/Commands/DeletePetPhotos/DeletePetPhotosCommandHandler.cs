@@ -22,19 +22,22 @@ public class DeletePetPhotosCommandHandler : ICommandHandler<DeletePetPhotosComm
     private readonly IValidator<DeletePetPhotosCommand> _validator;
     private readonly IMessageQueue<IEnumerable<FileInfo>> _queue;
     private readonly IVolunteerRepository _repository;
+    private readonly IFileProvider _fileProvider;
 
     public DeletePetPhotosCommandHandler(
         ILogger<DeletePetPhotosCommandHandler> logger,
         IUnitOfWork unitOfWork,
         IValidator<DeletePetPhotosCommand> validator,
         IMessageQueue<IEnumerable<FileInfo>> queue,
-        IVolunteerRepository repository)
+        IVolunteerRepository repository,
+        IFileProvider fileProvider)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _queue = queue;
         _repository = repository;
+        _fileProvider = fileProvider;
     }
 
     public async Task<UnitResult<ErrorList>> Handle(
@@ -64,6 +67,8 @@ public class DeletePetPhotosCommandHandler : ICommandHandler<DeletePetPhotosComm
 
         List<FileInfo> filesInfo = [];
 
+        var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+        
         foreach (var photoId in command.PhotosIds)
         {
             var petPhotoId = PetPhotoId.Create(photoId);
@@ -80,9 +85,17 @@ public class DeletePetPhotosCommandHandler : ICommandHandler<DeletePetPhotosComm
                 return petPhotoDeleteResult.Error.ToErrorList();
         }
 
-        await _queue.WriteAsync(filesInfo, cancellationToken);
-        
         await _unitOfWork.SaveChanges(cancellationToken);
+        
+        var deleteResult = await _fileProvider.DeleteFiles(filesInfo, cancellationToken);
+
+        if (deleteResult.IsFailure)
+        {
+            transaction.Rollback();
+            return deleteResult.Error;
+        }
+        
+        transaction.Commit();
 
         _logger.LogInformation("Delete pet {petId} photos successfully", command.PetId);
 

@@ -12,6 +12,8 @@ public class BreedDtoConfiguration : IEntityTypeConfiguration<BreedDto>
         
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.SpeciesId);
+        
         builder.Property(x => x.Name);
     }
 }

@@ -13,4 +13,6 @@ public interface IFileProvider
     Task<Result<string, Error>> GetFile(string bucketName, string fileName, CancellationToken ct);
     
     Task<Result<List<FilePath>, Error>> UploadFiles(IEnumerable<FileData> files, CancellationToken ct);
+    
+    Task<UnitResult<ErrorList>> DeleteFiles(IEnumerable<FileInfo> files, CancellationToken ct);
 }

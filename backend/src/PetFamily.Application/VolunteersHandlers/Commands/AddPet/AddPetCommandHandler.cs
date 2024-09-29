@@ -43,12 +43,13 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
         
-        var isSpeciesExists = _readDbContext.Species.Any(x => x.Id == command.SpeciesId);
+        var isSpeciesExists = _readDbContext.Species.Any(s => s.Id == command.SpeciesId);
 
         if (isSpeciesExists == false)
             return Errors.General.NotFound(command.SpeciesId).ToErrorList();
         
-        var isBreedExists = _readDbContext.Breeds.Any(x => x.Id == command.BreedId);
+        var isBreedExists = _readDbContext.Breeds.Any(b => 
+            b.Id == command.BreedId && b.SpeciesId == command.SpeciesId);
         
         if (isBreedExists == false)
             return Errors.General.NotFound(command.BreedId).ToErrorList();

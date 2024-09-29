@@ -65,7 +65,8 @@ public class UpdatePetCommandHandler : ICommandHandler<Guid, UpdatePetCommand>
         if (isSpeciesExists == false)
             return Errors.General.NotFound(command.SpeciesId).ToErrorList();
         
-        var isBreedExists = _readDbContext.Breeds.Any(b => b.Id == command.BreedId);
+        var isBreedExists = _readDbContext.Breeds.Any(b => 
+            b.Id == command.BreedId && b.SpeciesId == command.SpeciesId);
         
         if (isBreedExists == false)
             return Errors.General.NotFound(command.BreedId).ToErrorList();

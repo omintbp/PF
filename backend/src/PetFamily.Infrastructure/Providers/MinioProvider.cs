@@ -5,6 +5,7 @@ using Minio.DataModel.Args;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.ValueObjects;
+using FileInfo = PetFamily.Application.Providers.FileInfo;
 
 namespace PetFamily.Infrastructure.Providers;
 
@@ -150,6 +151,68 @@ public class MinioProvider : IFileProvider
                 "Fail to upload files in minio, files amount: {amount}", filesList.Count);
 
             return Error.Failure("file.upload", "Fail to upload files in minio");
+        }
+    }
+
+    public async Task<UnitResult<ErrorList>> DeleteFiles(IEnumerable<FileInfo> files, CancellationToken ct)
+    {
+        var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
+        var filesList = files.ToList();
+
+        try
+        {
+            var tasks = filesList.Select(async file =>
+                await DeleteObject(file, semaphoreSlim, ct));
+
+            var deleteResults = await Task.WhenAll(tasks);
+
+            if (deleteResults.Any(p => p.IsFailure))
+                return new ErrorList(deleteResults.Select(f => f.Error));
+
+            _logger.LogInformation("deleted {count} files from minio", deleteResults.Length);
+
+            return UnitResult.Success<ErrorList>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "Fail to upload files in minio, files amount: {amount}", filesList.Count);
+
+            return Error.Failure("file.upload", "Fail to upload files in minio")
+                .ToErrorList();
+        }
+    }
+
+    private async Task<UnitResult<Error>> DeleteObject(
+        FileInfo fileInfo,
+        SemaphoreSlim semaphoreSlim,
+        CancellationToken cancellationToken)
+    {
+        await semaphoreSlim.WaitAsync(cancellationToken);
+
+        var removeObjectArgs = new RemoveObjectArgs()
+            .WithBucket(fileInfo.BucketName)
+            .WithObject(fileInfo.FilePath.Path);
+
+        try
+        {
+            await _minioClient
+                .RemoveObjectAsync(removeObjectArgs, cancellationToken);
+
+            return UnitResult.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "Fail to delete file {path} in {bucket} from minio",
+                fileInfo.FilePath,
+                fileInfo.BucketName);
+
+            return Error.Failure("file.delete", "Fail to delete file from minio");
+        }
+        finally
+        {
+            semaphoreSlim.Release();
         }
     }
 
