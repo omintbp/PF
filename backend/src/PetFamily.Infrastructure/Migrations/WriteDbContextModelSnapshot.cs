@@ -271,12 +271,6 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_main");
 
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("path");
-
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
@@ -284,6 +278,17 @@ namespace PetFamily.Infrastructure.Migrations
                     b.Property<Guid?>("pet_id")
                         .HasColumnType("uuid")
                         .HasColumnName("pet_id");
+
+                    b.ComplexProperty<Dictionary<string, object>>("FilePath", "PetFamily.Domain.PetManagement.Entities.PetPhoto.FilePath#FilePath", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Path")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("file_path_path");
+                        });
 
                     b.HasKey("Id")
                         .HasName("pk_pet_photos");

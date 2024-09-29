@@ -55,7 +55,7 @@ public class DeletePetCommandHandler : ICommandHandler<DeletePetCommand>
         List<FileInfo> filesInfo = [];
         foreach (var photo in petResult.Value.Photos)
         {
-            var fileInfo = new FileInfo(FilePath.Create(photo.Path).Value, PHOTOS_BUCKET_NAME);
+            var fileInfo = new FileInfo(photo.FilePath, PHOTOS_BUCKET_NAME);
             filesInfo.Add(fileInfo);
         }
         
