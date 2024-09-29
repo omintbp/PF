@@ -6,6 +6,7 @@ using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
+using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;

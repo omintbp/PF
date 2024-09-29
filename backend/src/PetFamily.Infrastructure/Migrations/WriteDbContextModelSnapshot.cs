@@ -261,7 +261,7 @@ namespace PetFamily.Infrastructure.Migrations
                     b.ToTable("pets", (string)null);
                 });
 
-            modelBuilder.Entity("PetFamily.Domain.PetManagement.ValueObjects.PetPhoto", b =>
+            modelBuilder.Entity("PetFamily.Domain.PetManagement.Entities.PetPhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -276,6 +276,10 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("path");
+
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<Guid?>("pet_id")
                         .HasColumnType("uuid")
@@ -407,7 +411,6 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasColumnName("id");
 
                             b1.Property<string>("Requisites")
-                                .IsRequired()
                                 .HasColumnType("jsonb")
                                 .HasColumnName("requisites");
 
@@ -424,12 +427,12 @@ namespace PetFamily.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetFamily.Domain.PetManagement.ValueObjects.PetPhoto", b =>
+            modelBuilder.Entity("PetFamily.Domain.PetManagement.Entities.PetPhoto", b =>
                 {
                     b.HasOne("PetFamily.Domain.PetManagement.Entities.Pet", null)
                         .WithMany("Photos")
                         .HasForeignKey("pet_id")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pet_photos_pets_pet_id");
                 });
 

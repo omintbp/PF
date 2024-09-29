@@ -69,7 +69,7 @@ namespace PetFamily.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     help_status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
+                    requisites = table.Column<string>(type: "jsonb", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp(6) without time zone", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
@@ -110,6 +110,7 @@ namespace PetFamily.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     is_main = table.Column<bool>(type: "boolean", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     pet_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -119,7 +120,8 @@ namespace PetFamily.Infrastructure.Migrations
                         name: "fk_pet_photos_pets_pet_id",
                         column: x => x.pet_id,
                         principalTable: "pets",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

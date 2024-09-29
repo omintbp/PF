@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
@@ -25,5 +26,9 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
             .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
 
         builder.Property(p => p.IsMain);
+        
+        builder.Property<bool>("_isDeleted")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasColumnName("is_deleted");
     }
 }

@@ -116,7 +116,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .ValueObjectsCollectionJsonConversion(
                     r => new RequisiteDto(r.Name, r.Description),
                     dto => Requisite.Create(dto.Name, dto.Description).Value)
-                .HasColumnName("requisites");
+                .HasColumnName("requisites")
+                .IsRequired(false);
         });
 
         builder.ComplexProperty(p => p.SpeciesDetails, db =>
@@ -133,7 +134,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.HasMany(p => p.Photos)
             .WithOne()
-            .OnDelete(DeleteBehavior.NoAction)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasForeignKey("pet_id");
 
         builder.Property<bool>("_isDeleted")

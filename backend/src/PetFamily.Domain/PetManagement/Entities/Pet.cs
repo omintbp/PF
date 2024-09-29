@@ -68,10 +68,20 @@ public class Pet : Entity<PetId>, ISoftDeletable
     public void Delete()
     {
         _isDeleted = true;
+
+        foreach (var photo in _photos)
+        {
+            photo.Delete();
+        }
     }
 
     public void Restore()
     {
         _isDeleted = false;
+
+        foreach (var photo in _photos)
+        {
+            photo.Restore();
+        }
     }
 }
