@@ -5,8 +5,10 @@ using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Domain.PetManagement.Entities;
 
-public class PetPhoto : Shared.Entity<PetPhotoId>
+public class PetPhoto : Shared.Entity<PetPhotoId>, ISoftDeletable
 {
+    private bool _isDeleted = false;
+    
     public const int MAX_PATH_LENGTH = 8000;
     private PetPhoto(PetPhotoId id) 
         : base(id)
@@ -29,5 +31,15 @@ public class PetPhoto : Shared.Entity<PetPhotoId>
         var petPhoto = new PetPhoto(id, path, isMain);
 
         return petPhoto;
+    }
+
+    public void Delete()
+    {
+        _isDeleted = true;
+    }
+
+    public void Restore()
+    {
+        _isDeleted = false;
     }
 }

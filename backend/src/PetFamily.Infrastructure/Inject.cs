@@ -23,15 +23,11 @@ public static class Inject
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<WriteDbContext>();
-        
+
         services.AddScoped<IReadDbContext, ReadDbContext>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IVolunteerRepository, VolunteerRepository>();
-        
-        services.AddScoped<ISpeciesRepository, SpeciesRepository>();
-        
         services.AddHostedService<FileCleanerBackgroundService>();
 
         services.AddScoped<IFileCleanerService, FileCleanerService>();
@@ -40,9 +36,19 @@ public static class Inject
 
         services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, InMemoryMessageQueue<IEnumerable<FileInfo>>>();
 
-        services.AddMinio(configuration);
+        services
+            .AddRepositories()
+            .AddMinio(configuration);
 
         return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<IVolunteerRepository, VolunteerRepository>()
+            .AddScoped<ISpeciesRepository, SpeciesRepository>()
+            .AddScoped<IPetRepository, PetRepository>();
     }
 
     private static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)

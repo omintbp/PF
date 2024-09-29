@@ -13,7 +13,7 @@ using PetFamily.Infrastructure.DbContexts;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20240929080557_Initial")]
+    [Migration("20240929090410_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -264,7 +264,7 @@ namespace PetFamily.Infrastructure.Migrations
                     b.ToTable("pets", (string)null);
                 });
 
-            modelBuilder.Entity("PetFamily.Domain.PetManagement.ValueObjects.PetPhoto", b =>
+            modelBuilder.Entity("PetFamily.Domain.PetManagement.Entities.PetPhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -274,11 +274,15 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_main");
 
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.Property<Guid?>("pet_id")
                         .HasColumnType("uuid")
                         .HasColumnName("pet_id");
 
-                    b.ComplexProperty<Dictionary<string, object>>("FilePath", "PetFamily.Domain.PetManagement.ValueObjects.PetPhoto.FilePath#FilePath", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("FilePath", "PetFamily.Domain.PetManagement.Entities.PetPhoto.FilePath#FilePath", b1 =>
                         {
                             b1.IsRequired();
 
@@ -415,7 +419,6 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasColumnName("id");
 
                             b1.Property<string>("Requisites")
-                                .IsRequired()
                                 .HasColumnType("jsonb")
                                 .HasColumnName("requisites");
 
@@ -432,12 +435,12 @@ namespace PetFamily.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetFamily.Domain.PetManagement.ValueObjects.PetPhoto", b =>
+            modelBuilder.Entity("PetFamily.Domain.PetManagement.Entities.PetPhoto", b =>
                 {
                     b.HasOne("PetFamily.Domain.PetManagement.Entities.Pet", null)
                         .WithMany("Photos")
                         .HasForeignKey("pet_id")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pet_photos_pets_pet_id");
                 });
 

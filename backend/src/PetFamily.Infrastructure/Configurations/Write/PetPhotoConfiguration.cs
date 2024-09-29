@@ -29,5 +29,9 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
         });
 
         builder.Property(p => p.IsMain);
+        
+        builder.Property<bool>("_isDeleted")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasColumnName("is_deleted");
     }
 }
