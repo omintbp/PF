@@ -97,7 +97,7 @@ public class AddPetPhotosCommandHandler : ICommandHandler<Guid, AddPetPhotosComm
         foreach (var path in filesPathResult.Value)
         {
             var petPhotoId = PetPhotoId.NewPetPhotoId();
-            var petPhoto = PetPhoto.Create(petPhotoId, path.Path, false);
+            var petPhoto = PetPhoto.Create(petPhotoId, path, false);
 
             if (petPhoto.IsFailure)
                 return petPhoto.Error.ToErrorList();

@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
@@ -5,7 +6,7 @@ using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Domain.PetManagement.Entities;
 
-public class Pet : Entity<PetId>, ISoftDeletable
+public class Pet : Shared.Entity<PetId>, ISoftDeletable
 {
     private bool _isDeleted = false;
     
@@ -60,10 +61,54 @@ public class Pet : Entity<PetId>, ISoftDeletable
     public IReadOnlyList<PetPhoto> Photos => _photos;
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
+
+    public UnitResult<Error> DeletePhoto(PetPhotoId photoId)
+    {
+        var photo = _photos.FirstOrDefault(p => p.Id == photoId);
+
+        if (photo is null)
+            return Errors.General.NotFound();
+
+        _photos.Remove(photo);
+        
+        return UnitResult.Success<Error>();
+    }
+
+    public Result<PetPhoto, Error> GetPhotoById(PetPhotoId photoId)
+    {
+        var photo = _photos.FirstOrDefault(p => p.Id == photoId);
+
+        if (photo is null)
+            return Errors.General.NotFound();
+
+        return photo;
+    }
     
     public Position Position { get; private set; }
     
     public void SetPosition(Position position) => Position = position;
+
+    public void Update(  
+        PetName name,
+        Description description,
+        Address address,
+        PhoneNumber phoneNumber,
+        HelpStatus helpStatus,
+        PaymentDetails paymentDetails,
+        PetDetails details,
+        SpeciesDetails speciesDetails)
+    {
+        Name = name;
+        Description = description;
+        Address = address;
+        PhoneNumber = phoneNumber;
+        HelpStatus = helpStatus;
+        PaymentDetails = paymentDetails;
+        Details = details;
+        SpeciesDetails = speciesDetails;
+    }
+    
+    public void UpdateStatus(HelpStatus newStatus) => HelpStatus = newStatus;
     
     public void Delete()
     {

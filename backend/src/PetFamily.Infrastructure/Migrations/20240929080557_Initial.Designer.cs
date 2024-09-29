@@ -13,11 +13,7 @@ using PetFamily.Infrastructure.DbContexts;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-<<<<<<<< HEAD:backend/src/PetFamily.Infrastructure/Migrations/20240929031321_Initial.Designer.cs
-    [Migration("20240929031321_Initial")]
-========
-    [Migration("20240927140217_Initial")]
->>>>>>>> master:backend/src/PetFamily.Infrastructure/Migrations/20240927140217_Initial.Designer.cs
+    [Migration("20240929080557_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -268,7 +264,7 @@ namespace PetFamily.Infrastructure.Migrations
                     b.ToTable("pets", (string)null);
                 });
 
-            modelBuilder.Entity("PetFamily.Domain.PetManagement.Entities.PetPhoto", b =>
+            modelBuilder.Entity("PetFamily.Domain.PetManagement.ValueObjects.PetPhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -278,19 +274,20 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_main");
 
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("path");
-
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
                     b.Property<Guid?>("pet_id")
                         .HasColumnType("uuid")
                         .HasColumnName("pet_id");
+
+                    b.ComplexProperty<Dictionary<string, object>>("FilePath", "PetFamily.Domain.PetManagement.ValueObjects.PetPhoto.FilePath#FilePath", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Path")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("character varying(500)")
+                                .HasColumnName("file_path_path");
+                        });
 
                     b.HasKey("Id")
                         .HasName("pk_pet_photos");
@@ -418,6 +415,7 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasColumnName("id");
 
                             b1.Property<string>("Requisites")
+                                .IsRequired()
                                 .HasColumnType("jsonb")
                                 .HasColumnName("requisites");
 
@@ -434,12 +432,12 @@ namespace PetFamily.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetFamily.Domain.PetManagement.Entities.PetPhoto", b =>
+            modelBuilder.Entity("PetFamily.Domain.PetManagement.ValueObjects.PetPhoto", b =>
                 {
                     b.HasOne("PetFamily.Domain.PetManagement.Entities.Pet", null)
                         .WithMany("Photos")
                         .HasForeignKey("pet_id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("fk_pet_photos_pets_pet_id");
                 });
 

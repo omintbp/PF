@@ -4,44 +4,61 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
 using PetFamily.Domain.Shared.ValueObjects;
 
-namespace PetFamily.Application.VolunteersHandlers.Commands.AddPet;
+namespace PetFamily.Application.VolunteersHandlers.Commands.UpdatePet;
 
-public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
+public class UpdatePetCommandHandler : ICommandHandler<Guid, UpdatePetCommand>
 {
-    private readonly ILogger<AddPetCommand> _logger;
+    private readonly ILogger<UpdatePetCommandHandler> _logger;
+    private readonly IValidator<UpdatePetCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IVolunteerRepository _repository;
     private readonly IReadDbContext _readDbContext;
-    private readonly IValidator<AddPetCommand> _validator;
+    private readonly IVolunteerRepository _repository;
 
-    public AddPetCommandHandler(
-        ILogger<AddPetCommand> logger,
+    public UpdatePetCommandHandler(
+        ILogger<UpdatePetCommandHandler> logger,
+        IValidator<UpdatePetCommand> validator,
         IUnitOfWork unitOfWork,
-        IVolunteerRepository repository,
         IReadDbContext readDbContext,
-        IValidator<AddPetCommand> validator)
+        IVolunteerRepository repository)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
-        _repository = repository;
-        _readDbContext = readDbContext;
         _validator = validator;
+        _unitOfWork = unitOfWork;
+        _readDbContext = readDbContext;
+        _repository = repository;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
-        AddPetCommand command,
+        UpdatePetCommand command,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
 
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
+
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
+
+        var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
+
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error.ToErrorList();
+        
+        var volunteer = volunteerResult.Value;
+        
+        var petId = PetId.Create(command.PetId);
+
+        var petResult = volunteer.GetPetById(petId);
+        
+        if(petResult.IsFailure)
+            return petResult.Error.ToErrorList();
+
+        var pet = petResult.Value;
         
         var isSpeciesExists = _readDbContext.Species.Any(s => s.Id == command.SpeciesId);
 
@@ -53,15 +70,6 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
         
         if (isBreedExists == false)
             return Errors.General.NotFound(command.BreedId).ToErrorList();
-
-        var volunteerId = VolunteerId.Create(command.VolunteerId);
-
-        var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
-
-        if (volunteerResult.IsFailure)
-            return Errors.General.NotFound(volunteerId.Value).ToErrorList();
-
-        var volunteer = volunteerResult.Value;
 
         var name = PetName.Create(command.Name).Value;
 
@@ -92,27 +100,21 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
         var speciesId = SpeciesId.Create(command.SpeciesId);
 
         var speciesDetails = SpeciesDetails.Create(speciesId, command.BreedId);
-
-        var petId = PetId.NewPetId();
-
-        var pet = new Pet(
-            petId,
+        
+        pet.Update(
             name,
             description,
-            address,
-            phone,
-            command.Status,
-            DateTime.Now,
-            paymentDetails,
-            petDetails,
+            address, 
+            phone, 
+            command.Status, 
+            paymentDetails, 
+            petDetails, 
             speciesDetails);
-
-        volunteer.AddPet(pet);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 
-        _logger.LogInformation("Pet {petId} added to volunteer {volunteerId}", petId.Value, volunteerId.Value);
-
+        _logger.LogInformation("Pet with ID {petId} has been successfully updated.", petId);
+        
         return petId.Value;
     }
 }

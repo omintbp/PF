@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
+using PetFamily.Domain.Shared.ValueObjects;
 
 namespace PetFamily.Domain.PetManagement.Entities;
 
@@ -15,21 +16,18 @@ public class PetPhoto : Shared.Entity<PetPhotoId>, ISoftDeletable
         
     }
     
-    private PetPhoto(PetPhotoId id, string path, bool isMain) : base(id)
+    private PetPhoto(PetPhotoId id, FilePath filePath, bool isMain) : base(id)
     {
-        Path = path;
+        FilePath = filePath;
         IsMain = isMain;
     }
     
-    public string Path { get; private set; }
+    public FilePath FilePath { get; private set; }
     
     public bool IsMain { get; private set; }
-
-    public static Result<PetPhoto, Error> Create(PetPhotoId id, string path, bool isMain)
+    
+    public static Result<PetPhoto, Error> Create(PetPhotoId id, FilePath path, bool isMain)
     {
-        if (string.IsNullOrWhiteSpace(path) || path.Length > MAX_PATH_LENGTH)
-            return Errors.General.ValueIsInvalid(nameof(path));
-        
         var petPhoto = new PetPhoto(id, path, isMain);
 
         return petPhoto;
