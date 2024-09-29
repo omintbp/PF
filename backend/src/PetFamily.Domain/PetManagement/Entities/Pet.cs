@@ -108,6 +108,8 @@ public class Pet : Shared.Entity<PetId>, ISoftDeletable
         SpeciesDetails = speciesDetails;
     }
     
+    public void UpdateStatus(HelpStatus newStatus) => HelpStatus = newStatus;
+    
     public void Delete()
     {
         _isDeleted = true;
