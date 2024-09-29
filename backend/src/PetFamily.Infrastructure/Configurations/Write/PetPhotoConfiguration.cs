@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
@@ -20,9 +21,12 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
                 id => PetPhotoId.Create(id)
             );
 
-        builder.Property(p => p.Path)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+        builder.ComplexProperty(p => p.FilePath, pb =>
+        {
+            pb.Property(p => p.Path)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+        });
 
         builder.Property(p => p.IsMain);
     }

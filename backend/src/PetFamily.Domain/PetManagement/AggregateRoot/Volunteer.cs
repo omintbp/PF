@@ -122,7 +122,7 @@ public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
 
         return pet;
     }
-
+    
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {
         if (pet.Position == newPosition || _pets.Count == 1)
@@ -142,7 +142,7 @@ public class Volunteer : Shared.Entity<VolunteerId>, ISoftDeletable
 
         return UnitResult.Success<Error>();
     }
-
+    
     private Result<Position, Error> SetPetInitialPosition(Pet pet)
     {
         var position = Position.Create(_pets.Count + 1);
