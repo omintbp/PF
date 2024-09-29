@@ -65,6 +65,8 @@ public class Pet : Entity<PetId>, ISoftDeletable
     
     public void SetPosition(Position position) => Position = position;
     
+    public void UpdateStatus(HelpStatus newStatus) => HelpStatus = newStatus;
+    
     public void Delete()
     {
         _isDeleted = true;
