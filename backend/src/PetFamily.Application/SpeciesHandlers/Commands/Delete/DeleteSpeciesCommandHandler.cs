@@ -48,7 +48,7 @@ public class DeleteSpeciesCommandHandler : ICommandHandler<DeleteSpeciesCommand>
             return speciesResult.Error.ToErrorList();
 
         var isSpeciesActive = _readDbContext.Pets
-            .Any(p => p.SpeciesId == speciesId.Value);
+            .Any(p => p.Species.SpeciesId == speciesId.Value);
 
         if(isSpeciesActive)
             return Errors.General.ValueIsInvalid(nameof(speciesId)).ToErrorList();

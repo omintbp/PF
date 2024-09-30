@@ -111,7 +111,7 @@ namespace PetFamily.Infrastructure.Migrations
                     is_main = table.Column<bool>(type: "boolean", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     pet_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    file_path_path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
+                    file_path = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {

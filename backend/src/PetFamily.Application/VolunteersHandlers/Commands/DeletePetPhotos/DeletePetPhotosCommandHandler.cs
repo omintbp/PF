@@ -6,12 +6,11 @@ using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
-using PetFamily.Application.VolunteersHandlers;
-using PetFamily.Application.VolunteersHandlers.Commands.DeletePetPhotos;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.IDs;
-using PetFamily.Domain.Shared.ValueObjects;
 using FileInfo = PetFamily.Application.Providers.FileInfo;
+
+namespace PetFamily.Application.VolunteersHandlers.Commands.DeletePetPhotos;
 
 public class DeletePetPhotosCommandHandler : ICommandHandler<DeletePetPhotosCommand>
 {

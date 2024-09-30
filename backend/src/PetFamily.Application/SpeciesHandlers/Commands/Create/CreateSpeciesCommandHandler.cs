@@ -42,7 +42,7 @@ public class CreateSpeciesCommandHandler : ICommandHandler<Guid, CreateSpeciesCo
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
 
-        var isNameAlreadyUsed = _readDbContext.Species.Any(s => s.Name == command.Name);
+        var isNameAlreadyUsed = _readDbContext.Species.Any(s => s.SpeciesName == command.Name);
 
         if (isNameAlreadyUsed)
             return Errors.General.AlreadyExist(command.Name).ToErrorList();

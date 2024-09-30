@@ -36,6 +36,6 @@ public class AddPetCommandValidator : AbstractValidator<AddPetCommand>
                     d.IsVaccinated,
                     d.Color,
                     d.HealthInfo,
-                    d.Birthday));
+                    d.BirthdayDate));
     }
 }

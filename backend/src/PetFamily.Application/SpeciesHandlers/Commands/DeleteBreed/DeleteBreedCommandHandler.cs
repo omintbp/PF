@@ -50,7 +50,7 @@ public class DeleteBreedCommandHandler : ICommandHandler<DeleteBreedCommand>
 
         var breedId = BreedId.Create(command.BreedId);
 
-        var isBreedActive = _readDbContext.Pets.Any(v => v.BreedId == breedId.Value);
+        var isBreedActive = _readDbContext.Pets.Any(v => v.Breed.BreedId == breedId.Value);
 
         if (isBreedActive)
             return Errors.General.ValueIsInvalid(nameof(breedId)).ToErrorList();
