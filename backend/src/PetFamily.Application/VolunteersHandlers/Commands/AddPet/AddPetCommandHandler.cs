@@ -43,13 +43,13 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
         
-        var isSpeciesExists = _readDbContext.Species.Any(s => s.Id == command.SpeciesId);
+        var isSpeciesExists = _readDbContext.Species.Any(s => s.SpeciesId == command.SpeciesId);
 
         if (isSpeciesExists == false)
             return Errors.General.NotFound(command.SpeciesId).ToErrorList();
         
         var isBreedExists = _readDbContext.Breeds.Any(b => 
-            b.Id == command.BreedId && b.SpeciesId == command.SpeciesId);
+            b.BreedId == command.BreedId && b.SpeciesId == command.SpeciesId);
         
         if (isBreedExists == false)
             return Errors.General.NotFound(command.BreedId).ToErrorList();
@@ -87,7 +87,7 @@ public class AddPetCommandHandler : ICommandHandler<Guid, AddPetCommand>
             command.Details.IsVaccinated,
             command.Details.Color,
             command.Details.HealthInfo,
-            command.Details.Birthday).Value;
+            command.Details.BirthdayDate).Value;
 
         var speciesId = SpeciesId.Create(command.SpeciesId);
 

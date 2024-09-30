@@ -25,7 +25,8 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
         {
             pb.Property(p => p.Path)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                .HasColumnName("file_path");
         });
 
         builder.Property(p => p.IsMain);

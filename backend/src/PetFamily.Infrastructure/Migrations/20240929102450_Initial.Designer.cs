@@ -13,7 +13,7 @@ using PetFamily.Infrastructure.DbContexts;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20240929090410_Initial")]
+    [Migration("20240929102450_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -290,7 +290,7 @@ namespace PetFamily.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(500)
                                 .HasColumnType("character varying(500)")
-                                .HasColumnName("file_path_path");
+                                .HasColumnName("file_path");
                         });
 
                     b.HasKey("Id")

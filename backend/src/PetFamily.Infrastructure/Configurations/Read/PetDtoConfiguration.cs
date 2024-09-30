@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Application.DTOs.Shared;
 using PetFamily.Application.DTOs.Volunteers;
+using PetFamily.Domain.SpeciesManagement.AggregateRoot;
 
 namespace PetFamily.Infrastructure.Configurations.Read;
 
@@ -25,9 +26,12 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
             .HasColumnName("help_status")
             .HasColumnType("varchar");
 
-        builder.Property(b => b.SpeciesId);
+        builder.HasMany(p => p.Photos)
+            .WithOne()
+            .HasForeignKey("pet_id");
 
-        builder.Property(b => b.BreedId);
+        builder.HasOne(b => b.Species);
+        builder.HasOne(b => b.Breed);
 
         builder.ComplexProperty(p => p.Address, ab =>
         {
@@ -44,7 +48,7 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
 
         builder.ComplexProperty(p => p.Details, db =>
         {
-            db.Property(d => d.Birthday)
+            db.Property(d => d.BirthdayDate)
                 .HasColumnName("birthday_date");
 
             db.Property(p => p.Weight)

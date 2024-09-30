@@ -9,11 +9,13 @@ public class BreedDtoConfiguration : IEntityTypeConfiguration<BreedDto>
     public void Configure(EntityTypeBuilder<BreedDto> builder)
     {
         builder.ToTable("breeds");
-        
-        builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.SpeciesId);
-        
-        builder.Property(x => x.Name);
+        builder.HasKey(b => b.BreedId);
+
+        builder.Property(b => b.BreedId).HasColumnName("id");
+
+        builder.Property(b => b.SpeciesId);
+
+        builder.Property(b => b.BreedName).HasColumnName("name");
     }
 }

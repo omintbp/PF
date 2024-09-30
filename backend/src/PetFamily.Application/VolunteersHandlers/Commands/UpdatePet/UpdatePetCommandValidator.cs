@@ -38,6 +38,6 @@ public class UpdatePetCommandValidator : AbstractValidator<UpdatePetCommand>
                     d.IsVaccinated,
                     d.Color,
                     d.HealthInfo,
-                    d.Birthday));
+                    d.BirthdayDate));
     }
 }

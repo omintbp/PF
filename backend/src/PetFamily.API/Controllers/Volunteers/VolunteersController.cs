@@ -266,5 +266,4 @@ public class VolunteersController : ApplicationController
 
         return Ok();
     }
-    
 }
