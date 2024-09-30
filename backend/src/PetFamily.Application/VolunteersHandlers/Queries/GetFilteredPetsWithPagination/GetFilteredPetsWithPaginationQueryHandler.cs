@@ -121,7 +121,11 @@ public class GetFilteredPetsWithPaginationQueryHandler
                         pets.Add(petDto.Id, petDto);
                     }
 
-                    if (petPhoto is not null)
+                    if (petPhoto is null) return petDto;
+                    
+                    if(petPhoto.IsMain)
+                        petDto.Photos.Insert(0, petPhoto);
+                    else
                         petDto.Photos.Add(petPhoto);
 
                     return petDto;
