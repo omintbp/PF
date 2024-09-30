@@ -1,3 +1,8 @@
 namespace PetFamily.Application.DTOs.Species;
 
-public record BreedDto(Guid Id, Guid SpeciesId, string Name);
+public class BreedDto
+{
+    public Guid BreedId { get; init; }
+    public Guid SpeciesId { get; init; }
+    public string BreedName { get; init; } 
+}

@@ -287,7 +287,7 @@ namespace PetFamily.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(500)
                                 .HasColumnType("character varying(500)")
-                                .HasColumnName("file_path_path");
+                                .HasColumnName("file_path");
                         });
 
                     b.HasKey("Id")
