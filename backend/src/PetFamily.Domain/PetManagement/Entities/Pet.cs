@@ -62,6 +62,23 @@ public class Pet : Shared.Entity<PetId>, ISoftDeletable
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
 
+    public UnitResult<Error> SetMainPhoto(PetPhotoId photoId)
+    {
+        var photoResult = _photos.FirstOrDefault(p => p.Id == photoId);
+
+        if (photoResult is null)
+            return Errors.General.NotFound(photoId.Value);
+
+        foreach (var photo in _photos)
+        {
+            photo.SetAsNotMain();
+        }
+        
+        photoResult.SetAsMain();
+        
+        return UnitResult.Success<Error>();
+    }
+
     public UnitResult<Error> DeletePhoto(PetPhotoId photoId)
     {
         var photo = _photos.FirstOrDefault(p => p.Id == photoId);

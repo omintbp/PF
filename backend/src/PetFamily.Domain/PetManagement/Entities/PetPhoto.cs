@@ -33,6 +33,16 @@ public class PetPhoto : Shared.Entity<PetPhotoId>, ISoftDeletable
         return petPhoto;
     }
 
+    public void SetAsMain()
+    {
+        IsMain = true;
+    }
+
+    public void SetAsNotMain()
+    {
+        IsMain = false;
+    }
+
     public void Delete()
     {
         _isDeleted = true;
