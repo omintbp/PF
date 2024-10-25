@@ -24,4 +24,12 @@ public static class Errors
             return Error.Validation("record.already.exist", $"{label} already exist");
         }
     }
+
+    public static class User
+    {
+        public static Error InvalidCredentials()
+        {
+            return Error.Validation("credentials.is.invalid", "Your credentials is invalid");
+        }
+    }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.DTOs.Volunteers;
@@ -10,6 +11,7 @@ using PetFamily.Volunteers.Presentation.Pets.Requests;
 
 namespace PetFamily.Volunteers.Presentation.Pets;
 
+[Authorize]
 public class PetsController : ApplicationController
 {
     [HttpGet]
