@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel;
 using PetFamily.Volunteers.Application.Queries.CheckIfPetExistsByBreedId;
@@ -7,6 +8,7 @@ using PetFamily.Volunteers.Contracts;
 
 namespace PetFamily.Volunteers.Presentation;
 
+[Authorize]
 public class VolunteerContract : IVolunteerContract
 {
     private readonly IQueryHandler<bool, CheckIfPetExistsBySpeciesIdQuery> _checkBySpeciesIdHandler;

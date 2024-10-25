@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.DTOs.Species;
@@ -14,6 +15,7 @@ using PetFamily.Species.Presentation.Requests;
 
 namespace PetFamily.Species.Presentation;
 
+[Authorize]
 public class SpeciesController : ApplicationController
 {
     [HttpPost]
