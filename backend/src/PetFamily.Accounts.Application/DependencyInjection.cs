@@ -2,7 +2,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 
-namespace PetFamily.Species.Application;
+namespace PetFamily.Accounts.Application;
 
 public static class DependencyInjection
 {

@@ -1,5 +1,11 @@
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.DTOs.Shared;
 
-namespace PetFamily.Species.Application.Commands.Register;
+namespace PetFamily.Accounts.Application.Commands.Register;
 
-public record RegisterCommand(string UserName, string Email, string Password) : ICommand;
+public record RegisterCommand(
+    FullNameDto FullName,
+    string UserName,
+    string Email,
+    string Password,
+    IEnumerable<SocialNetworkDto> SocialNetworks) : ICommand;

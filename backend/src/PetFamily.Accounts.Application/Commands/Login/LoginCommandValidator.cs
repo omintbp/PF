@@ -2,7 +2,7 @@ using FluentValidation;
 using PetFamily.Core.Validation;
 using PetFamily.SharedKernel;
 
-namespace PetFamily.Species.Application.Commands.Login;
+namespace PetFamily.Accounts.Application.Commands.Login;
 
 public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {

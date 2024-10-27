@@ -1,4 +1,6 @@
+using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
@@ -20,7 +22,8 @@ builder.Services.AddLogger(builder.Configuration);
 
 builder.Services
     .AddAccountApplication()
-    .AddAccountInfrastructure(builder.Configuration);
+    .AddAccountInfrastructure(builder.Configuration)
+    .AddAccountPresentation();
 
 builder.Services
     .AddSpeciesInfrastructure()
@@ -38,6 +41,9 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(SpeciesController).Assembly);
 
 var app = builder.Build();
+
+var accountSeedingService = app.Services.GetRequiredService<AccountsSeeder>();
+await accountSeedingService.Seed();
 
 app.UseExceptionHandleMiddleware();
 

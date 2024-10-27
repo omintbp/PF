@@ -2,7 +2,7 @@ using FluentValidation;
 using PetFamily.Core.Validation;
 using PetFamily.SharedKernel;
 
-namespace PetFamily.Species.Application.Commands.Register;
+namespace PetFamily.Accounts.Application.Commands.Register;
 
 public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {

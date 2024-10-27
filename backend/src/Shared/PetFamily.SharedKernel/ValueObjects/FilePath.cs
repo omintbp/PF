@@ -4,6 +4,8 @@ namespace PetFamily.SharedKernel.ValueObjects;
 
 public record FilePath
 {
+    public static FilePath None => new(string.Empty);
+
     private FilePath(string path)
     {
         Path = path;
@@ -15,7 +17,7 @@ public record FilePath
     {
         if (string.IsNullOrWhiteSpace(extension) || extension.Length > Constants.MAX_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(extension));
-        
+
         var fullPath = path + extension;
 
         return new FilePath(fullPath);

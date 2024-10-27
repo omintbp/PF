@@ -4,6 +4,7 @@ using PetFamily.Core.Abstractions;
 using PetFamily.Core.DTOs.Species;
 using PetFamily.Core.Models;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.Framework.Extensions;
 using PetFamily.Species.Application.Commands.Create;
 using PetFamily.Species.Application.Commands.CreateBreed;
@@ -19,6 +20,7 @@ namespace PetFamily.Species.Presentation;
 public class SpeciesController : ApplicationController
 {
     [HttpPost]
+    [Permission(Permissions.Species.CreateSpecies)]
     public async Task<ActionResult> Create(
         [FromBody] CreateSpeciesRequest request,
         [FromServices] ICommandHandler<Guid, CreateSpeciesCommand> handler,
@@ -35,6 +37,7 @@ public class SpeciesController : ApplicationController
     }
     
     [HttpPost("{speciesId::guid}/breed")]
+    [Permission(Permissions.Species.CreateSpecies)]
     public async Task<ActionResult> CreateBreed(
         [FromRoute] Guid speciesId,
         [FromBody] CreateBreedRequest request,
@@ -52,6 +55,7 @@ public class SpeciesController : ApplicationController
     }
     
     [HttpDelete("{speciesId::guid}")]
+    [Permission(Permissions.Species.DeleteSpecies)]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid speciesId,
         [FromServices] ICommandHandler<DeleteSpeciesCommand> handler,
@@ -68,6 +72,7 @@ public class SpeciesController : ApplicationController
     }
     
     [HttpDelete("{speciesId::guid}/breeds/{breedId::guid}")]
+    [Permission(Permissions.Species.DeleteSpecies)]
     public async Task<ActionResult> DeleteBreed(
         [FromRoute] Guid speciesId,
         [FromRoute] Guid breedId,
@@ -85,6 +90,7 @@ public class SpeciesController : ApplicationController
     }
 
     [HttpGet]
+    [Permission(Permissions.Species.ReadSpecies)]
     public async Task<ActionResult> Get(
         [FromQuery] GetSpeciesWithPaginationRequest request,
         [FromServices] IQueryHandler<PagedList<SpeciesDto>, GetSpeciesWithPaginationQuery> handler,
@@ -101,6 +107,7 @@ public class SpeciesController : ApplicationController
     }
     
     [HttpGet("{speciesId::guid}/breeds")]
+    [Permission(Permissions.Species.ReadSpecies)]
     public async Task<ActionResult> GetBreeds(
         [FromRoute] Guid speciesId,
         [FromQuery] GetBreedsWithPaginationRequest request,

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Accounts.Presentation.Requests;
+using PetFamily.Accounts.Application.Commands.Login;
+using PetFamily.Accounts.Application.Commands.Register;
+using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Core.Abstractions;
 using PetFamily.Framework;
 using PetFamily.Framework.Extensions;
-using PetFamily.Species.Application.Commands.Login;
-using PetFamily.Species.Application.Commands.Register;
 
 namespace PetFamily.Accounts.Presentation;
 
@@ -22,10 +22,10 @@ public class AccountController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         return Ok();
     }
-    
+
     [HttpPost("login")]
     public async Task<ActionResult> Login(
         [FromBody] LoginRequest request,
@@ -38,7 +38,7 @@ public class AccountController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         return Ok(result.Value);
     }
 }

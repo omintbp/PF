@@ -4,6 +4,7 @@ using PetFamily.Core.Abstractions;
 using PetFamily.Core.DTOs.Volunteers;
 using PetFamily.Core.Models;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.Framework.Extensions;
 using PetFamily.Volunteers.Application.Queries.GetFilteredPetsWithPagination;
 using PetFamily.Volunteers.Application.Queries.GetPetById;
@@ -15,6 +16,7 @@ namespace PetFamily.Volunteers.Presentation.Pets;
 public class PetsController : ApplicationController
 {
     [HttpGet]
+    [Permission(Permissions.Pets.ReadPet)]
     public async Task<ActionResult> Get(
         [FromQuery] GetFilteredPetsWithPaginationRequest request,
         [FromServices] IQueryHandler<PagedList<PetDto>, GetFilteredPetsWithPaginationQuery> handler,
@@ -28,6 +30,7 @@ public class PetsController : ApplicationController
     }
     
     [HttpGet("{petId::guid}")]
+    [Permission(Permissions.Pets.ReadPet)]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid petId,
         [FromServices] IQueryHandler<PetDto, GetPetByIdQuery> handler,

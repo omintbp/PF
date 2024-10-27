@@ -1,0 +1,49 @@
+{
+  "Roles": {
+    "Admin": [
+      "species.create",
+      "species.read",
+      "species.update",
+      "species.delete",
+      "volunteer.create",
+      "volunteer.read",
+      "volunteer.update",
+      "volunteer.delete",
+      "pet.create",
+      "pet.read",
+      "pet.update",
+      "pet.delete"
+    ],
+    "Volunteer": [
+      "species.create",
+      "species.read",
+      "species.update",
+      "species.delete",
+      "pet.create",
+      "pet.read",
+      "pet.update",
+      "pet.delete",
+      "volunteer.read",
+      "volunteer.update"
+    ],
+    "Participant": [
+      "species.read",
+      "pet.read",
+      "volunteer.read"
+    ]
+  },
+  "Permissions": [
+    "species.create",
+    "species.read",
+    "species.update",
+    "species.delete",
+    "volunteer.create",
+    "volunteer.read",
+    "volunteer.update",
+    "volunteer.delete",
+    "pet.create",
+    "pet.read",
+    "pet.update",
+    "pet.delete"
+  ]
+}
