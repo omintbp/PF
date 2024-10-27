@@ -1,6 +1,6 @@
 using PetFamily.Accounts.Domain;
 
-namespace PetFamily.Species.Application;
+namespace PetFamily.Accounts.Application;
 
 public interface ITokenProvider
 {

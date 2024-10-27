@@ -10,6 +10,16 @@ namespace PetFamily.Accounts.Infrastructure.DbContexts;
 public class AuthorizationDbContext(IConfiguration configuration)
     : IdentityDbContext<User, Role, Guid>
 {
+    public DbSet<Permission> Permissions => Set<Permission>();
+    
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+
+    public DbSet<AdminAccount> Admins => Set<AdminAccount>();
+
+    public DbSet<VolunteerAccount> Volunteers => Set<VolunteerAccount>();
+
+    public DbSet<ParticipantAccount> Participants => Set<ParticipantAccount>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("PetFamily"));
@@ -42,6 +52,10 @@ public class AuthorizationDbContext(IConfiguration configuration)
 
         builder.Entity<IdentityUserRole<Guid>>()
             .ToTable("user_roles");
+
+        builder.ApplyConfigurationsFromAssembly(
+            typeof(AuthorizationDbContext).Assembly,
+            type => type.FullName?.Contains("Configurations") ?? false);
     }
 
     private ILoggerFactory CreateLoggerFactory() =>

@@ -7,7 +7,7 @@ using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel;
 
-namespace PetFamily.Species.Application.Commands.Login;
+namespace PetFamily.Accounts.Application.Commands.Login;
 
 public class LoginCommandHandler : ICommandHandler<string, LoginCommand>
 {

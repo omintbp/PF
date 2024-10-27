@@ -1,13 +1,18 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using PetFamily.Accounts.Application;
+using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.Managers;
+using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
-using PetFamily.Species.Application;
+using PetFamily.Framework.Authorization;
 
 namespace PetFamily.Accounts.Infrastructure;
 
@@ -18,10 +23,24 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         return services
+            .AddAccountSeeder()
+            .AddManagers()
             .AddAuthServices(configuration)
             .AddIdentity()
             .AddDbContexts()
             .AddTokenProvider();
+    }
+
+    private static IServiceCollection AddManagers(this IServiceCollection services)
+    {
+        return services.AddScoped<IPermissionManager, PermissionManager>();
+    }
+
+    private static IServiceCollection AddAccountSeeder(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<AccountsSeedingService>()
+            .AddSingleton<AccountsSeeder>();
     }
 
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
@@ -79,6 +98,8 @@ public static class DependencyInjection
                 };
             });
 
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         services.AddAuthorization();
 
         return services;

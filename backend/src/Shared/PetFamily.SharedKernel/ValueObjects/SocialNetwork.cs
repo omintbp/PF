@@ -1,8 +1,6 @@
-using System.Runtime.InteropServices.JavaScript;
 using CSharpFunctionalExtensions;
-using PetFamily.SharedKernel;
 
-namespace PetFamily.Volunteers.Domain.ValueObjects;
+namespace PetFamily.SharedKernel.ValueObjects;
 
 public record SocialNetwork
 {

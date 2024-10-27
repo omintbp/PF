@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using PetFamily.SharedKernel;
 
-namespace PetFamily.Species.Application.Extensions;
+namespace PetFamily.Accounts.Application.Extensions;
 
 public static class IdentityExtensions
 {
