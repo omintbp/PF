@@ -10,9 +10,12 @@ using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
 using PetFamily.Accounts.Infrastructure.Managers;
+using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Accounts.Infrastructure.Seeding;
+using PetFamily.Core.Database;
 using PetFamily.Core.Options;
 using PetFamily.Framework.Authorization;
+using PetFamily.SharedKernel;
 
 namespace PetFamily.Accounts.Infrastructure;
 
@@ -28,12 +31,15 @@ public static class DependencyInjection
             .AddAuthServices(configuration)
             .AddIdentity()
             .AddDbContexts()
+            .AddDatabase()
             .AddTokenProvider();
     }
 
     private static IServiceCollection AddManagers(this IServiceCollection services)
     {
-        return services.AddScoped<IPermissionManager, PermissionManager>();
+        return services
+            .AddScoped<IPermissionManager, PermissionManager>()
+            .AddScoped<IAccountManager, AccountManager>();
     }
 
     private static IServiceCollection AddAccountSeeder(this IServiceCollection services)
@@ -46,6 +52,11 @@ public static class DependencyInjection
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
     {
         return services.AddScoped<AuthorizationDbContext>();
+    }
+
+    public static IServiceCollection AddDatabase(this IServiceCollection services)
+    {
+        return services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.AccountManagement);
     }
 
     private static IServiceCollection AddTokenProvider(this IServiceCollection services)
@@ -72,6 +83,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
 
         services
             .AddAuthentication(options =>

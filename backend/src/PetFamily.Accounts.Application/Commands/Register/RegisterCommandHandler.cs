@@ -3,8 +3,10 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.Extensions;
+using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Database;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.ValueObjects;
@@ -16,18 +18,24 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
     private readonly ILogger<RegisterCommandHandler> _logger;
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
+    private readonly IAccountManager _accountManager;
     private readonly IValidator<RegisterCommand> _validator;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RegisterCommandHandler(
         ILogger<RegisterCommandHandler> logger,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IValidator<RegisterCommand> validator)
+        IAccountManager accountManager,
+        IValidator<RegisterCommand> validator,
+        IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _userManager = userManager;
         _roleManager = roleManager;
+        _accountManager = accountManager;
         _validator = validator;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<UnitResult<ErrorList>> Handle(
@@ -51,7 +59,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
         var socialNetworks = command.SocialNetworks
             .Select(s => SocialNetwork.Create(s.Url, s.Name).Value);
 
-        var user = User.CreateParticipant(
+        var userResult = User.CreateParticipant(
             command.UserName,
             command.Email,
             fullName,
@@ -59,12 +67,32 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
             participantRole,
             socialNetworks);
 
-        var createResult = await _userManager.CreateAsync(user, command.Password);
+        if (userResult.IsFailure)
+            return userResult.Error.ToErrorList();
 
-        if (createResult.Succeeded == false)
-            return createResult.Errors.ToErrorList();
+        var user = userResult.Value;
 
-        //var participant = new ParticipantAccount(user);
+        var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+
+        try
+        {
+            var createResult = await _userManager.CreateAsync(user, command.Password);
+
+            if (createResult.Succeeded == false)
+                return createResult.Errors.ToErrorList();
+
+            var participant = new ParticipantAccount(user);
+
+            await _accountManager.CreateParticipantAccount(participant, cancellationToken);
+
+            await _unitOfWork.SaveChanges(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+        }
+
+        transaction.Commit();
 
         _logger.LogInformation("User {userName} created", command.UserName);
 
