@@ -14,6 +14,8 @@ using PetFamily.WEB.Extensions;
 using PetFamily.WEB.Middlewares;
 using Serilog;
 
+DotNetEnv.Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSwagger();
