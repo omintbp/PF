@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using PetFamily.Accounts.Contracts.Response;
 using PetFamily.Accounts.Domain;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Extensions;
@@ -9,7 +10,7 @@ using PetFamily.SharedKernel;
 
 namespace PetFamily.Accounts.Application.Commands.Login;
 
-public class LoginCommandHandler : ICommandHandler<string, LoginCommand>
+public class LoginCommandHandler : ICommandHandler<LoginResponse, LoginCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly ITokenProvider _tokenProvider;
@@ -28,7 +29,7 @@ public class LoginCommandHandler : ICommandHandler<string, LoginCommand>
         _validator = validator;
     }
 
-    public async Task<Result<string, ErrorList>> Handle(
+    public async Task<Result<LoginResponse, ErrorList>> Handle(
         LoginCommand command,
         CancellationToken cancellationToken)
     {
@@ -45,10 +46,14 @@ public class LoginCommandHandler : ICommandHandler<string, LoginCommand>
         if (!passwordConfirmed)
             return Errors.User.InvalidCredentials().ToErrorList();
 
-        var token = _tokenProvider.GenerateAccessToken(user);
+        var accessToken = _tokenProvider.GenerateAccessToken(user);
+        var refreshToken = await _tokenProvider.GenerateRefreshToken(
+            user,
+            accessToken.Jti,
+            cancellationToken);
 
         _logger.LogInformation("Successfully logged in.");
 
-        return token;
+        return new LoginResponse(accessToken.Token, refreshToken);
     }
 }

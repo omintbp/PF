@@ -26,7 +26,7 @@ public class AccountsSeedingService
 
     public AccountsSeedingService(
         ILogger<AccountsSeedingService> logger,
-        [FromKeyedServices(Modules.AccountManagement)]
+        [FromKeyedServices(Modules.Accounts)]
         IUnitOfWork unitOfWork,
         UserManager<User> userManager,
         IAccountManager accountManager,

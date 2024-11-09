@@ -19,6 +19,8 @@ public class AuthorizationDbContext(IConfiguration configuration)
     public DbSet<VolunteerAccount> Volunteers => Set<VolunteerAccount>();
 
     public DbSet<ParticipantAccount> Participants => Set<ParticipantAccount>();
+    
+    public DbSet<RefreshSession> RefreshSessions => Set<RefreshSession>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

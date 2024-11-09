@@ -31,5 +31,15 @@ public static class Errors
         {
             return Error.Validation("credentials.is.invalid", "Your credentials is invalid");
         }
+
+        public static Error RefreshTokenExpired()
+        {
+            return Error.Validation("refresh.token.expired", "Refresh token has expired");
+        }
+        
+        public static Error TokenInvalid()
+        {
+            return Error.Validation("invalid.token", "Access token is anvalid");
+        }
     }
 }
