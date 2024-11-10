@@ -61,7 +61,7 @@ public class JwtTokenProvider : ITokenProvider
             User = user,
             Jti = jti,
             CreatedAt = DateTime.UtcNow,
-            ExpiresIn = DateTime.UtcNow.AddDays(30),
+            ExpiresIn = DateTime.UtcNow.AddDays(int.Parse(_options.RefreshDaysTime)),
             RefreshToken = Guid.NewGuid()
         };
 
