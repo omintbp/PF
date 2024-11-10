@@ -14,6 +14,7 @@ using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Database;
 using PetFamily.Core.Options;
+using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.SharedKernel;
 
@@ -39,6 +40,7 @@ public static class DependencyInjection
     {
         return services
             .AddScoped<IPermissionManager, PermissionManager>()
+            .AddScoped<IRefreshSessionManager, RefreshSessionManager>()
             .AddScoped<IAccountManager, AccountManager>();
     }
 
@@ -56,7 +58,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddDatabase(this IServiceCollection services)
     {
-        return services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.AccountManagement);
+        return services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Accounts);
     }
 
     private static IServiceCollection AddTokenProvider(this IServiceCollection services)
@@ -97,17 +99,7 @@ public static class DependencyInjection
                 var jwtOptions = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
                                  ?? throw new ApplicationException("Missing jwt configuration");
 
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
+                options.TokenValidationParameters = TokenValidationParametersFactory.CreateWithLifeTime(jwtOptions);
             });
 
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
