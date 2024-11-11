@@ -6,27 +6,25 @@ using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public class PetPhoto : SharedKernel.Entity<PetPhotoId>, ISoftDeletable
+public class PetPhoto : SoftDeletableEntity<PetPhotoId>
 {
-    private bool _isDeleted = false;
-    
     public const int MAX_PATH_LENGTH = 8000;
-    private PetPhoto(PetPhotoId id) 
+
+    private PetPhoto(PetPhotoId id)
         : base(id)
     {
-        
     }
-    
+
     private PetPhoto(PetPhotoId id, FilePath filePath, bool isMain) : base(id)
     {
         FilePath = filePath;
         IsMain = isMain;
     }
-    
+
     public FilePath FilePath { get; private set; }
-    
+
     public bool IsMain { get; private set; }
-    
+
     public static Result<PetPhoto, Error> Create(PetPhotoId id, FilePath path, bool isMain)
     {
         var petPhoto = new PetPhoto(id, path, isMain);
@@ -42,15 +40,5 @@ public class PetPhoto : SharedKernel.Entity<PetPhotoId>, ISoftDeletable
     public void SetAsNotMain()
     {
         IsMain = false;
-    }
-
-    public void Delete()
-    {
-        _isDeleted = true;
-    }
-
-    public void Restore()
-    {
-        _isDeleted = false;
     }
 }

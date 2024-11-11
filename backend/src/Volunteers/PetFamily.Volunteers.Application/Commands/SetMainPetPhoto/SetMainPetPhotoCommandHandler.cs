@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Database;
@@ -16,7 +17,7 @@ public class SetMainPetPhotoCommandHandler : ICommandHandler<SetMainPetPhotoComm
     public SetMainPetPhotoCommandHandler(
         ILogger<SetMainPetPhotoCommandHandler> logger,
         IVolunteerRepository repository,
-        IUnitOfWork unitOfWork)
+        [FromKeyedServices(Modules.Pets)] IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _repository = repository;

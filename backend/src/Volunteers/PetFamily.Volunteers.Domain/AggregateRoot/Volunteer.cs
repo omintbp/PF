@@ -7,10 +7,8 @@ using PetFamily.Volunteers.Domain.ValueObjects;
 
 namespace PetFamily.Volunteers.Domain.AggregateRoot;
 
-public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
+public class Volunteer : SoftDeletableEntity<VolunteerId>
 {
-    private bool _isDeleted = false;
-
     private readonly List<Pet> _pets = [];
 
     private Volunteer(VolunteerId id)
@@ -93,9 +91,14 @@ public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
     public void UpdateSocialNetworks(VolunteerSocialNetworks socialNetworks) =>
         SocialNetworks = socialNetworks;
 
-    public void Delete()
+    public void DeletePets(Predicate<Pet> predicate)
     {
-        _isDeleted = true;
+        _pets.RemoveAll(predicate);
+    }
+
+    public override void Delete()
+    {
+        base.Delete();
 
         foreach (var pet in _pets)
         {
@@ -103,9 +106,9 @@ public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
         }
     }
 
-    public void Restore()
+    public override void Restore()
     {
-        _isDeleted = false;
+        base.Restore();
 
         foreach (var pet in _pets)
         {
@@ -122,7 +125,7 @@ public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
 
         return pet;
     }
-    
+
     public UnitResult<Error> MovePet(Pet pet, Position newPosition)
     {
         if (pet.Position == newPosition || _pets.Count == 1)
@@ -142,7 +145,7 @@ public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
 
         return UnitResult.Success<Error>();
     }
-    
+
     private Result<Position, Error> SetPetInitialPosition(Pet pet)
     {
         var position = Position.Create(_pets.Count + 1);
@@ -167,7 +170,7 @@ public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
 
                 if (moveBackwardResult.IsFailure)
                     return moveBackwardResult.Error;
-                
+
                 petToMove.SetPosition(moveBackwardResult.Value);
             }
         }
@@ -181,7 +184,7 @@ public class Volunteer : SharedKernel.Entity<VolunteerId>, ISoftDeletable
 
                 if (moveForwardResult.IsFailure)
                     return moveForwardResult.Error;
-                
+
                 petToMove.SetPosition(moveForwardResult.Value);
             }
         }

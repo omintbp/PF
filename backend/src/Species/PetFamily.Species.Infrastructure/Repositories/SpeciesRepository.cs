@@ -20,7 +20,7 @@ public class SpeciesRepository : ISpeciesRepository
         Species.Domain.AggregateRoot.Species species, 
         CancellationToken cancellationToken = default)
     {
-        await _context.AddAsync(species, cancellationToken);
+        await _context.Species.AddAsync(species, cancellationToken);
         
         return species.Id;
     }

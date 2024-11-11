@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Database;
@@ -15,7 +16,7 @@ public class SoftDeletePetCommandHandler : ICommandHandler<SoftDeletePetCommand>
 
     public SoftDeletePetCommandHandler(
         ILogger<SoftDeletePetCommandHandler> logger,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Pets)] IUnitOfWork unitOfWork,
         IVolunteerRepository repository)
     {
         _logger = logger;

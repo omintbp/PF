@@ -56,7 +56,7 @@ public static class DependencyInjection
         return services.AddScoped<AuthorizationDbContext>();
     }
 
-    public static IServiceCollection AddDatabase(this IServiceCollection services)
+    private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
         return services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Accounts);
     }

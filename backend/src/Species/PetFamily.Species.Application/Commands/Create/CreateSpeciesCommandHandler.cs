@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Database;
@@ -20,7 +21,7 @@ public class CreateSpeciesCommandHandler : ICommandHandler<Guid, CreateSpeciesCo
 
     public CreateSpeciesCommandHandler(
         ILogger<CreateSpeciesCommandHandler> logger,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Species)] IUnitOfWork unitOfWork,
         IValidator<CreateSpeciesCommand> validator,
         IReadDbContext readDbContext,
         ISpeciesRepository repository)

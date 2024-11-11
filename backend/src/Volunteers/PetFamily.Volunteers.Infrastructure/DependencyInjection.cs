@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using PetFamily.Core.Database;
 using PetFamily.Core.Messaging;
+using PetFamily.SharedKernel;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Application.Files;
 using PetFamily.Volunteers.Application.Providers;
@@ -21,19 +22,31 @@ namespace PetFamily.Volunteers.Infrastructure;
 public static class DependencyInjection
 {
     public static IServiceCollection AddVolunteersInfrastructure(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, InMemoryMessageQueue<IEnumerable<FileInfo>>>();
 
         services
+            .AddEntitiesCleaner(configuration)
             .AddDbContexts()
             .AddDatabase()
             .AddRepositories()
             .AddFiles()
             .AddMinio(configuration);
-        
+
         return services;
+    }
+
+    private static IServiceCollection AddEntitiesCleaner(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services
+            .AddHostedService<EntitiesCleanerBackgroundService>()
+            .Configure<EntitiesCleanerOptions>(configuration.GetSection(EntitiesCleanerOptions.ENTITIES_CLEANER))
+            .AddScoped<IDeletedVolunteersCleanerService, DeletedVolunteersCleanerService>()
+            .AddScoped<IDeletedPetsCleanerService, DeletedPetsCleanerService>();
     }
 
     private static IServiceCollection AddFiles(this IServiceCollection services)
@@ -46,7 +59,7 @@ public static class DependencyInjection
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
         return services
-            .AddScoped<IUnitOfWork, UnitOfWork>()
+            .AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Pets)
             .AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
     }
 
@@ -54,9 +67,9 @@ public static class DependencyInjection
     {
         return services
             .AddScoped<WriteDbContext>()
-            .AddScoped<IReadDbContext, ReadDbContext>();;
+            .AddScoped<IReadDbContext, ReadDbContext>();
     }
-    
+
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         return services
