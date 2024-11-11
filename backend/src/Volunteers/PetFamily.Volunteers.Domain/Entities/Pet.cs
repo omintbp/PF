@@ -2,14 +2,13 @@ using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.IDs;
 using PetFamily.SharedKernel.ValueObjects;
+using PetFamily.Volunteers.Domain.AggregateRoot;
 using PetFamily.Volunteers.Domain.ValueObjects;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public class Pet : SharedKernel.Entity<PetId>, ISoftDeletable
+public class Pet : SoftDeletableEntity<PetId>
 {
-    private bool _isDeleted = false;
-    
     private readonly List<PetPhoto> _photos = [];
 
     private Pet(PetId id) : base(id)
@@ -57,7 +56,7 @@ public class Pet : SharedKernel.Entity<PetId>, ISoftDeletable
     public PetDetails Details { get; private set; }
 
     public SpeciesDetails SpeciesDetails { get; private set; }
-
+    
     public IReadOnlyList<PetPhoto> Photos => _photos;
 
     public void AddPhoto(PetPhoto photo) => _photos.Add(photo);
@@ -127,9 +126,9 @@ public class Pet : SharedKernel.Entity<PetId>, ISoftDeletable
     
     public void UpdateStatus(HelpStatus newStatus) => HelpStatus = newStatus;
     
-    public void Delete()
+    public override void Delete()
     {
-        _isDeleted = true;
+        base.Delete();
 
         foreach (var photo in _photos)
         {
@@ -137,10 +136,10 @@ public class Pet : SharedKernel.Entity<PetId>, ISoftDeletable
         }
     }
 
-    public void Restore()
+    public override void Restore()
     {
-        _isDeleted = false;
-
+        base.Restore();
+        
         foreach (var photo in _photos)
         {
             photo.Restore();

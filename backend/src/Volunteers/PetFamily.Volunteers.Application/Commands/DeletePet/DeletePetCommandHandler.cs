@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Database;
@@ -21,7 +22,7 @@ public class DeletePetCommandHandler : ICommandHandler<DeletePetCommand>
 
     public DeletePetCommandHandler(
         ILogger<DeletePetCommandHandler> logger,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Pets)] IUnitOfWork unitOfWork,
         IVolunteerRepository repository,
         IPetRepository petRepository,
         IFileProvider fileProvider)

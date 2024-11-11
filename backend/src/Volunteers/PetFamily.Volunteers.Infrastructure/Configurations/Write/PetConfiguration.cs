@@ -136,9 +136,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade)
             .HasForeignKey("pet_id");
-
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("is_deleted");
     }
 }

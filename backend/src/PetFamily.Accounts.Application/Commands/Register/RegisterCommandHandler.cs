@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.Extensions;
 using PetFamily.Accounts.Application.Managers;
@@ -28,7 +29,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand>
         RoleManager<Role> roleManager,
         IAccountManager accountManager,
         IValidator<RegisterCommand> validator,
-        IUnitOfWork unitOfWork)
+        [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _userManager = userManager;

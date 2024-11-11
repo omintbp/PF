@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Database;
@@ -20,7 +21,7 @@ public class DeleteBreedCommandHandler : ICommandHandler<DeleteBreedCommand>
 
     public DeleteBreedCommandHandler(
         ILogger<DeleteBreedCommandHandler> logger,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Species)] IUnitOfWork unitOfWork,
         IValidator<DeleteBreedCommand> validator,
         IVolunteerContract volunteerContract,
         ISpeciesRepository repository)
@@ -49,7 +50,8 @@ public class DeleteBreedCommandHandler : ICommandHandler<DeleteBreedCommand>
 
         var breedId = BreedId.Create(command.BreedId);
 
-        var isBreedActiveResult = await _volunteerContract.CheckIfPetExistsByBreedId(command.BreedId, cancellationToken);
+        var isBreedActiveResult =
+            await _volunteerContract.CheckIfPetExistsByBreedId(command.BreedId, cancellationToken);
 
         if (isBreedActiveResult.IsFailure)
             return isBreedActiveResult.Error;

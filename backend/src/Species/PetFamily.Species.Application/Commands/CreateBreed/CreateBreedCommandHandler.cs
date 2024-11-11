@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Database;
@@ -20,7 +21,7 @@ public class CreateBreedCommandHandler : ICommandHandler<Guid, CreateBreedComman
 
     public CreateBreedCommandHandler(
         ILogger<CreateBreedCommandHandler> logger,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Species)] IUnitOfWork unitOfWork,
         IValidator<CreateBreedCommand> validator,
         ISpeciesRepository repository)
     {
@@ -52,15 +53,15 @@ public class CreateBreedCommandHandler : ICommandHandler<Guid, CreateBreedComman
 
         if (isBreedAlreadyExists)
             return Errors.General.AlreadyExist(command.Name).ToErrorList();
-        
+
         var breedId = BreedId.NewBreedId();
         var breedName = BreedName.Create(command.Name).Value;
 
         var breed = new Breed(breedId, breedName);
 
         var addBreedResult = species.AddBreed(breed);
-        
-        if(addBreedResult.IsFailure)
+
+        if (addBreedResult.IsFailure)
             return addBreedResult.Error.ToErrorList();
 
         await _unitOfWork.SaveChanges(cancellationToken);
