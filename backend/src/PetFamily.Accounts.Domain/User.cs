@@ -21,6 +21,12 @@ public class User : IdentityUser<Guid>
 
     public IReadOnlyList<Role> Roles => _roles;
 
+    public AdminAccount? AdminAccount { get; set; }
+
+    public VolunteerAccount? VolunteerAccount { get; set; }
+
+    public ParticipantAccount? ParticipantAccount { get; set; }
+
     public static Result<User, Error> CreateParticipant(
         string userName,
         string email,
@@ -29,9 +35,9 @@ public class User : IdentityUser<Guid>
         Role role,
         IEnumerable<SocialNetwork> socialNetworks)
     {
-        if(role.Name != ParticipantAccount.Participant)
+        if (role.Name != ParticipantAccount.Participant)
             return Errors.General.ValueIsInvalid(nameof(role));
-        
+
         return new User()
         {
             UserName = userName,
@@ -46,12 +52,12 @@ public class User : IdentityUser<Guid>
     public static Result<User, Error> CreateAdmin(
         string userName,
         string email,
-        FullName fullName, 
+        FullName fullName,
         FilePath photo,
         Role role,
         IEnumerable<SocialNetwork> socialNetworks)
     {
-        if(role.Name != AdminAccount.Admin)
+        if (role.Name != AdminAccount.Admin)
             return Errors.General.ValueIsInvalid(nameof(role));
 
         return new User()

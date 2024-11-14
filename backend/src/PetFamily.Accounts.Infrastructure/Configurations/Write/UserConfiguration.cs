@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Domain;
@@ -6,7 +7,7 @@ using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.ValueObjects;
 
-namespace PetFamily.Accounts.Infrastructure.Configurations;
+namespace PetFamily.Accounts.Infrastructure.Configurations.Write;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
@@ -19,7 +20,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         });
 
         builder.HasMany(u => u.Roles)
-            .WithMany();
+            .WithMany()
+            .UsingEntity<IdentityUserRole<Guid>>();
 
         builder.ComplexProperty(v => v.FullName, nb =>
         {
@@ -38,6 +40,24 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
                 .HasColumnName("surname");
         });
+
+        builder
+            .HasOne(u => u.ParticipantAccount)
+            .WithOne(a => a.User)
+            .HasForeignKey<ParticipantAccount>(u => u.UserId)
+            .IsRequired(false);
+
+        builder
+            .HasOne(u => u.VolunteerAccount)
+            .WithOne(a => a.User)
+            .HasForeignKey<VolunteerAccount>(u => u.UserId)
+            .IsRequired(false);
+
+        builder
+            .HasOne(u => u.AdminAccount)
+            .WithOne(a => a.User)
+            .HasForeignKey<AdminAccount>(a => a.UserId)
+            .IsRequired(false);
 
         builder.Property(s => s.SocialsNetworks)
             .ValueObjectsCollectionJsonConversion(

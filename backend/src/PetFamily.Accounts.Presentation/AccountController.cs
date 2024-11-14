@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshToken;
 using PetFamily.Accounts.Application.Commands.Register;
+using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Contracts.Response;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.DTOs.Accounts;
 using PetFamily.Framework;
 using PetFamily.Framework.Extensions;
 
@@ -58,6 +60,22 @@ public class AccountController : ApplicationController
         var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);
 
         var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
+    [HttpGet("{userId::guid}")]
+    public async Task<ActionResult> GetById(
+        [FromRoute] Guid userId,
+        [FromServices] IQueryHandler<UserDto, GetUserByIdQuery> handler,
+        CancellationToken cancellationToken = default!)
+    {
+        var query = new GetUserByIdQuery(userId);
+
+        var result = await handler.Handle(query, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();

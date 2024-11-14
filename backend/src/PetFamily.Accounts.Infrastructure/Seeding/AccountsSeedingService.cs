@@ -95,12 +95,13 @@ public class AccountsSeedingService
                 photo,
                 adminRole,
                 []).Value;
-            var adminAccount = new AdminAccount(adminUser.Id, adminUser);
-
+            
             var createUserResult = await _userManager.CreateAsync(adminUser, options.Password);
-
+            
             if (createUserResult.Succeeded == false)
                 throw new ApplicationException();
+            
+            var adminAccount = new AdminAccount(adminUser.Id, adminUser);
             
             await _accountManager.CreateAdminAccount(adminAccount, cancellationToken);
 

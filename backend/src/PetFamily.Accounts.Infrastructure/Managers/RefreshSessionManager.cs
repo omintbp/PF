@@ -3,15 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.DbContexts.Write;
 using PetFamily.SharedKernel;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
 public class RefreshSessionManager : IRefreshSessionManager
 {
-    private readonly AuthorizationDbContext _context;
+    private readonly AccountWriteDbContext _context;
 
-    public RefreshSessionManager(AuthorizationDbContext context)
+    public RefreshSessionManager(AccountWriteDbContext context)
     {
         _context = context;
     }

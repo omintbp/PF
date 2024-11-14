@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.DbContexts.Write;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
-public class PermissionManager(AuthorizationDbContext context) : IPermissionManager
+public class PermissionManager(AccountWriteDbContext context) : IPermissionManager
 {
     public async Task AddRangeIfNotExists(
         IEnumerable<string> codes,

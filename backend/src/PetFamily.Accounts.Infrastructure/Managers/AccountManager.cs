@@ -1,10 +1,11 @@
 using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.DbContexts.Write;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
-public class AccountManager(AuthorizationDbContext context) : IAccountManager
+public class AccountManager(AccountWriteDbContext context) : IAccountManager
 {
     public async Task CreateAdminAccount(
         AdminAccount account,

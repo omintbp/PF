@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Domain;
 
-namespace PetFamily.Accounts.Infrastructure.DbContexts;
+namespace PetFamily.Accounts.Infrastructure.DbContexts.Write;
 
-public class AuthorizationDbContext(IConfiguration configuration)
+public class AccountWriteDbContext(IConfiguration configuration)
     : IdentityDbContext<User, Role, Guid>
 {
     public DbSet<Permission> Permissions => Set<Permission>();
@@ -56,8 +56,8 @@ public class AuthorizationDbContext(IConfiguration configuration)
             .ToTable("user_roles");
 
         builder.ApplyConfigurationsFromAssembly(
-            typeof(AuthorizationDbContext).Assembly,
-            type => type.FullName?.Contains("Configurations") ?? false);
+            typeof(AccountWriteDbContext).Assembly,
+            type => type.FullName?.Contains("Configurations.Write") ?? false);
     }
 
     private ILoggerFactory CreateLoggerFactory() =>
