@@ -1,15 +1,16 @@
 using System.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.DbContexts.Write;
 using PetFamily.Core.Database;
 
 namespace PetFamily.Accounts.Infrastructure;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly AuthorizationDbContext _context;
+    private readonly AccountWriteDbContext _context;
 
-    public UnitOfWork(AuthorizationDbContext context)
+    public UnitOfWork(AccountWriteDbContext context)
     {
         _context = context;
     }

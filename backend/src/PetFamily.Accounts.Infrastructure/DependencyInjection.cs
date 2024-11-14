@@ -9,6 +9,8 @@ using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.DbContexts.Read;
+using PetFamily.Accounts.Infrastructure.DbContexts.Write;
 using PetFamily.Accounts.Infrastructure.Managers;
 using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Accounts.Infrastructure.Seeding;
@@ -53,7 +55,9 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
     {
-        return services.AddScoped<AuthorizationDbContext>();
+        return services
+            .AddScoped<AccountWriteDbContext>()
+            .AddScoped<IAccountReadDbContext, AccountReadDbContext>();
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
@@ -74,7 +78,7 @@ public static class DependencyInjection
                 options.Password.RequireNonAlphanumeric = false;
             })
             .AddRoles<Role>()
-            .AddEntityFrameworkStores<AuthorizationDbContext>()
+            .AddEntityFrameworkStores<AccountWriteDbContext>()
             .AddDefaultTokenProviders();
 
         return services;

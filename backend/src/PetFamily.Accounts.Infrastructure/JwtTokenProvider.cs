@@ -8,6 +8,7 @@ using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Application.Models;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure.DbContexts;
+using PetFamily.Accounts.Infrastructure.DbContexts.Write;
 using PetFamily.Core.Models;
 using PetFamily.Core.Options;
 using PetFamily.Framework;
@@ -17,12 +18,12 @@ namespace PetFamily.Accounts.Infrastructure;
 
 public class JwtTokenProvider : ITokenProvider
 {
-    private readonly AuthorizationDbContext _dbContext;
+    private readonly AccountWriteDbContext _dbContext;
     private readonly JwtOptions _options;
 
     public JwtTokenProvider(
         IOptions<JwtOptions> options,
-        AuthorizationDbContext dbContext)
+        AccountWriteDbContext dbContext)
     {
         _dbContext = dbContext;
         _options = options.Value;
