@@ -39,7 +39,27 @@ public static class Errors
         
         public static Error TokenInvalid()
         {
-            return Error.Validation("invalid.token", "Access token is anvalid");
+            return Error.Validation("invalid.token", "Access token is invalid");
+        }
+    }
+
+    public static class Discussion
+    {
+        public static Error UserNotInDiscussion(Guid? id = null)
+        {
+            var forId = id == null ? "" : $"'{id}'";
+            
+            return Error.Validation("user.not.in.discussion", $"The user {forId} is not part of the discussion");
+        }
+        
+        public static Error InvalidNumberOfUsers()
+        {
+            return Error.Validation("number.of.users", "The number of users in the discussion should be two");
+        }
+        
+        public static Error NoRightsToEditMessage()
+        {
+            return Error.Validation("message.edit", "There are no rights to edit the message");
         }
     }
 }
