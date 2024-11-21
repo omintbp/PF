@@ -5,5 +5,6 @@ public enum Modules
     Species,
     Pets,
     Accounts,
-    VolunteerRequests
+    VolunteerRequests,
+    Discussions
 }

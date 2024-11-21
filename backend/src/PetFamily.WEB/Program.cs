@@ -2,6 +2,8 @@ using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
+using PetFamily.Discussions.Infrastructure;
+using PetFamily.Discussions.Presentation;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
@@ -32,6 +34,10 @@ builder.Services
 builder.Services
     .AddVolunteerRequestsInfrastructure(builder.Configuration)
     .AddVolunteerRequestsPresentation();
+
+builder.Services
+    .AddDiscussionsInfrastructure(builder.Configuration)
+    .AddDiscussionsPresentation();
 
 builder.Services
     .AddSpeciesInfrastructure()

@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Database;
+using PetFamily.Discussions.Application;
+using PetFamily.Discussions.Infrastructure.DbContexts;
+using PetFamily.Discussions.Infrastructure.Repositories;
 using PetFamily.SharedKernel;
-using PetFamily.VolunteerRequests.Application;
-using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
-using PetFamily.VolunteerRequests.Infrastructure.Repositories;
 
-namespace PetFamily.VolunteerRequests.Infrastructure;
+namespace PetFamily.Discussions.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddVolunteerRequestsInfrastructure(
+    public static IServiceCollection AddDiscussionsInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -22,7 +22,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
-        return services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.VolunteerRequests);
+        return services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Discussions);
     }
 
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
@@ -32,6 +32,6 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        return services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
+        return services.AddScoped<IDiscussionsRepository, DiscussionsRepository>();
     }
 }
