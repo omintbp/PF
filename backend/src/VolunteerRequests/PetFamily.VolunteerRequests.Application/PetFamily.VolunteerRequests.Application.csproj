@@ -4,11 +4,10 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>PetFamily.VolunteerRequest.Application</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\PetFamily.Accounts.Domain\PetFamily.Accounts.Domain.csproj" />
+      <ProjectReference Include="..\PetFamily.VolunteerRequests.Domain\PetFamily.VolunteerRequests.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -5,6 +5,8 @@ using PetFamily.Accounts.Presentation;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
+using PetFamily.VolunteerRequests.Infrastructure;
+using PetFamily.VolunteerRequests.Presentation;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Infrastructure;
 using PetFamily.Volunteers.Presentation;
@@ -28,6 +30,10 @@ builder.Services
     .AddAccountPresentation();
 
 builder.Services
+    .AddVolunteerRequestsInfrastructure(builder.Configuration)
+    .AddVolunteerRequestsPresentation();
+
+builder.Services
     .AddSpeciesInfrastructure()
     .AddSpeciesApplication()
     .AddSpeciesPresentation();
@@ -37,7 +43,8 @@ builder.Services
     .AddVolunteersApplication(builder.Configuration)
     .AddVolunteersPresentation();
 
-builder.Services.AddControllers()
+builder.Services
+    .AddControllers()
     .AddApplicationPart(typeof(VolunteersController).Assembly)
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(SpeciesController).Assembly);
