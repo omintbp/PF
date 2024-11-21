@@ -29,8 +29,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Discussions\PetFamily.Discussions.Infrastructure\PetFamily.Discussions.Infrastructure.csproj" />
+      <ProjectReference Include="..\Discussions\PetFamily.Discussions.Presentation\PetFamily.Discussions.Presentation.csproj" />
       <ProjectReference Include="..\PetFamily.Accounts.Presentation\PetFamily.Accounts.Presentation.csproj" />
       <ProjectReference Include="..\Species\PetFamily.Species.Presentation\PetFamily.Species.Presentation.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Infrastructure\PetFamily.VolunteerRequests.Infrastructure.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\PetFamily.VolunteerRequests.Presentation\PetFamily.VolunteerRequests.Presentation.csproj" />
       <ProjectReference Include="..\Volunteers\PetFamily.Volunteers.Presentation\PetFamily.Volunteers.Presentation.csproj" />
     </ItemGroup>
 

@@ -1,13 +1,6 @@
-using PetFamily.Accounts.Application;
-using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
-using PetFamily.Species.Application;
-using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
-using PetFamily.Volunteers.Application;
-using PetFamily.Volunteers.Infrastructure;
-using PetFamily.Volunteers.Presentation;
 using PetFamily.Volunteers.Presentation.Volunteers;
 using PetFamily.WEB;
 using PetFamily.WEB.Extensions;
@@ -23,21 +16,14 @@ builder.Services.AddSwagger();
 builder.Services.AddLogger(builder.Configuration);
 
 builder.Services
-    .AddAccountApplication()
-    .AddAccountInfrastructure(builder.Configuration)
-    .AddAccountPresentation();
+    .AddSpeciesModule(builder.Configuration)
+    .AddPetsModule(builder.Configuration)
+    .AddAccountsModule(builder.Configuration)
+    .AddDiscussionsModule(builder.Configuration)
+    .AddVolunteerRequestsModule(builder.Configuration);
 
 builder.Services
-    .AddSpeciesInfrastructure()
-    .AddSpeciesApplication()
-    .AddSpeciesPresentation();
-
-builder.Services
-    .AddVolunteersInfrastructure(builder.Configuration)
-    .AddVolunteersApplication(builder.Configuration)
-    .AddVolunteersPresentation();
-
-builder.Services.AddControllers()
+    .AddControllers()
     .AddApplicationPart(typeof(VolunteersController).Assembly)
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(SpeciesController).Assembly);

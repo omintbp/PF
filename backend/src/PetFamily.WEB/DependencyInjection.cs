@@ -1,4 +1,17 @@
 using Microsoft.OpenApi.Models;
+using PetFamily.Accounts.Application;
+using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Presentation;
+using PetFamily.Discussions.Infrastructure;
+using PetFamily.Discussions.Presentation;
+using PetFamily.Species.Application;
+using PetFamily.Species.Infrastructure;
+using PetFamily.Species.Presentation;
+using PetFamily.VolunteerRequests.Infrastructure;
+using PetFamily.VolunteerRequests.Presentation;
+using PetFamily.Volunteers.Application;
+using PetFamily.Volunteers.Infrastructure;
+using PetFamily.Volunteers.Presentation;
 
 namespace PetFamily.WEB;
 
@@ -11,6 +24,54 @@ public static class DependencyInjection
         services.AddSwaggerGen();
 
         return services;
+    }
+
+    public static IServiceCollection AddSpeciesModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services
+            .AddSpeciesInfrastructure()
+            .AddSpeciesApplication()
+            .AddSpeciesPresentation();
+    }
+
+    public static IServiceCollection AddPetsModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services
+            .AddVolunteersInfrastructure(configuration)
+            .AddVolunteersApplication(configuration)
+            .AddVolunteersPresentation();
+    }
+
+    public static IServiceCollection AddAccountsModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services
+            .AddAccountApplication()
+            .AddAccountInfrastructure(configuration)
+            .AddAccountPresentation();
+    }
+
+    public static IServiceCollection AddDiscussionsModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services
+            .AddDiscussionsInfrastructure(configuration)
+            .AddDiscussionsPresentation();
+    }
+
+    public static IServiceCollection AddVolunteerRequestsModule(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services
+            .AddVolunteerRequestsInfrastructure(configuration)
+            .AddVolunteerRequestsPresentation();
     }
 
     public static IServiceCollection AddSwagger(this IServiceCollection services)

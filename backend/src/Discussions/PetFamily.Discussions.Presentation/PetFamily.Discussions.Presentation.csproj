@@ -8,8 +8,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\PetFamily.Framework\PetFamily.Framework.csproj" />
-      <ProjectReference Include="..\PetFamily.VolunteerRequests.Contracts\PetFamily.VolunteerRequests.Contracts.csproj" />
-      <ProjectReference Include="..\PetFamily.VolunteerRequests.Infrastructure\PetFamily.VolunteerRequests.Infrastructure.csproj" />
+      <ProjectReference Include="..\PetFamily.Discussions.Application\PetFamily.Discussions.Application.csproj" />
+      <ProjectReference Include="..\PetFamily.Discussions.Contracts\PetFamily.Discussions.Contracts.csproj" />
     </ItemGroup>
 
 </Project>
