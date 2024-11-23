@@ -5,6 +5,8 @@ namespace PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 public class RejectionComment : ValueObject
 {
+    public static RejectionComment None => new (string.Empty);
+    
     private RejectionComment(string value)
     {
         Value = value;

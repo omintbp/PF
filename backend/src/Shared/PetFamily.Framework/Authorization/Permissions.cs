@@ -25,4 +25,9 @@ public static class Permissions
         public const string UpdatePet = "pet.update";
         public const string DeletePet = "pet.delete";
     }
+
+    public static class VolunteerRequests
+    {
+        public const string CreateVolunteerRequest = "volunteer.request.create";
+    }
 }

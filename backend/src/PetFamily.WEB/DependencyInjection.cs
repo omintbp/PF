@@ -7,6 +7,7 @@ using PetFamily.Discussions.Presentation;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
+using PetFamily.VolunteerRequests.Application;
 using PetFamily.VolunteerRequests.Infrastructure;
 using PetFamily.VolunteerRequests.Presentation;
 using PetFamily.Volunteers.Application;
@@ -71,6 +72,7 @@ public static class DependencyInjection
     {
         return services
             .AddVolunteerRequestsInfrastructure(configuration)
+            .AddVolunteerRequestsApplication(configuration)
             .AddVolunteerRequestsPresentation();
     }
 

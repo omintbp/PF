@@ -12,7 +12,8 @@
       "pet.create",
       "pet.read",
       "pet.update",
-      "pet.delete"
+      "pet.delete",
+      "volunteer.request.create"
     ],
     "Volunteer": [
       "species.create",
@@ -29,7 +30,8 @@
     "Participant": [
       "species.read",
       "pet.read",
-      "volunteer.read"
+      "volunteer.read",
+      "volunteer.request.create"
     ]
   },
   "Permissions": [
@@ -44,6 +46,7 @@
     "pet.create",
     "pet.read",
     "pet.update",
-    "pet.delete"
+    "pet.delete",
+    "volunteer.request.create"
   ]
 }
