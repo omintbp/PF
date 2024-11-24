@@ -5,6 +5,7 @@ using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.Framework.Extensions;
 using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
+using PetFamily.VolunteerRequests.Application.Commands.RejectVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.SendVolunteerRequestToRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeVolunteerRequestToReview;
 using PetFamily.VolunteerRequests.Contracts.Requests;
@@ -67,6 +68,31 @@ public class VolunteerRequestsController : ApplicationController
         CancellationToken cancellationToken = default)
     {
         var command = new SendVolunteerRequestToRevisionCommand(
+            volunteerRequestId,
+            request.RejectionComment);
+
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("{volunteerRequestId::guid}/reject")]
+    [Permission(Permissions.VolunteerRequests.RejectVolunteerRequest)]
+    public async Task<ActionResult> RejectVolunteerRequest(
+        [FromRoute] Guid volunteerRequestId,
+        [FromBody] RejectVolunteerRequestRequest request,
+        [FromServices] ICommandHandler<Guid, RejectVolunteerRequestCommand> handler,
+        [FromServices] IAccountContract accountContract,
+        CancellationToken cancellationToken = default)
+    {
+        var userIdResult = accountContract.GetCurrentUserId(HttpContext);
+        if (userIdResult.IsFailure)
+            return userIdResult.Error.ToResponse();
+
+        var command = new RejectVolunteerRequestCommand(
+            userIdResult.Value,
             volunteerRequestId,
             request.RejectionComment);
 

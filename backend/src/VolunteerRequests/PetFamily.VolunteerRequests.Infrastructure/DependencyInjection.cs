@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Database;
+using PetFamily.Core.Options;
 using PetFamily.SharedKernel;
 using PetFamily.VolunteerRequests.Application;
 using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
@@ -15,9 +16,16 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         return services
+            .AddOptions(configuration)
             .AddDatabase()
             .AddRepositories()
             .AddDbContexts();
+    }
+
+    private static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services.Configure<VolunteerRequestsOptions>(
+            configuration.GetSection(VolunteerRequestsOptions.VOLUNTEER_REQUESTS));
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
@@ -32,6 +40,8 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        return services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
+        return services
+            .AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>()
+            .AddScoped<IVolunteerRequestBanRepository, VolunteerRequestBanRepository>();
     }
 }

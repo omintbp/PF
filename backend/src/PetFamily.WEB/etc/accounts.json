@@ -15,7 +15,8 @@
       "pet.delete",
       "volunteer.request.create",
       "volunteer.request.take.to.review",
-      "volunteer.request.send.revision"
+      "volunteer.request.send.revision",
+      "volunteer.request.reject"
     ],
     "Volunteer": [
       "species.create",
@@ -51,6 +52,7 @@
     "pet.delete",
     "volunteer.request.create",
     "volunteer.request.take.to.review",
-    "volunteer.request.send.revision"
+    "volunteer.request.send.revision",
+    "volunteer.request.reject"
   ]
 }

@@ -11,6 +11,8 @@ public class WriteDbContext(IConfiguration configuration) : DbContext
 
     public DbSet<VolunteerRequest> VolunteerRequests => Set<VolunteerRequest>();
 
+    public DbSet<VolunteerRequestBan> VolunteerRequestBans => Set<VolunteerRequestBan>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString(DATABASE));

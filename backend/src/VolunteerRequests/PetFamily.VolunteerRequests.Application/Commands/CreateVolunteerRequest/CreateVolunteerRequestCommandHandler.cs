@@ -17,18 +17,21 @@ public class CreateVolunteerRequestCommandHandler : ICommandHandler<Guid, Create
 {
     private readonly ILogger<CreateVolunteerRequestCommandHandler> _logger;
     private readonly IVolunteerRequestsRepository _repository;
+    private readonly IVolunteerRequestBanRepository _bansRepository;
     private readonly IValidator<CreateVolunteerRequestCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateVolunteerRequestCommandHandler(
         ILogger<CreateVolunteerRequestCommandHandler> logger,
         IVolunteerRequestsRepository repository,
+        IVolunteerRequestBanRepository bansRepository,
         IValidator<CreateVolunteerRequestCommand> validator,
         [FromKeyedServices(Modules.VolunteerRequests)]
         IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _repository = repository;
+        _bansRepository = bansRepository;
         _validator = validator;
         _unitOfWork = unitOfWork;
     }
@@ -40,6 +43,16 @@ public class CreateVolunteerRequestCommandHandler : ICommandHandler<Guid, Create
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
+
+        var userBansResult = await _bansRepository.GetByUserId(command.UserId, cancellationToken);
+        if (userBansResult.IsFailure)
+            return userBansResult.Error.ToErrorList();
+
+        var activeBans = userBansResult.Value
+            .Where(b => b.IsActiveFor(DateTime.UtcNow));
+
+        if (activeBans.Any())
+            return Errors.VolunteerRequest.UserBanned().ToErrorList();
 
         var experience = Experience.Create(command.Experience).Value;
 
