@@ -11,7 +11,7 @@ using PetFamily.SharedKernel.ValueObjects;
 using PetFamily.VolunteerRequests.Domain.AggregateRoot;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
-namespace PetFamily.VolunteerRequests.Application.Commands.Create;
+namespace PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
 
 public class CreateVolunteerRequestCommandHandler : ICommandHandler<Guid, CreateVolunteerRequestCommand>
 {
