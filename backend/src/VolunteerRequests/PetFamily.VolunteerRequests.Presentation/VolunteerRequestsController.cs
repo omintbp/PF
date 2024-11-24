@@ -5,6 +5,7 @@ using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.Framework.Extensions;
 using PetFamily.VolunteerRequests.Application.Commands.CreateVolunteerRequest;
+using PetFamily.VolunteerRequests.Application.Commands.SendVolunteerRequestToRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeVolunteerRequestToReview;
 using PetFamily.VolunteerRequests.Contracts.Requests;
 
@@ -49,6 +50,25 @@ public class VolunteerRequestsController : ApplicationController
             return userIdResult.Error.ToResponse();
 
         var command = new TakeVolunteerRequestToReviewCommand(volunteerRequestId, userIdResult.Value);
+
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("{volunteerRequestId::guid}/send-to-revision")]
+    [Permission(Permissions.VolunteerRequests.SendVolunteerRequestToRevision)]
+    public async Task<ActionResult> SendVolunteerRequestToRevision(
+        [FromRoute] Guid volunteerRequestId,
+        [FromBody] SendVolunteerRequestToRevisionRequest request,
+        [FromServices] ICommandHandler<Guid, SendVolunteerRequestToRevisionCommand> handler,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new SendVolunteerRequestToRevisionCommand(
+            volunteerRequestId,
+            request.RejectionComment);
 
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
