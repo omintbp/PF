@@ -14,6 +14,13 @@ public class AccountManager(AccountWriteDbContext context) : IAccountManager
         await context.Admins.AddAsync(account, cancellationToken);
     }
 
+    public async Task CreateVolunteerAccount(
+        VolunteerAccount account, 
+        CancellationToken cancellationToken = default)
+    {
+        await context.Volunteers.AddAsync(account, cancellationToken);
+    }
+
     public async Task CreateParticipantAccount(
         ParticipantAccount account,
         CancellationToken cancellationToken = default)

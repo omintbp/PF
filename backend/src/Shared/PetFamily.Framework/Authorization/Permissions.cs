@@ -9,7 +9,7 @@ public static class Permissions
         public const string UpdateSpecies = "species.update";
         public const string DeleteSpecies = "species.delete";
     }
-    
+
     public static class Volunteers
     {
         public const string CreateVolunteer = "volunteer.create";
@@ -17,7 +17,7 @@ public static class Permissions
         public const string UpdateVolunteer = "volunteer.update";
         public const string DeleteVolunteer = "volunteer.delete";
     }
-    
+
     public static class Pets
     {
         public const string CreatePet = "pet.create";
@@ -32,5 +32,7 @@ public static class Permissions
         public const string TakeVolunteerRequestToReview = "volunteer.request.take.to.review";
         public const string SendVolunteerRequestToRevision = "volunteer.request.send.revision";
         public const string RejectVolunteerRequest = "volunteer.request.reject";
+        public const string UpdateVolunteerRequest = "volunteer.request.update";
+        public const string ApproveVolunteerRequest = "volunteer.request.approve";
     }
 }

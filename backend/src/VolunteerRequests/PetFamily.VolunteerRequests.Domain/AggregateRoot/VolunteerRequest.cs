@@ -102,4 +102,14 @@ public class VolunteerRequest : SharedKernel.Entity<VolunteerRequestId>
 
         return UnitResult.Success<Error>();
     }
+
+    public UnitResult<Error> Update(VolunteerInfo volunteerInfo)
+    {
+        if (Status != VolunteerRequestStatus.RevisionRequired)
+            return Errors.General.ValueIsInvalid(nameof(Status));
+
+        VolunteerInfo = volunteerInfo;
+
+        return UnitResult.Success<Error>();
+    }
 }

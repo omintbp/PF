@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Discussions\PetFamily.Discussions.Contracts\PetFamily.Discussions.Contracts.csproj" />
+      <ProjectReference Include="..\..\PetFamily.Accounts.Contracts\PetFamily.Accounts.Contracts.csproj" />
       <ProjectReference Include="..\..\Shared\PetFamily.Core\PetFamily.Core.csproj" />
       <ProjectReference Include="..\PetFamily.VolunteerRequests.Contracts\PetFamily.VolunteerRequests.Contracts.csproj" />
       <ProjectReference Include="..\PetFamily.VolunteerRequests.Domain\PetFamily.VolunteerRequests.Domain.csproj" />

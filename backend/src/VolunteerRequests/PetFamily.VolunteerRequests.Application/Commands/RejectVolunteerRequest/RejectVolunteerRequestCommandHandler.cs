@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PetFamily.Core.Abstractions;
@@ -28,6 +29,7 @@ public class RejectVolunteerRequestCommandHandler : ICommandHandler<Guid, Reject
         IVolunteerRequestBanRepository banRepository,
         IValidator<RejectVolunteerRequestCommand> validator,
         IOptions<VolunteerRequestsOptions> options,
+        [FromKeyedServices(Modules.VolunteerRequests)]
         IUnitOfWork unitOfWork)
     {
         _logger = logger;

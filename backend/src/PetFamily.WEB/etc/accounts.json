@@ -16,7 +16,9 @@
       "volunteer.request.create",
       "volunteer.request.take.to.review",
       "volunteer.request.send.revision",
-      "volunteer.request.reject"
+      "volunteer.request.reject",
+      "volunteer.request.update",
+      "volunteer.request.approve"
     ],
     "Volunteer": [
       "species.create",
@@ -34,7 +36,8 @@
       "species.read",
       "pet.read",
       "volunteer.read",
-      "volunteer.request.create"
+      "volunteer.request.create",
+      "volunteer.request.update"
     ]
   },
   "Permissions": [
@@ -53,6 +56,8 @@
     "volunteer.request.create",
     "volunteer.request.take.to.review",
     "volunteer.request.send.revision",
-    "volunteer.request.reject"
+    "volunteer.request.reject",
+    "volunteer.request.update",
+    "volunteer.request.approve"
   ]
 }
