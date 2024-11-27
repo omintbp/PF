@@ -28,9 +28,6 @@ public class VolunteerRequestBanRepository(WriteDbContext context)
             .Where(x => x.UserId == userId)
             .ToListAsync(cancellationToken);
 
-        if (bans.Count == 0)
-            return Errors.General.NotFound(userId);
-
         return bans;
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Contracts;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Models;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.Framework.Extensions;
@@ -10,6 +11,9 @@ using PetFamily.VolunteerRequests.Application.Commands.RejectVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.SendVolunteerRequestToRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeVolunteerRequestToReview;
 using PetFamily.VolunteerRequests.Application.Commands.UpdateVolunteerRequest;
+using PetFamily.VolunteerRequests.Application.Queries.GetUnclaimedVolunteerRequests;
+using PetFamily.VolunteerRequests.Application.Queries.GetUnclaimedVolunteerRequestsWithPagination;
+using PetFamily.VolunteerRequests.Contracts.DTOs;
 using PetFamily.VolunteerRequests.Contracts.Requests;
 
 namespace PetFamily.VolunteerRequests.Presentation;
@@ -148,6 +152,26 @@ public class VolunteerRequestsController : ApplicationController
             request.Requisites);
 
         var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("unclaimed-requests")]
+    [Permission(Permissions.VolunteerRequests.GetUnclaimedVolunteerRequests)]
+    public async Task<ActionResult> GetUnclaimedVolunteerRequests(
+        [FromQuery] GetUnclaimedVolunteerRequestsWithPaginationRequest request,
+        [FromServices] GetUnclaimedVolunteerRequestsWithPaginationQueryHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetUnclaimedVolunteerRequestsWithPaginationQuery(
+            request.Page,
+            request.PageSize,
+            request.SortBy,
+            request.SortDirection);
+
+        var result = await handler.Handle(query, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 

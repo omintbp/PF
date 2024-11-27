@@ -31,6 +31,13 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
                 .HasMaxLength(Constants.MAX_HIGH_TEXT_LENGTH);
         });
 
+        builder.ComplexProperty(v => v.Status, pb =>
+        {
+            pb.Property(p => p.Status)
+                .HasColumnName("status")
+                .IsRequired();
+        });
+
         builder.OwnsOne(v => v.VolunteerInfo, pb =>
         {
             pb.OwnsOne(p => p.Experience, eb =>

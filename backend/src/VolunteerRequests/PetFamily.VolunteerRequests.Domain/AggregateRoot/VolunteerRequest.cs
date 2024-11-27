@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.IDs;
-using PetFamily.VolunteerRequests.Domain.Enums;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 namespace PetFamily.VolunteerRequests.Domain.AggregateRoot;

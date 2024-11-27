@@ -18,7 +18,8 @@
       "volunteer.request.send.revision",
       "volunteer.request.reject",
       "volunteer.request.update",
-      "volunteer.request.approve"
+      "volunteer.request.approve",
+      "volunteer.request.get.unclaimed.requests"
     ],
     "Volunteer": [
       "species.create",
@@ -58,6 +59,7 @@
     "volunteer.request.send.revision",
     "volunteer.request.reject",
     "volunteer.request.update",
-    "volunteer.request.approve"
+    "volunteer.request.approve",
+    "volunteer.request.get.unclaimed.requests"
   ]
 }

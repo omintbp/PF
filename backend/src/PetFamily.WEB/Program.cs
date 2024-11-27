@@ -1,5 +1,6 @@
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
+using PetFamily.Core;
 using PetFamily.Species.Presentation;
 using PetFamily.Volunteers.Presentation.Volunteers;
 using PetFamily.WEB;
@@ -27,6 +28,8 @@ builder.Services
     .AddApplicationPart(typeof(VolunteersController).Assembly)
     .AddApplicationPart(typeof(AccountController).Assembly)
     .AddApplicationPart(typeof(SpeciesController).Assembly);
+
+Inject.AddDapperTypeHandlers();
 
 var app = builder.Build();
 
