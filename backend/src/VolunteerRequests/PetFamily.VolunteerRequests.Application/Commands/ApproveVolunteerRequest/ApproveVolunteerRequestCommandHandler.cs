@@ -73,15 +73,15 @@ public class ApproveVolunteerRequestCommandHandler : ICommandHandler<Guid, Appro
 
             await _unitOfWork.SaveChanges(cancellationToken);
 
+            await transaction.CommitAsync(cancellationToken);
+
             _logger.LogInformation("Volunteer request {volunteerRequestId} was approved by {adminId}",
                 volunteerRequestId.Value,
                 command.AdminId);
-
-            transaction.Commit();
         }
         catch (Exception e)
         {
-            transaction.Rollback();
+            await transaction.RollbackAsync(cancellationToken);
 
             _logger.LogError(
                 "An error occurred during the approval of a volunteer request {volunteerRequestId}: {errorMessage}, {stackTrace}",

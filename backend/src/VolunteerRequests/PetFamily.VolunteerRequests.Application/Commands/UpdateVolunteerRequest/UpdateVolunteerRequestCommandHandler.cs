@@ -50,19 +50,38 @@ public class UpdateVolunteerRequestCommandHandler
 
         var volunteerRequestId = VolunteerRequestId.Create(command.VolunteerRequestId);
 
-        var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
-        if (volunteerRequestResult.IsFailure)
-            return volunteerRequestResult.Error.ToErrorList();
+        await using var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
 
-        var updateResult = volunteerRequestResult.Value.Update(volunteerInfo);
-        if (updateResult.IsFailure)
-            return updateResult.Error.ToErrorList();
+        try
+        {
+            var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
+            if (volunteerRequestResult.IsFailure)
+                return volunteerRequestResult.Error.ToErrorList();
 
-        await _unitOfWork.SaveChanges(cancellationToken);
+            var updateResult = volunteerRequestResult.Value.Update(volunteerInfo);
+            if (updateResult.IsFailure)
+                return updateResult.Error.ToErrorList();
 
-        _logger.LogInformation("Volunteer request {volunteerRequestId} has been successfully updated",
-            volunteerRequestId.Value);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
-        return volunteerRequestId.Value;
+            _logger.LogInformation("Volunteer request {volunteerRequestId} has been successfully updated",
+                volunteerRequestId.Value);
+
+            return volunteerRequestId.Value;
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+
+            _logger.LogError(
+                "Error while updating a volunteer request {volunteerRequestId}: {message}, {stackTrace}",
+                volunteerRequestId.Value,
+                e.Message,
+                e.StackTrace);
+
+            return Error.Failure(
+                "update.volunteer.request.fail",
+                "Error while updating a volunteer request").ToErrorList();
+        }
     }
 }

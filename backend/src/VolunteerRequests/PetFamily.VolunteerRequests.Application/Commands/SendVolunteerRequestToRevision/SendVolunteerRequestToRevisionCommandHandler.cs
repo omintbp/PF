@@ -40,23 +40,44 @@ public class SendVolunteerRequestToRevisionCommandHandler
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
 
+        await using var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+
         var volunteerRequestId = VolunteerRequestId.Create(command.VolunteerRequestId);
 
-        var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
-        if (volunteerRequestResult.IsFailure)
-            return volunteerRequestResult.Error.ToErrorList();
+        try
+        {
+            var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
+            if (volunteerRequestResult.IsFailure)
+                return volunteerRequestResult.Error.ToErrorList();
 
-        var rejectionComment = RejectionComment.Create(command.RejectionComment).Value;
+            var rejectionComment = RejectionComment.Create(command.RejectionComment).Value;
 
-        var sendToRevisionResult = volunteerRequestResult.Value.SendToRevision(rejectionComment);
-        if (sendToRevisionResult.IsFailure)
-            return sendToRevisionResult.Error.ToErrorList();
+            var sendToRevisionResult = volunteerRequestResult.Value.SendToRevision(rejectionComment);
+            if (sendToRevisionResult.IsFailure)
+                return sendToRevisionResult.Error.ToErrorList();
 
-        await _unitOfWork.SaveChanges(cancellationToken);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
-        _logger.LogInformation("Volunteer request {volunteerRequestId} sent to revision",
-            volunteerRequestId.Value);
+            await transaction.CommitAsync(cancellationToken);
 
-        return volunteerRequestId.Value;
+            _logger.LogInformation("Volunteer request {volunteerRequestId} sent to revision",
+                volunteerRequestId.Value);
+
+            return volunteerRequestId.Value;
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+
+            _logger.LogError(
+                "Error while sending volunteer request {volunteerRequestId} to revision : {message}, {stackTrace}",
+                volunteerRequestId.Value,
+                e.Message,
+                e.StackTrace);
+
+            return Error.Failure(
+                "revision.volunteer.request.fail",
+                "Error while sending volunteer request to revision").ToErrorList();
+        }
     }
 }

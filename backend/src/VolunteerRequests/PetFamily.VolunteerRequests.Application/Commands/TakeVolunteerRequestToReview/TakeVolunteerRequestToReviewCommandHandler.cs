@@ -43,31 +43,56 @@ public class TakeVolunteerRequestToReviewCommandHandler : ICommandHandler<Guid, 
             return validationResult.ToErrorsList();
 
         var volunteerRequestId = VolunteerRequestId.Create(command.VolunteerRequestId);
-        var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
 
-        if (volunteerRequestResult.IsFailure)
-            return volunteerRequestResult.Error.ToErrorList();
+        await using var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
 
-        var volunteerRequest = volunteerRequestResult.Value;
+        try
+        {
+            var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
 
-        var createDiscussionResult = await _discussionsContract.CreateDiscussionHandler(
-            volunteerRequest.UserId,
-            command.AdminId,
-            volunteerRequestId.Value,
-            cancellationToken);
+            if (volunteerRequestResult.IsFailure)
+                return volunteerRequestResult.Error.ToErrorList();
 
-        if (createDiscussionResult.IsFailure)
-            return createDiscussionResult.Error.ToErrorList();
+            var volunteerRequest = volunteerRequestResult.Value;
 
-        var discussionId = createDiscussionResult.Value;
+            var createDiscussionResult = await _discussionsContract.CreateDiscussionHandler(
+                volunteerRequest.UserId,
+                command.AdminId,
+                volunteerRequestId.Value,
+                cancellationToken);
 
-        var takeToReviewResult = volunteerRequest.TakeToReview(command.AdminId, discussionId);
+            if (createDiscussionResult.IsFailure)
+                return createDiscussionResult.Error.ToErrorList();
 
-        if (takeToReviewResult.IsFailure)
-            return takeToReviewResult.Error.ToErrorList();
+            var discussionId = createDiscussionResult.Value;
 
-        await _unitOfWork.SaveChanges(cancellationToken);
+            var takeToReviewResult = volunteerRequest.TakeToReview(command.AdminId, discussionId);
 
-        return volunteerRequest.Id.Value;
+            if (takeToReviewResult.IsFailure)
+                return takeToReviewResult.Error.ToErrorList();
+
+            await _unitOfWork.SaveChanges(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+
+            _logger.LogInformation("Volunteer request {volunteerRequestId} has taken to review",
+                volunteerRequestId.Value);
+
+            return volunteerRequest.Id.Value;
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+
+            _logger.LogError(
+                "Error while sending a volunteer request {volunteerRequestId} to review : {message}, {stackTrace}",
+                volunteerRequestId.Value,
+                e.Message,
+                e.StackTrace);
+
+            return Error.Failure(
+                "take.review.volunteer.request.fail",
+                "Error while sending a volunteer request to review").ToErrorList();
+        }
     }
 }

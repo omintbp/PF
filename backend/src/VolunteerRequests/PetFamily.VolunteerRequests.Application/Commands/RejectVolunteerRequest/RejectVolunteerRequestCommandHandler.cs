@@ -50,42 +50,62 @@ public class RejectVolunteerRequestCommandHandler : ICommandHandler<Guid, Reject
 
         var volunteerRequestId = VolunteerRequestId.Create(command.VolunteerRequestId);
 
-        var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
-        if (volunteerRequestResult.IsFailure)
-            return volunteerRequestResult.Error.ToErrorList();
+        await using var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
 
-        var volunteerRequest = volunteerRequestResult.Value;
+        try
+        {
+            var volunteerRequestResult = await _repository.GetById(volunteerRequestId, cancellationToken);
+            if (volunteerRequestResult.IsFailure)
+                return volunteerRequestResult.Error.ToErrorList();
 
-        if (volunteerRequest.AdminId != command.AdminId)
-            return Errors.General.ValueIsInvalid(nameof(command.AdminId)).ToErrorList();
+            var volunteerRequest = volunteerRequestResult.Value;
 
-        var rejectionComment = RejectionComment.Create(command.RejectionComment).Value;
+            if (volunteerRequest.AdminId != command.AdminId)
+                return Errors.General.ValueIsInvalid(nameof(command.AdminId)).ToErrorList();
 
-        var rejectionResult = volunteerRequest.Reject(rejectionComment);
-        if (rejectionResult.IsFailure)
-            return rejectionResult.Error.ToErrorList();
+            var rejectionComment = RejectionComment.Create(command.RejectionComment).Value;
 
-        var userToBan = volunteerRequest.UserId;
-        var banStartDate = DateTime.UtcNow;
-        var banEndDate = banStartDate.AddDays(_options.BanInDays);
+            var rejectionResult = volunteerRequest.Reject(rejectionComment);
+            if (rejectionResult.IsFailure)
+                return rejectionResult.Error.ToErrorList();
 
-        var volunteerRequestBanId = VolunteerRequestBanId.NewVolunteerRequestBanId();
+            var userToBan = volunteerRequest.UserId;
+            var banStartDate = DateTime.UtcNow;
+            var banEndDate = banStartDate.AddDays(_options.BanInDays);
+            var volunteerRequestBanId = VolunteerRequestBanId.NewVolunteerRequestBanId();
 
-        var volunteerRequestBanResult = VolunteerRequestBan.Create(
-            volunteerRequestBanId,
-            userToBan,
-            banStartDate,
-            banEndDate);
+            var volunteerRequestBanResult = VolunteerRequestBan.Create(
+                volunteerRequestBanId,
+                userToBan,
+                banStartDate,
+                banEndDate);
 
-        if (volunteerRequestBanResult.IsFailure)
-            return volunteerRequestBanResult.Error.ToErrorList();
+            if (volunteerRequestBanResult.IsFailure)
+                return volunteerRequestBanResult.Error.ToErrorList();
 
-        await _banRepository.Add(volunteerRequestBanResult.Value, cancellationToken);
+            await _banRepository.Add(volunteerRequestBanResult.Value, cancellationToken);
 
-        await _unitOfWork.SaveChanges(cancellationToken);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
-        _logger.LogInformation("Rejected volunteer request {volunteerRequestId}", volunteerRequestId);
+            await transaction.CommitAsync(cancellationToken);
 
-        return volunteerRequestId.Value;
+            _logger.LogInformation("Rejected volunteer request {volunteerRequestId}", volunteerRequestId);
+
+            return volunteerRequestId.Value;
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+
+            _logger.LogError(
+                "Error during the rejection of volunteer request {volunteerRequestId}: {message}, {stackTrace}",
+                volunteerRequestId.Value,
+                e.Message,
+                e.StackTrace);
+
+            return Error.Failure( 
+                "reject.volunteer.request.fail",
+                "Error during the rejection of volunteer request").ToErrorList();
+        }
     }
 }

@@ -44,41 +44,60 @@ public class CreateVolunteerRequestCommandHandler : ICommandHandler<Guid, Create
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
 
-        var userBansResult = await _bansRepository.GetByUserId(command.UserId, cancellationToken);
-        if (userBansResult.IsFailure)
-            return userBansResult.Error.ToErrorList();
+        await using var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
 
-        var activeBans = userBansResult.Value
-            .Where(b => b.IsActiveFor(DateTime.UtcNow));
+        try
+        {
+            var userBansResult = await _bansRepository.GetByUserId(command.UserId, cancellationToken);
+            if (userBansResult.IsFailure)
+                return userBansResult.Error.ToErrorList();
 
-        if (activeBans.Any())
-            return Errors.VolunteerRequest.UserBanned().ToErrorList();
+            var activeBans = userBansResult.Value
+                .Where(b => b.IsActiveFor(DateTime.UtcNow));
 
-        var experience = Experience.Create(command.Experience).Value;
+            if (activeBans.Any())
+                return Errors.VolunteerRequest.UserBanned().ToErrorList();
 
-        var requisites = command.Requisites.Select(r =>
-            Requisite.Create(r.Name, r.Description).Value);
+            var experience = Experience.Create(command.Experience).Value;
 
-        var volunteerInfo = VolunteerInfo.Create(experience, requisites).Value;
+            var requisites = command.Requisites.Select(r =>
+                Requisite.Create(r.Name, r.Description).Value);
 
-        var volunteerRequestId = VolunteerRequestId.NewVolunteerRequestId();
+            var volunteerInfo = VolunteerInfo.Create(experience, requisites).Value;
 
-        var volunteerRequestResult = VolunteerRequest.Create(
-            volunteerRequestId,
-            command.UserId,
-            volunteerInfo);
+            var volunteerRequestId = VolunteerRequestId.NewVolunteerRequestId();
 
-        if (volunteerRequestResult.IsFailure)
-            return volunteerRequestResult.Error.ToErrorList();
+            var volunteerRequestResult = VolunteerRequest.Create(
+                volunteerRequestId,
+                command.UserId,
+                volunteerInfo);
 
-        var id = await _repository.Add(volunteerRequestResult.Value, cancellationToken);
+            if (volunteerRequestResult.IsFailure)
+                return volunteerRequestResult.Error.ToErrorList();
 
-        await _unitOfWork.SaveChanges(cancellationToken);
+            var id = await _repository.Add(volunteerRequestResult.Value, cancellationToken);
 
-        _logger.LogInformation("User {userId} created request {volunteerRequestId} for become volunteer",
-            command.UserId,
-            id.Value);
+            await _unitOfWork.SaveChanges(cancellationToken);
 
-        return id.Value;
+            await transaction.CommitAsync(cancellationToken);
+
+            _logger.LogInformation("User {userId} created request {volunteerRequestId} for become volunteer",
+                command.UserId,
+                id.Value);
+
+            return id.Value;
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+
+            _logger.LogError("Error while creation of volunteer request: {message}, {stackTrace}",
+                e.Message,
+                e.StackTrace);
+
+            return Error.Failure(
+                "create.volunteer.request.fail",
+                "Error while creation of volunteer request").ToErrorList();
+        }
     }
 }
