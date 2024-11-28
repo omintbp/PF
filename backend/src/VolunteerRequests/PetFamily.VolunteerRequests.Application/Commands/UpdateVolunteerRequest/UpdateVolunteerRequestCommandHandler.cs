@@ -64,6 +64,8 @@ public class UpdateVolunteerRequestCommandHandler
 
             await _unitOfWork.SaveChanges(cancellationToken);
 
+            await transaction.CommitAsync(cancellationToken);
+            
             _logger.LogInformation("Volunteer request {volunteerRequestId} has been successfully updated",
                 volunteerRequestId.Value);
 

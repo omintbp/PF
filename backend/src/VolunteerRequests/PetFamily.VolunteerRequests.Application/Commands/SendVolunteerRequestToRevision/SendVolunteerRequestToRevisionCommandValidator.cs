@@ -13,6 +13,11 @@ public class SendVolunteerRequestToRevisionCommandValidator : AbstractValidator<
             .NotNull()
             .NotEmpty()
             .WithError(Errors.General.ValueIsInvalid());
+        
+        RuleFor(r => r.AdminId)
+            .NotNull()
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsInvalid());
 
         RuleFor(r => r.RejectionComment)
             .MustBeValueObject(RejectionComment.Create);

@@ -50,6 +50,9 @@ public class SendVolunteerRequestToRevisionCommandHandler
             if (volunteerRequestResult.IsFailure)
                 return volunteerRequestResult.Error.ToErrorList();
 
+            if (volunteerRequestResult.Value.AdminId != command.AdminId)
+                return Errors.General.ValueIsInvalid(nameof(command.AdminId)).ToErrorList();
+
             var rejectionComment = RejectionComment.Create(command.RejectionComment).Value;
 
             var sendToRevisionResult = volunteerRequestResult.Value.SendToRevision(rejectionComment);

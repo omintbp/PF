@@ -108,6 +108,7 @@ public class VolunteerRequest : SharedKernel.Entity<VolunteerRequestId>
             return Errors.General.ValueIsInvalid(nameof(Status));
 
         VolunteerInfo = volunteerInfo;
+        Status = VolunteerRequestStatus.Submitted;
 
         return UnitResult.Success<Error>();
     }

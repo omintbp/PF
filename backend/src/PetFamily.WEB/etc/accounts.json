@@ -41,7 +41,8 @@
       "pet.read",
       "volunteer.read",
       "volunteer.request.create",
-      "volunteer.request.update"
+      "volunteer.request.update",
+      "volunteer.request.get.by.user.id"
     ]
   },
   "Permissions": [

@@ -72,9 +72,15 @@ public class VolunteerRequestsController : ApplicationController
         [FromRoute] Guid volunteerRequestId,
         [FromBody] SendVolunteerRequestToRevisionRequest request,
         [FromServices] ICommandHandler<Guid, SendVolunteerRequestToRevisionCommand> handler,
+        [FromServices] IAccountContract accountContract,
         CancellationToken cancellationToken = default)
     {
+        var userIdResult = accountContract.GetCurrentUserId(HttpContext);
+        if (userIdResult.IsFailure)
+            return userIdResult.Error.ToResponse();
+        
         var command = new SendVolunteerRequestToRevisionCommand(
+            userIdResult.Value,
             volunteerRequestId,
             request.RejectionComment);
 
@@ -179,16 +185,20 @@ public class VolunteerRequestsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpGet("admin-requests/{adminId::guid}")]
+    [HttpGet("admin-requests")]
     [Permission(Permissions.VolunteerRequests.GetVolunteerRequestsByAdminId)]
     public async Task<ActionResult> GetByAdminId(
-        [FromRoute] Guid adminId,
         [FromQuery] GetVolunteerRequestByAdminWithPaginationRequest request,
         [FromServices] GetVolunteerRequestByAdminWithPaginationQueryHandler handler,
+        [FromServices] IAccountContract accountContract,
         CancellationToken cancellationToken = default)
     {
+        var userIdResult = accountContract.GetCurrentUserId(HttpContext);
+        if (userIdResult.IsFailure)
+            return userIdResult.Error.ToResponse();
+        
         var query = new GetVolunteerRequestByAdminWithPaginationQuery(
-            adminId,
+            userIdResult.Value,
             request.Page,
             request.PageSize,
             request.Status,
@@ -202,16 +212,20 @@ public class VolunteerRequestsController : ApplicationController
         return Ok(result.Value);
     }
     
-    [HttpGet("user-requests/{userId::guid}")]
+    [HttpGet("user-requests")]
     [Permission(Permissions.VolunteerRequests.GetVolunteerRequestsByUserId)]
     public async Task<ActionResult> GetByUserId(
-        [FromRoute] Guid userId,
         [FromQuery] GetVolunteerRequestByUserIdWithPaginationRequest request,
         [FromServices] GetVolunteerRequestByUserIdWithPaginationQueryHandler handler,
+        [FromServices] IAccountContract accountContract,
         CancellationToken cancellationToken = default)
     {
+        var userIdResult = accountContract.GetCurrentUserId(HttpContext);
+        if (userIdResult.IsFailure)
+            return userIdResult.Error.ToResponse();
+        
         var query = new GetVolunteerRequestByUserIdWithPaginationQuery(
-            userId,
+            userIdResult.Value,
             request.Page,
             request.PageSize,
             request.Status,
