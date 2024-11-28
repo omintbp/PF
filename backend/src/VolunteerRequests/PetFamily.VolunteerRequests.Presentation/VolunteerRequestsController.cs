@@ -21,7 +21,7 @@ namespace PetFamily.VolunteerRequests.Presentation;
 
 public class VolunteerRequestsController : ApplicationController
 {
-    [HttpPost("create")]
+    [HttpPost]
     [Permission(Permissions.VolunteerRequests.CreateVolunteerRequest)]
     public async Task<ActionResult> CreateVolunteerRequest(
         [FromBody] CreateVolunteerRequestRequest request,
