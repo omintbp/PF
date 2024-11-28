@@ -1,4 +1,4 @@
-namespace PetFamily.VolunteerRequest.Contracts;
+namespace PetFamily.VolunteerRequests.Contracts;
 
 public interface IVolunteerRequestsContract
 {

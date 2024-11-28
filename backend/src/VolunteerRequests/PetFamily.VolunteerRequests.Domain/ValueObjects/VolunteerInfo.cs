@@ -1,27 +1,42 @@
+using System.Collections;
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel;
+using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 public class VolunteerInfo : ValueObject
 {
-    private VolunteerInfo(string value)
+    private readonly List<Requisite> _requisites = [];
+
+    private VolunteerInfo()
     {
-        Value = value;
     }
 
-    public string Value { get; }
-
-    public static Result<VolunteerInfo, Error> Create(string value)
+    private VolunteerInfo(
+        Experience experience,
+        IEnumerable<Requisite> requisites)
     {
-        if (string.IsNullOrWhiteSpace(value) || value.Length > Constants.MAX_HIGH_TEXT_LENGTH)
-            return Errors.General.ValueIsInvalid(nameof(VolunteerInfo));
+        Experience = experience;
+        _requisites = requisites.ToList();
+    }
 
-        return new VolunteerInfo(value);
+    public Experience Experience { get; }
+
+    public IReadOnlyList<Requisite> Requisites => _requisites;
+
+    public static Result<VolunteerInfo, Error> Create(
+        Experience experience,
+        IEnumerable<Requisite> requisites)
+    {
+        return new VolunteerInfo(experience, requisites);
     }
 
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Experience.Value;
+
+        foreach (var requisite in _requisites)
+            yield return requisite;
     }
 }

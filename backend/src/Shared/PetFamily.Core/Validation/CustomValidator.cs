@@ -8,10 +8,13 @@ public static class CustomValidator
 {
     public static IRuleBuilderOptionsConditions<T, TElement> MustBeValueObject<T, TElement, TValueObject>(
         this IRuleBuilder<T, TElement> ruleBuilder,
-        Func<TElement, Result<TValueObject, Error>> factoryMethod)
+        Func<TElement, Result<TValueObject, Error>> factoryMethod,
+        Predicate<TElement>? predicate = null)
     {
         return ruleBuilder.Custom((value, context) =>
         {
+            if (predicate?.Invoke(value) == false) return;
+            
             var result = factoryMethod(value);
 
             if (result.IsSuccess)

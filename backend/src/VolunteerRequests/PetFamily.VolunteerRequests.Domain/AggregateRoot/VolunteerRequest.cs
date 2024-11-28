@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel;
 using PetFamily.SharedKernel.IDs;
-using PetFamily.VolunteerRequests.Domain.Enums;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
 namespace PetFamily.VolunteerRequests.Domain.AggregateRoot;
@@ -15,15 +14,14 @@ public class VolunteerRequest : SharedKernel.Entity<VolunteerRequestId>
     private VolunteerRequest(
         VolunteerRequestId id,
         Guid userId,
-        Guid discussionId,
         VolunteerInfo volunteerInfo)
         : base(id)
     {
         UserId = userId;
-        DiscussionId = discussionId;
         VolunteerInfo = volunteerInfo;
         CreatedAt = DateTime.UtcNow;
         Status = VolunteerRequestStatus.Submitted;
+        RejectionComment = RejectionComment.None;
     }
 
     public Guid AdminId { get; private set; }
@@ -41,34 +39,32 @@ public class VolunteerRequest : SharedKernel.Entity<VolunteerRequestId>
     public VolunteerRequestStatus Status { get; private set; }
 
     public static Result<VolunteerRequest, Error> Create(
+        VolunteerRequestId id,
         Guid userId,
-        Guid discussionId,
         VolunteerInfo volunteerInfo)
     {
         if (userId == Guid.Empty)
             return Errors.General.ValueIsInvalid(nameof(userId));
 
-        if (discussionId == Guid.Empty)
-            return Errors.General.ValueIsInvalid(nameof(discussionId));
-
-        var id = VolunteerRequestId.NewVolunteerRequestId();
-
         return new VolunteerRequest(
             id,
             userId,
-            discussionId,
             volunteerInfo);
     }
 
-    public UnitResult<Error> TakeToReview(Guid adminId)
+    public UnitResult<Error> TakeToReview(Guid adminId, Guid discussionId)
     {
         if (adminId == Guid.Empty)
             return Errors.General.ValueIsInvalid(nameof(adminId));
+
+        if (discussionId == Guid.Empty)
+            return Errors.General.ValueIsInvalid(nameof(discussionId));
 
         if (Status != VolunteerRequestStatus.Submitted && Status != VolunteerRequestStatus.RevisionRequired)
             return Errors.General.ValueIsInvalid(nameof(Status));
 
         AdminId = adminId;
+        DiscussionId = discussionId;
         Status = VolunteerRequestStatus.OnReview;
 
         return UnitResult.Success<Error>();
@@ -87,9 +83,9 @@ public class VolunteerRequest : SharedKernel.Entity<VolunteerRequestId>
 
     public UnitResult<Error> Reject(RejectionComment comment)
     {
-        if(Status != VolunteerRequestStatus.OnReview)
+        if (Status != VolunteerRequestStatus.OnReview)
             return Errors.General.ValueIsInvalid(nameof(Status));
-            
+
         Status = VolunteerRequestStatus.Rejected;
         RejectionComment = comment;
 
@@ -102,6 +98,17 @@ public class VolunteerRequest : SharedKernel.Entity<VolunteerRequestId>
             return Errors.General.ValueIsInvalid(nameof(Status));
 
         Status = VolunteerRequestStatus.Approved;
+
+        return UnitResult.Success<Error>();
+    }
+
+    public UnitResult<Error> Update(VolunteerInfo volunteerInfo)
+    {
+        if (Status != VolunteerRequestStatus.RevisionRequired)
+            return Errors.General.ValueIsInvalid(nameof(Status));
+
+        VolunteerInfo = volunteerInfo;
+        Status = VolunteerRequestStatus.Submitted;
 
         return UnitResult.Success<Error>();
     }

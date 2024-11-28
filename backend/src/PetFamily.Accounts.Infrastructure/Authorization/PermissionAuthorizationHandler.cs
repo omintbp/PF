@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Contracts;
 using PetFamily.Core.Models;
+using PetFamily.Framework.Authorization;
 
-namespace PetFamily.Framework.Authorization;
+namespace PetFamily.Accounts.Infrastructure.Authorization;
 
 public class PermissionAuthorizationHandler(IServiceScopeFactory factory)
     : AuthorizationHandler<PermissionAttribute>

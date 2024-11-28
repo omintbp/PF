@@ -6,5 +6,7 @@ public interface IAccountManager
 {
     Task CreateAdminAccount(AdminAccount account, CancellationToken cancellationToken = default);
 
+    Task CreateVolunteerAccount(VolunteerAccount account, CancellationToken cancellationToken = default);
+
     Task CreateParticipantAccount(ParticipantAccount account, CancellationToken cancellationToken = default);
 }

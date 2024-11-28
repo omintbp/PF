@@ -1,0 +1,3 @@
+namespace PetFamily.VolunteerRequests.Contracts.Requests;
+
+public record SendVolunteerRequestToRevisionRequest(string RejectionComment);

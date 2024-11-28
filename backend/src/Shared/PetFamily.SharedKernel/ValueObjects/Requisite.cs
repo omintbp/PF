@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace PetFamily.SharedKernel.ValueObjects;
 
-public record Requisite
+public class Requisite : ValueObject
 {
     private Requisite(string name, string description)
     {
@@ -25,5 +25,12 @@ public record Requisite
         var requisite = new Requisite(name, description);
 
         return requisite;
+    }
+
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Name;
+
+        yield return Description;
     }
 }

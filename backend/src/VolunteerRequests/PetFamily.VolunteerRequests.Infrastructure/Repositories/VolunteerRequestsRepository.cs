@@ -15,9 +15,7 @@ public class VolunteerRequestsRepository(WriteDbContext context)
         VolunteerRequest request,
         CancellationToken cancellationToken = default)
     {
-        context.Add(request);
-
-        await context.SaveChangesAsync(cancellationToken);
+        await context.AddAsync(request, cancellationToken);
 
         return request.Id;
     }

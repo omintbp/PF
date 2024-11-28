@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore.Storage;
 using PetFamily.Core.Database;
 using PetFamily.VolunteerRequests.Infrastructure.DbContexts;
@@ -14,7 +15,7 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
     }
 
-    public async Task<IDbTransaction> BeginTransaction(CancellationToken cancellationToken = default)
+    public async Task<DbTransaction> BeginTransaction(CancellationToken cancellationToken = default)
     {
         var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 

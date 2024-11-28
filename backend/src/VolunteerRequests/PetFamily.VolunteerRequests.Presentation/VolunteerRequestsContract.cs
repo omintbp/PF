@@ -1,4 +1,4 @@
-using PetFamily.VolunteerRequest.Contracts;
+using PetFamily.VolunteerRequests.Contracts;
 
 namespace PetFamily.VolunteerRequests.Presentation;
 
