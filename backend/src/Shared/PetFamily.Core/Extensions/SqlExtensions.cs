@@ -51,4 +51,15 @@ public static class SqlExtensions
 
         return sqlBuilder.AppendLine($" order by {sortBy} {sortDirection}");
     }
+
+    public static StringBuilder AppendLineIf(
+        this StringBuilder sqlBuilder,
+        bool condition,
+        string statement)
+    {
+        if (condition == false)
+            return sqlBuilder;
+
+        return sqlBuilder.AppendLine(statement);
+    }
 }

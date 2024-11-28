@@ -36,5 +36,7 @@ public static class Permissions
         public const string ApproveVolunteerRequest = "volunteer.request.approve";
         
         public const string GetUnclaimedVolunteerRequests = "volunteer.request.get.unclaimed.requests";
+        public const string GetVolunteerRequestsByAdminId = "volunteer.request.get.by.admin.id";
+        public const string GetVolunteerRequestsByUserId = "volunteer.request.get.by.user.id";
     }
 }

@@ -1,14 +1,18 @@
 using FluentValidation;
 using PetFamily.Core.Validation;
 using PetFamily.SharedKernel;
+using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
-namespace PetFamily.VolunteerRequests.Application.Queries.GetUnclaimedVolunteerRequestsWithPagination;
+namespace PetFamily.VolunteerRequests.Application.Queries.GetVolunteerRequestByUserIdWithPagination;
 
-public class GetUnclaimedVolunteerRequestsWithPaginationQueryValidator
-    : AbstractValidator<GetUnclaimedVolunteerRequestsWithPaginationQuery>
+public class GetVolunteerRequestByUserIdWithPaginationQueryValidator
+    : AbstractValidator<GetVolunteerRequestByUserIdWithPaginationQuery>
 {
-    public GetUnclaimedVolunteerRequestsWithPaginationQueryValidator()
+    public GetVolunteerRequestByUserIdWithPaginationQueryValidator()
     {
+        RuleFor(q => q.Status)
+            .MustBeValueObject(VolunteerRequestStatus.Create, status => status != null);
+        
         RuleFor(q => q.SortDirection)
             .MaximumLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
             .WithError(Errors.General.ValueIsInvalid("SortDirection"));

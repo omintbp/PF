@@ -11,16 +11,16 @@ using PetFamily.SharedKernel;
 using PetFamily.VolunteerRequests.Contracts.DTOs;
 using PetFamily.VolunteerRequests.Domain.ValueObjects;
 
-namespace PetFamily.VolunteerRequests.Application.Queries.GetUnclaimedVolunteerRequestsWithPagination;
+namespace PetFamily.VolunteerRequests.Application.Queries.GetVolunteerRequestByAdminWithPagination;
 
-public class GetUnclaimedVolunteerRequestsWithPaginationQueryHandler
-    : IQueryHandler<PagedList<VolunteerRequestDto>, GetUnclaimedVolunteerRequestsWithPaginationQuery>
+public class GetVolunteerRequestByAdminWithPaginationQueryHandler
+    : IQueryHandler<PagedList<VolunteerRequestDto>, GetVolunteerRequestByAdminWithPaginationQuery>
 {
-    private readonly IValidator<GetUnclaimedVolunteerRequestsWithPaginationQuery> _validator;
+    private readonly IValidator<GetVolunteerRequestByAdminWithPaginationQuery> _validator;
     private readonly ISqlConnectionFactory _factory;
 
-    public GetUnclaimedVolunteerRequestsWithPaginationQueryHandler(
-        IValidator<GetUnclaimedVolunteerRequestsWithPaginationQuery> validator,
+    public GetVolunteerRequestByAdminWithPaginationQueryHandler(
+        IValidator<GetVolunteerRequestByAdminWithPaginationQuery> validator,
         ISqlConnectionFactory factory)
     {
         _validator = validator;
@@ -28,7 +28,7 @@ public class GetUnclaimedVolunteerRequestsWithPaginationQueryHandler
     }
 
     public async Task<Result<PagedList<VolunteerRequestDto>, ErrorList>> Handle(
-        GetUnclaimedVolunteerRequestsWithPaginationQuery query,
+        GetVolunteerRequestByAdminWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(query, cancellationToken);
@@ -37,11 +37,16 @@ public class GetUnclaimedVolunteerRequestsWithPaginationQueryHandler
 
         var connection = _factory.Create();
 
+        var status = query.Status == null
+            ? VolunteerRequestStatus.OnReview.Status
+            : VolunteerRequestStatus.Create(query.Status).Value.Status;
+
         var parameters = new DynamicParameters();
-        parameters.Add("@Status", VolunteerRequestStatus.Submitted.Status, DbType.String);
+        parameters.Add("@Status", status, DbType.String);
+        parameters.Add("@AdminId", query.AdminId, DbType.Guid);
 
         var totalCount = await connection.ExecuteScalarAsync<long>(
-            $"select count(1) from volunteer_requests where status = @Status",
+            $"select count(1) from volunteer_requests where admin_id = @AdminId",
             parameters);
 
         var sql = new StringBuilder($"""
@@ -58,6 +63,7 @@ public class GetUnclaimedVolunteerRequestsWithPaginationQueryHandler
                                      from 
                                          volunteer_requests
                                      where 
+                                         admin_id = @AdminId and
                                          status = @Status
                                      """);
 

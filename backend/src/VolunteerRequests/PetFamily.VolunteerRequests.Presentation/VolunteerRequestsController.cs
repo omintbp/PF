@@ -11,8 +11,9 @@ using PetFamily.VolunteerRequests.Application.Commands.RejectVolunteerRequest;
 using PetFamily.VolunteerRequests.Application.Commands.SendVolunteerRequestToRevision;
 using PetFamily.VolunteerRequests.Application.Commands.TakeVolunteerRequestToReview;
 using PetFamily.VolunteerRequests.Application.Commands.UpdateVolunteerRequest;
-using PetFamily.VolunteerRequests.Application.Queries.GetUnclaimedVolunteerRequests;
 using PetFamily.VolunteerRequests.Application.Queries.GetUnclaimedVolunteerRequestsWithPagination;
+using PetFamily.VolunteerRequests.Application.Queries.GetVolunteerRequestByAdminWithPagination;
+using PetFamily.VolunteerRequests.Application.Queries.GetVolunteerRequestByUserIdWithPagination;
 using PetFamily.VolunteerRequests.Contracts.DTOs;
 using PetFamily.VolunteerRequests.Contracts.Requests;
 
@@ -168,6 +169,52 @@ public class VolunteerRequestsController : ApplicationController
         var query = new GetUnclaimedVolunteerRequestsWithPaginationQuery(
             request.Page,
             request.PageSize,
+            request.SortBy,
+            request.SortDirection);
+
+        var result = await handler.Handle(query, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("admin-requests/{adminId::guid}")]
+    [Permission(Permissions.VolunteerRequests.GetVolunteerRequestsByAdminId)]
+    public async Task<ActionResult> GetByAdminId(
+        [FromRoute] Guid adminId,
+        [FromQuery] GetVolunteerRequestByAdminWithPaginationRequest request,
+        [FromServices] GetVolunteerRequestByAdminWithPaginationQueryHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetVolunteerRequestByAdminWithPaginationQuery(
+            adminId,
+            request.Page,
+            request.PageSize,
+            request.Status,
+            request.SortBy,
+            request.SortDirection);
+
+        var result = await handler.Handle(query, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
+    [HttpGet("user-requests/{userId::guid}")]
+    [Permission(Permissions.VolunteerRequests.GetVolunteerRequestsByUserId)]
+    public async Task<ActionResult> GetByUserId(
+        [FromRoute] Guid userId,
+        [FromQuery] GetVolunteerRequestByUserIdWithPaginationRequest request,
+        [FromServices] GetVolunteerRequestByUserIdWithPaginationQueryHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetVolunteerRequestByUserIdWithPaginationQuery(
+            userId,
+            request.Page,
+            request.PageSize,
+            request.Status,
             request.SortBy,
             request.SortDirection);
 

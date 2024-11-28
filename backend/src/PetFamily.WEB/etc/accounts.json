@@ -19,7 +19,9 @@
       "volunteer.request.reject",
       "volunteer.request.update",
       "volunteer.request.approve",
-      "volunteer.request.get.unclaimed.requests"
+      "volunteer.request.get.unclaimed.requests",
+      "volunteer.request.get.by.admin.id",
+      "volunteer.request.get.by.user.id"
     ],
     "Volunteer": [
       "species.create",
@@ -31,7 +33,8 @@
       "pet.update",
       "pet.delete",
       "volunteer.read",
-      "volunteer.update"
+      "volunteer.update",
+      "volunteer.request.get.by.user.id"
     ],
     "Participant": [
       "species.read",
@@ -60,6 +63,8 @@
     "volunteer.request.reject",
     "volunteer.request.update",
     "volunteer.request.approve",
-    "volunteer.request.get.unclaimed.requests"
+    "volunteer.request.get.unclaimed.requests",
+    "volunteer.request.get.by.admin.id",
+    "volunteer.request.get.by.user.id"
   ]
 }

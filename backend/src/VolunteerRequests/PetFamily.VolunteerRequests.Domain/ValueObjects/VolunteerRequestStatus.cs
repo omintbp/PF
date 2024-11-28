@@ -35,14 +35,14 @@ public class VolunteerRequestStatus : ValueObject
 
     public string Status { get; }
 
-    public Result<VolunteerRequestStatus, Error> Create(string status)
+    public static Result<VolunteerRequestStatus, Error> Create(string? status)
     {
         var isStatusAllowed = _statuses.Any(s =>
             string.Equals(s.Status, status, StringComparison.OrdinalIgnoreCase));
 
-        if (isStatusAllowed == false)
+        if (string.IsNullOrWhiteSpace(status) || isStatusAllowed == false)
             return Errors.General.ValueIsInvalid(nameof(status));
-
+        
         return new VolunteerRequestStatus(status);
     }
 
