@@ -42,7 +42,7 @@ public class Discussion : SharedKernel.Entity<DiscussionId>
         return new Discussion(id, relationId, users);
     }
 
-    public UnitResult<Error> AddComment(Guid userId, Message message)
+    public UnitResult<Error> AddMessage(Guid userId, Message message)
     {
         if (Users.Contains(userId) == false)
             return Errors.Discussion.UserNotInDiscussion(userId);
@@ -52,7 +52,7 @@ public class Discussion : SharedKernel.Entity<DiscussionId>
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> DeleteComment(Guid userId, MessageId messageId)
+    public UnitResult<Error> DeleteMessage(Guid userId, MessageId messageId)
     {
         if (Users.Contains(userId) == false)
             return Errors.Discussion.UserNotInDiscussion(userId);
@@ -70,7 +70,7 @@ public class Discussion : SharedKernel.Entity<DiscussionId>
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> UpdateComment(MessageId messageId, Guid userId, Text text)
+    public UnitResult<Error> UpdateMessage(MessageId messageId, Guid userId, Text text)
     {
         if (Users.Contains(userId) == false)
             return Errors.Discussion.UserNotInDiscussion(userId);
@@ -88,7 +88,7 @@ public class Discussion : SharedKernel.Entity<DiscussionId>
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> CloseDiscussion(Guid userId)
+    public UnitResult<Error> Close(Guid userId)
     {
         if (Users.Contains(userId) == false)
             return Errors.Discussion.UserNotInDiscussion(userId);

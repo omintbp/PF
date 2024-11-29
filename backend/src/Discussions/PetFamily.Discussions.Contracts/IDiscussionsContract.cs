@@ -5,9 +5,8 @@ namespace PetFamily.Discussions.Contracts;
 
 public interface IDiscussionsContract
 {
-    Task<Result<Guid, Error>> CreateDiscussionHandler(
-        Guid firstUser,
-        Guid secondUser,
+    Task<Result<Guid, ErrorList>> CreateDiscussionHandler(
+        IEnumerable<Guid> users,
         Guid relationId,
         CancellationToken cancellationToken);
 }

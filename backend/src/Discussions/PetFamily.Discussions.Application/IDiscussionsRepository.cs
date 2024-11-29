@@ -15,6 +15,10 @@ public interface IDiscussionsRepository
         DiscussionId discussionId,
         CancellationToken cancellationToken = default!);
 
+    Task<List<Discussion>> GetByRelationId(
+        Guid relationId,
+        CancellationToken cancellationToken = default!);
+    
     Task<Guid> Delete(
         Discussion discussion,
         CancellationToken cancellationToken = default!);

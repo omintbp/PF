@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
+using PetFamily.Discussions.Application.Commands.CreateDiscussion;
 using PetFamily.Discussions.Contracts;
 using PetFamily.SharedKernel;
 
@@ -6,8 +8,25 @@ namespace PetFamily.Discussions.Presentation;
 
 public class DiscussionsContract : IDiscussionsContract
 {
-    public async Task<Result<Guid, Error>> CreateDiscussionHandler(Guid firstUser, Guid secondUser, Guid relationId, CancellationToken cancellationToken)
+    private readonly ICommandHandler<Guid, CreateDiscussionCommand> _createDiscussionCommandHandler;
+
+    public DiscussionsContract(ICommandHandler<Guid, CreateDiscussionCommand> createDiscussionCommandHandler)
     {
-        return Guid.NewGuid();
+        _createDiscussionCommandHandler = createDiscussionCommandHandler;
+    }
+
+    public async Task<Result<Guid, ErrorList>> CreateDiscussionHandler(
+        IEnumerable<Guid> users,
+        Guid relationId,
+        CancellationToken cancellationToken)
+    {
+        var command = new CreateDiscussionCommand(relationId, users);
+        
+        var result = await _createDiscussionCommandHandler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error;
+        
+        return result.Value;
     }
 }

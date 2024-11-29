@@ -21,7 +21,13 @@
       "volunteer.request.approve",
       "volunteer.request.get.unclaimed.requests",
       "volunteer.request.get.by.admin.id",
-      "volunteer.request.get.by.user.id"
+      "volunteer.request.get.by.user.id",
+      "discussion.create",
+      "discussion.close",
+      "discussion.add.message",
+      "discussion.update.message",
+      "discussion.delete.message",
+      "discussion.get.by.relation"
     ],
     "Volunteer": [
       "species.create",
@@ -34,7 +40,12 @@
       "pet.delete",
       "volunteer.read",
       "volunteer.update",
-      "volunteer.request.get.by.user.id"
+      "volunteer.request.get.by.user.id",
+      "discussion.create",
+      "discussion.add.message",
+      "discussion.update.message",
+      "discussion.delete.message",
+      "discussion.get.by.relation"
     ],
     "Participant": [
       "species.read",
@@ -42,7 +53,12 @@
       "volunteer.read",
       "volunteer.request.create",
       "volunteer.request.update",
-      "volunteer.request.get.by.user.id"
+      "volunteer.request.get.by.user.id",
+      "discussion.create",
+      "discussion.add.message",
+      "discussion.update.message",
+      "discussion.delete.message",
+      "discussion.get.by.relation"
     ]
   },
   "Permissions": [
@@ -66,6 +82,12 @@
     "volunteer.request.approve",
     "volunteer.request.get.unclaimed.requests",
     "volunteer.request.get.by.admin.id",
-    "volunteer.request.get.by.user.id"
+    "volunteer.request.get.by.user.id",
+    "discussion.create",
+    "discussion.close",
+    "discussion.add.message",
+    "discussion.update.message",
+    "discussion.delete.message",
+    "discussion.get.by.relation"
   ]
 }

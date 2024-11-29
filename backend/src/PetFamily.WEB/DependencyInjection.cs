@@ -2,6 +2,7 @@ using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Presentation;
+using PetFamily.Discussions.Application;
 using PetFamily.Discussions.Infrastructure;
 using PetFamily.Discussions.Presentation;
 using PetFamily.Species.Application;
@@ -62,6 +63,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         return services
+            .AddDiscussionsApplication(configuration)
             .AddDiscussionsInfrastructure(configuration)
             .AddDiscussionsPresentation();
     }
