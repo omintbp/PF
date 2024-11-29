@@ -14,6 +14,9 @@ public class DiscussionConfiguration : IEntityTypeConfiguration<Discussion>
 
         builder.HasKey(d => d.Id);
 
+        builder.HasIndex(d => d.RelationId)
+            .IsUnique();
+
         builder.Property(d => d.Id)
             .HasConversion(
                 id => id.Value,

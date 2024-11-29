@@ -9,5 +9,6 @@ public static class Inject
     public static void AddDapperTypeHandlers()
     {
         SqlMapper.AddTypeHandler(new JsonTypeHandler<List<RequisiteDto>>());
+        SqlMapper.AddTypeHandler(new JsonTypeHandler<List<Guid>>());
     }
 }

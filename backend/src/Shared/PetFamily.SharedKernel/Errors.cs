@@ -53,6 +53,13 @@ public static class Errors
 
     public static class Discussion
     {
+        public static Error DiscussionNotActive(Guid? id = null)
+        {
+            var forId = id == null ? "" : $"'{id}'";
+
+            return Error.Failure("discussion.not.active", $"Discussion {forId} is not active");
+        }
+        
         public static Error UserNotInDiscussion(Guid? id = null)
         {
             var forId = id == null ? "" : $"'{id}'";

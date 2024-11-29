@@ -27,12 +27,24 @@ public class DiscussionsRepository(WriteDbContext context)
         CancellationToken cancellationToken = default)
     {
         var discussion = await context.Discussions
+            .Include(d => d.Messages)
             .FirstOrDefaultAsync(v => v.Id == discussionId, cancellationToken);
 
         if (discussion is null)
             return Errors.General.NotFound(discussionId.Value);
 
         return discussion;
+    }
+
+    public async Task<List<Discussion>> GetByRelationId(
+        Guid relationId, CancellationToken cancellationToken = default)
+    {
+        var discussions = await context.Discussions
+            .Include(d => d.Messages)
+            .Where(d => d.RelationId == relationId)
+            .ToListAsync(cancellationToken);
+
+        return discussions;
     }
 
     public async Task<Guid> Delete(

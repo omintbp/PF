@@ -56,13 +56,12 @@ public class TakeVolunteerRequestToReviewCommandHandler : ICommandHandler<Guid, 
             var volunteerRequest = volunteerRequestResult.Value;
 
             var createDiscussionResult = await _discussionsContract.CreateDiscussionHandler(
-                volunteerRequest.UserId,
-                command.AdminId,
+                [volunteerRequest.UserId, command.AdminId],
                 volunteerRequestId.Value,
                 cancellationToken);
 
             if (createDiscussionResult.IsFailure)
-                return createDiscussionResult.Error.ToErrorList();
+                return createDiscussionResult.Error;
 
             var discussionId = createDiscussionResult.Value;
 
