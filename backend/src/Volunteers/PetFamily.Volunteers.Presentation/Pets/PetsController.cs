@@ -12,11 +12,9 @@ using PetFamily.Volunteers.Presentation.Pets.Requests;
 
 namespace PetFamily.Volunteers.Presentation.Pets;
 
-[Authorize]
 public class PetsController : ApplicationController
 {
     [HttpGet]
-    [Permission(Permissions.Pets.ReadPet)]
     public async Task<ActionResult> Get(
         [FromQuery] GetFilteredPetsWithPaginationRequest request,
         [FromServices] IQueryHandler<PagedList<PetDto>, GetFilteredPetsWithPaginationQuery> handler,

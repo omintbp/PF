@@ -41,6 +41,16 @@ public static class Errors
         {
             return Error.Validation("invalid.token", "Access token is invalid");
         }
+
+        public static Error RefreshTokenNotFound()
+        {
+            return Error.Failure("refresh.token.not.found", "Refresh token not found in cookies");
+        }
+        
+        public static Error HttpContextUnavailable()
+        {
+            return Error.Failure("http.context", "Request context unavailable");
+        }
     }
 
     public static class VolunteerRequest

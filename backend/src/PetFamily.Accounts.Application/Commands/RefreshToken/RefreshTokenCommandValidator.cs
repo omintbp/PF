@@ -8,11 +8,6 @@ public class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenComman
 {
     public RefreshTokenCommandValidator()
     {
-        RuleFor(command => command.AccessToken)
-            .NotNull()
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsInvalid());
-        
         RuleFor(command => command.RefreshToken)
             .NotEmpty()
             .WithError(Errors.General.ValueIsInvalid());

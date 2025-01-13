@@ -11,4 +11,10 @@ public interface IRefreshSessionManager
         CancellationToken cancellationToken = default);
 
     void Delete(RefreshSession refreshSession);
+
+    Result<Guid, Error> GetRefreshSessionCookie();
+
+    public UnitResult<Error> SetRefreshSessionCookie(Guid refreshToken);
+
+    public UnitResult<Error> DeleteRefreshSessionCookie();
 }
