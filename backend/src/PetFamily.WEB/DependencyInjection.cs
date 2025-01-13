@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddFramework();
 
         return services;
     }
@@ -76,6 +77,11 @@ public static class DependencyInjection
             .AddVolunteerRequestsInfrastructure(configuration)
             .AddVolunteerRequestsApplication(configuration)
             .AddVolunteerRequestsPresentation();
+    }
+
+    private static IServiceCollection AddFramework(this IServiceCollection services)
+    {
+        return services.AddHttpContextAccessor();
     }
 
     public static IServiceCollection AddSwagger(this IServiceCollection services)

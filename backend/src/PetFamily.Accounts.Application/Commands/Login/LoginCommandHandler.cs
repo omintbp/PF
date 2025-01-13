@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Contracts.Response;
 using PetFamily.Accounts.Domain;
@@ -38,9 +39,11 @@ public class LoginCommandHandler : ICommandHandler<LoginResponse, LoginCommand>
         if (validationResult.IsValid == false)
             return validationResult.ToErrorsList();
 
-        var user = await _userManager.FindByEmailAsync(command.Email);
+        var user = await _userManager.Users.Include(u => u.Roles)
+            .FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken);
+        
         if (user is null)
-            return Errors.General.NotFound().ToErrorList();
+            return Errors.User.InvalidCredentials().ToErrorList();
 
         var passwordConfirmed = await _userManager.CheckPasswordAsync(user, command.Password);
         if (!passwordConfirmed)
@@ -52,8 +55,12 @@ public class LoginCommandHandler : ICommandHandler<LoginResponse, LoginCommand>
             accessToken.Jti,
             cancellationToken);
 
+        var userRoles = user.Roles
+            .Where(r => string.IsNullOrEmpty(r.Name) == false)
+            .Select(r => r.Name!.ToLower());
+
         _logger.LogInformation("Successfully logged in.");
 
-        return new LoginResponse(accessToken.Token, refreshToken);
+        return new LoginResponse(accessToken.Token, refreshToken, user.Id, userRoles);
     }
 }

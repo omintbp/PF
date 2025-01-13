@@ -7,7 +7,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAccountPresentation(this IServiceCollection services)
     {
-        services.AddScoped<IAccountContract, AccountContract>();
+        services.AddScoped<IAccountContract, AccountsContract>();
         return services;
     }
 }

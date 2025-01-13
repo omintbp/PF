@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.Login;
 using PetFamily.Accounts.Application.Commands.RefreshToken;
 using PetFamily.Accounts.Application.Commands.Register;
+using PetFamily.Accounts.Application.Managers;
 using PetFamily.Accounts.Application.Queries.GetUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Contracts.Response;
@@ -12,7 +13,7 @@ using PetFamily.Framework.Extensions;
 
 namespace PetFamily.Accounts.Presentation;
 
-public class AccountController : ApplicationController
+public class AccountsController : ApplicationController
 {
     [HttpPost("register")]
     public async Task<ActionResult> Register(
@@ -39,34 +40,46 @@ public class AccountController : ApplicationController
     public async Task<ActionResult> Login(
         [FromBody] LoginRequest request,
         [FromServices] ICommandHandler<LoginResponse, LoginCommand> handler,
+        [FromServices] IRefreshSessionManager refreshSessionManager,
         CancellationToken cancellationToken = default!)
     {
         var command = new LoginCommand(request.Email, request.Password);
 
         var result = await handler.Handle(command, cancellationToken);
-
         if (result.IsFailure)
             return result.Error.ToResponse();
+
+        var setRefreshSessionCookieResult = refreshSessionManager.SetRefreshSessionCookie(result.Value.RefreshToken);
+        if (setRefreshSessionCookieResult.IsFailure)
+            return setRefreshSessionCookieResult.Error.ToResponse();
 
         return Ok(result.Value);
     }
 
     [HttpPost("refresh")]
     public async Task<ActionResult> RefreshToken(
-        [FromBody] RefreshTokenRequest request,
         [FromServices] ICommandHandler<LoginResponse, RefreshTokenCommand> handler,
+        [FromServices] IRefreshSessionManager refreshSessionManager,
         CancellationToken cancellationToken = default!)
     {
-        var command = new RefreshTokenCommand(request.AccessToken, request.RefreshToken);
+        var getRefreshSessionCookieResult = refreshSessionManager.GetRefreshSessionCookie();
+        if (getRefreshSessionCookieResult.IsFailure)
+            return Unauthorized();
+
+        var command = new RefreshTokenCommand(getRefreshSessionCookieResult.Value);
 
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
 
+        var setRefreshSessionCookieRes = refreshSessionManager.SetRefreshSessionCookie(result.Value.RefreshToken);
+        if (setRefreshSessionCookieRes.IsFailure)
+            return setRefreshSessionCookieRes.Error.ToResponse();
+
         return Ok(result.Value);
     }
-    
+
     [HttpGet("{userId::guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid userId,

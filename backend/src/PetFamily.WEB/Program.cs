@@ -16,6 +16,8 @@ builder.Services.AddSwagger();
 
 builder.Services.AddLogger(builder.Configuration);
 
+builder.Services.AddCors();
+
 builder.Services
     .AddSpeciesModule(builder.Configuration)
     .AddPetsModule(builder.Configuration)
@@ -26,7 +28,7 @@ builder.Services
 builder.Services
     .AddControllers()
     .AddApplicationPart(typeof(VolunteersController).Assembly)
-    .AddApplicationPart(typeof(AccountController).Assembly)
+    .AddApplicationPart(typeof(AccountsController).Assembly)
     .AddApplicationPart(typeof(SpeciesController).Assembly);
 
 Inject.AddDapperTypeHandlers();
@@ -35,6 +37,15 @@ var app = builder.Build();
 
 var accountSeedingService = app.Services.GetRequiredService<AccountsSeeder>();
 await accountSeedingService.Seed();
+
+app.UseCors(corsBuilder =>
+{
+    corsBuilder
+        .SetIsOriginAllowed(p => true)
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .AllowAnyHeader();
+});
 
 app.UseExceptionHandleMiddleware();
 
@@ -47,6 +58,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+
 app.MapControllers();
 
 app.Run();

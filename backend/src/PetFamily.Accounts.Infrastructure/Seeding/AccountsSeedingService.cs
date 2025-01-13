@@ -106,6 +106,8 @@ public class AccountsSeedingService
             await _accountManager.CreateAdminAccount(adminAccount, cancellationToken);
 
             await _unitOfWork.SaveChanges(cancellationToken);
+            
+            await transaction.CommitAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -114,8 +116,6 @@ public class AccountsSeedingService
         }
 
         _logger.LogInformation("Admin account created or updated.");
-
-        transaction.Commit();
     }
 
     private async Task SeedRoles(

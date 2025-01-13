@@ -11,12 +11,12 @@ using PetFamily.SharedKernel.ValueObjects;
 
 namespace PetFamily.Accounts.Presentation;
 
-public class AccountContract : IAccountContract
+public class AccountsContract : IAccountContract
 {
     private readonly IQueryHandler<bool, CheckIfUserHasPermissionQuery> _checkIfUserHasPermissionHandler;
     private readonly ICommandHandler<Guid, CreateVolunteerAccountCommand> _createVolunteerAccountHandler;
 
-    public AccountContract(
+    public AccountsContract(
         ICommandHandler<Guid, CreateVolunteerAccountCommand> createVolunteerAccountHandler,
         IQueryHandler<bool, CheckIfUserHasPermissionQuery> checkIfUserHasPermissionHandler)
     {

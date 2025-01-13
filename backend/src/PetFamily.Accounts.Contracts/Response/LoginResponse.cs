@@ -1,3 +1,7 @@
 namespace PetFamily.Accounts.Contracts.Response;
 
-public record LoginResponse(string AccessToken, Guid RefreshToken);
+public record LoginResponse(
+    string AccessToken,
+    Guid RefreshToken,
+    Guid UserId,
+    IEnumerable<string> Roles);
