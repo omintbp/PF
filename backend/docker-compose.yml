@@ -1,18 +1,29 @@
 ﻿version: '3.9'
 services:
-  db:
-    container_name: postgres_container
+  backend:
+    #image: dmzpp/petfamily-backend:1.0
+    build:
+      context: ./
+      dockerfile: ./src/PetFamily.WEB/Dockerfile
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+      - minio
+      - seq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+
+  postgres:
     image: postgres:latest
     environment:
       POSTGRES_DB: testdb
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     ports:
-      - "5434:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - custom_network
     restart: always
 
   pgadmin:
@@ -25,9 +36,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
-      - db
-    networks:
-      - custom_network
+      - postgres
     restart: always
   
   seq:
@@ -39,7 +48,7 @@ services:
     ports:
       - 5341:5341
       - 8081:80
-      
+  
   minio:
     container_name: minio
     image: minio/minio
@@ -50,10 +59,17 @@ services:
       - minio_data:/data
     command: server --console-address ":9001" /data
     restart: always
-
-networks:
-  custom_network:
-    driver: bridge
+  
+  nginx:
+    image: 'nginx:stable-alpine'
+    links:
+      - backend
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
